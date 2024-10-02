@@ -372,19 +372,19 @@ auto run(Simulation3D const& sim) -> void {
   auto const elapsedAirSec = Seconds(elapsedAir).count();
   auto const elapsedBnSec  = Seconds(elapsedBn).count();
 
-  fmt::println("Air update: {:.6}s, {:.2} Mvox/s", elapsedAirSec, Npts * Nt / 1e6 / elapsedAirSec);
-  fmt::println("Boundary loop: {:.6}s, {:.2} Mvox/s", elapsedBnSec, Nb * Nt / 1e6 / elapsedBnSec);
-  fmt::println("Combined (total): {:.6}s, {:.2} Mvox/s", elapsed, Npts * Nt / 1e6 / elapsed);
+  fmt::println("Air update: {:.6}s, {:.2} Mvox/s", elapsedAirSec, static_cast<double>(Npts * Nt) / 1e6 / elapsedAirSec);
+  fmt::println("Boundary loop: {:.6}s, {:.2} Mvox/s", elapsedBnSec, static_cast<double>(Nb * Nt) / 1e6 / elapsedBnSec);
+  fmt::println("Combined (total): {:.6}s, {:.2} Mvox/s", elapsed, static_cast<double>(Npts * Nt) / 1e6 / elapsed);
 }
 
 } // namespace
 
 auto EngineCPU3D::operator()(Simulation3D const& sim) const -> void {
   switch (sim.precision) {
-    case Precision::Float: return run<float>(sim);
-    case Precision::Double: return run<double>(sim);
-    case Precision::DoubleFloat: return run<Double<float>>(sim);
-    case Precision::DoubleDouble: return run<Double<double>>(sim);
+    case Precision::Float: run<float>(sim); return;
+    case Precision::Double: run<double>(sim); return;
+    case Precision::DoubleFloat: run<Double<float>>(sim); return;
+    case Precision::DoubleDouble: run<Double<double>>(sim); return;
     default: raisef<std::invalid_argument>("invalid precision {}", static_cast<int>(sim.precision));
   }
 }

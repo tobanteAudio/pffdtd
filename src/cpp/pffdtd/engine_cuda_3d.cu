@@ -1403,17 +1403,21 @@ auto run(Simulation3D const& sim) -> void { // NOLINT(readability-function-cogni
   auto const elapsedAirSec      = Seconds(elapsedAir).count();
   auto const elapsedBoundarySec = Seconds(elapsedBoundary).count();
 
-  std::printf("Boundary loop: %.6fs, %.2f Mvox/s\n", elapsedBoundarySec, sim.Nb * sim.Nt / 1e6 / elapsedBoundarySec);
-  std::printf("Air update: %.6fs, %.2f Mvox/s\n", elapsedAirSec, sim.Npts * sim.Nt / 1e6 / elapsedAirSec);
-  std::printf("Combined (total): %.6fs, %.2f Mvox/s\n", elapsedSec, sim.Npts * sim.Nt / 1e6 / elapsedSec);
+  auto const airMvox      = static_cast<double>(sim.Npts * sim.Nt) / 1e6 / elapsedAirSec;
+  auto const boundaryMvox = static_cast<double>(sim.Nb * sim.Nt) / 1e6 / elapsedBoundarySec;
+  auto const totalMvox    = static_cast<double>(sim.Npts * sim.Nt) / 1e6 / elapsedSec;
+
+  std::printf("Air update: %.6fs, %.2f Mvox/s\n", elapsedAirSec, airMvox);
+  std::printf("Boundary loop: %.6fs, %.2f Mvox/s\n", elapsedBoundarySec, boundaryMvox);
+  std::printf("Combined (total): %.6fs, %.2f Mvox/s\n", elapsedSec, totalMvox);
 }
 
 } // namespace
 
 auto EngineCUDA3D::operator()(Simulation3D const& sim) const -> void {
   switch (sim.precision) {
-    case Precision::Float: return run<float>(sim);
-    case Precision::Double: return run<double>(sim);
+    case Precision::Float: run<float>(sim); return;
+    case Precision::Double: run<double>(sim); return;
     default: throw std::invalid_argument("invalid precision " + std::to_string(static_cast<int>(sim.precision)));
   }
 }
