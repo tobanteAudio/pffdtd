@@ -69,18 +69,16 @@ async function createRenderer(obj, update) {
   let scene_container = obj.scene_container;
 
   let renderer = obj.renderer;
-  //console.log(renderer);
   if (!renderer) {
+    THREE.ColorManagement.enabled = true;
+
     // create the renderer (canvas)
     obj.renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer = obj.renderer;
 
     renderer.setSize(scene_container.clientWidth, scene_container.clientHeight);
     renderer.setPixelRatio(window.devicePixelRatio);
-    // renderer.outputEncoding = THREE.LinearSRGBColorSpace;
-
-    // renderer.gammaFactor = 2.2;
-    //renderer.gammaOutput = true;
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
 
     // add the automatically created <canvas> element to the page
     scene_container.appendChild(renderer.domElement);
@@ -318,12 +316,12 @@ async function createModelMesh() {
     );
     mat_geometry.computeVertexNormals();
 
-    let material = new THREE.MeshStandardMaterial({
+    let material = new THREE.MeshBasicMaterial({
       color: new THREE.Color(
         ...geo.mats_hash[mat].color.map(function (c) {
           return c / 255;
         })
-      ),
+      ).convertSRGBToLinear(),
       transparent: true,
       opacity: 0.95,
       side: THREE.BackSide,
