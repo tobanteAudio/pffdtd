@@ -116,12 +116,19 @@ class CartGrid():
         self.print(f'{cg.xyzmin=}')
         self.print(f'{cg.xyzmax=}')
 
-        if cg.fcc:
-            self.print(f'{cg.Npts/(2**28):.3f}GB in two-grid fcc single')
-            self.print(f'{cg.Npts/(2**27):.3f}GB in two-grid fcc double')
+        f32, f64 = self.memory_requirements()
+        grid = 'fcc' if self.fcc else 'cart'
+        self.print(f'{f32:.3f}GB in two-grid {grid} float32')
+        self.print(f'{f64:.3f}GB in two-grid {grid} float64')
+
+    def memory_requirements(self) -> tuple[float, float]:
+        Npts = self.Npts
+        Nbytes = Npts * 8 * 2
+        NGbytes = Nbytes/1e9
+        if self.fcc:
+            return NGbytes/4, NGbytes/2
         else:
-            self.print(f'{cg.Npts/(2**27):.3f}GB in two-grid cart single')
-            self.print(f'{cg.Npts/(2**26):.3f}GB in two-grid cart double')
+            return NGbytes/2, NGbytes
 
     def print(self, fstring):
         print(f'--CART_GRID: {fstring}')
