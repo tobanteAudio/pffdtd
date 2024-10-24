@@ -243,6 +243,7 @@ class RoomGeometry:
                 pass
             # issue with saving settings on successive runs, need some close() function
 
+            ps.set_SSAA_factor(4)
             ps.set_up_dir('z_up')
             # Register a mesh
             for m in range(-1, Nmat):

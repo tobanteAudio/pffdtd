@@ -13,6 +13,8 @@ a.out
 .polyscope.ini
 imgui.ini
 mmap_dat
+/models/CP
+/playground
 
 /venv
 __pycache__# Byte-compiled / optimized / DLL files
