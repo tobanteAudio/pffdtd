@@ -1,11 +1,11 @@
 # SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: 2024 Tobias Hienzsch
 
-default_stages: [commit]
+default_stages: [pre-commit]
 
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.6.0
+    rev: v5.0.0
     hooks:
       - id: check-case-conflict
       - id: check-docstring-first
@@ -22,17 +22,17 @@ repos:
       - id: trailing-whitespace
 
   - repo: https://github.com/hhatto/autopep8
-    rev: v2.3.1
+    rev: v2.3.2
     hooks:
       - id: autopep8
 
   - repo: https://github.com/fsfe/reuse-tool
-    rev: v4.0.3
+    rev: v5.0.2
     hooks:
       - id: reuse
 
   - repo: https://github.com/pre-commit/mirrors-clang-format
-    rev: v19.1.0
+    rev: v19.1.7
     hooks:
       - id: clang-format
         types_or: [c, c++, cuda, metal, objective-c]
