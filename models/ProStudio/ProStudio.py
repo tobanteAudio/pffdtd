@@ -6,7 +6,7 @@ import numpy as np
 
 from pffdtd.absorption.admittance import fit_to_Sabs_oct_11
 from pffdtd.absorption.porous import porous_absorber
-from pffdtd.geometry.math import find_third_vertex, point_along_line
+from pffdtd.geometry.math import find_third_vertex, point_along_line, with_x_offset
 from pffdtd.sim3d.model_builder import MeshModelBuilder
 from pffdtd.sim3d.setup import Setup3D
 
@@ -23,7 +23,7 @@ class ProStudio(Setup3D):
         'Ceiling': 'absorber_8000_200mm_gap_200mm.h5',
         'Console': 'metal_iron.h5',
         'Couch': 'leather_arm_chair.h5',
-        'Diffusor': 'wood.h5',
+        # 'Diffusor': 'wood.h5',
         'Floor': 'wood_on_concrete.h5',
         'Outboard': 'metal_iron.h5',
         'Rack': 'wood.h5',
@@ -33,15 +33,15 @@ class ProStudio(Setup3D):
         'Walls Side': 'absorber_8000_50mm.h5',
         'Windows': 'glas_thick.h5',
     }
-    duration = 1.2
+    duration = 1.5
     Tc = 20
     rh = 50
     fcc = False
     ppw = 7.7
-    fmax = 800.0
+    fmax = 2000.0
     save_folder = '../../sim_data/ProStudio/cpu'
     save_folder_gpu = '../../sim_data/ProStudio/gpu'
-    draw_vox = False
+    draw_vox = True
     draw_backend = 'polyscope'
     compress = 0
     rot_az_el = [0, 0]
@@ -102,30 +102,30 @@ class ProStudio(Setup3D):
         r5 = point_along_line(r2, r1, 0.60)
         r6 = point_along_line(r2, r1, 0.80)
 
-        # # Couch
-        # r2 = r1.copy()
-        # r2[1] = 1.2
-        # r2[2] = 1.3
+        # Couch
+        r2 = r1.copy()
+        r2[1] = 1.2
+        r2[2] = 1.3
 
-        # r3 = with_x_offset(r2, -0.73*1.5)
-        # r4 = with_x_offset(r2, -0.73*0.5)
-        # r5 = with_x_offset(r2, +0.73*0.5)
-        # r6 = with_x_offset(r2, +0.73*1.5)
+        r3 = with_x_offset(r2, -0.73*1.5)
+        r4 = with_x_offset(r2, -0.73*0.5)
+        r5 = with_x_offset(r2, +0.73*0.5)
+        r6 = with_x_offset(r2, +0.73*1.5)
 
         m = MeshModelBuilder()
         m.add('ATC Left', obj / 'atc_left.obj', [5, 5, 5], reverse=True)
         m.add('ATC Right', obj / 'atc_right.obj', [5, 5, 5], reverse=True)
-        m.add('Ceiling', obj / 'ceiling.obj', [60, 60, 60])
+        m.add('Ceiling', obj / 'ceiling.obj', [100, 100, 100])
         m.add('Console', obj / 'console.obj', [60, 60, 60], reverse=True)
         m.add('Couch', obj / 'couch.obj', [5, 5, 48], reverse=True)
-        m.add('Diffusor', obj / 'diffusor.obj', [53, 33, 0], reverse=True)
+        # m.add('Diffusor', obj / 'diffusor.obj', [53, 33, 0], reverse=True)
         m.add('Floor', obj / 'floor.obj', [53, 33, 0])
         m.add('Outboard', obj / 'outboard.obj', [0, 0, 0], reverse=True)
         m.add('Rack', obj / 'rack.obj', [25, 25, 25], reverse=True)
         m.add('Raised Floor', obj / 'raised_floor.obj', [25, 25, 25], reverse=True)
-        m.add('Walls Back', obj / 'walls_back.obj', [100, 100, 100])
-        m.add('Walls Front', obj / 'walls_front.obj', [100, 100, 100])
-        m.add('Walls Side', obj / 'walls_side.obj', [180, 180, 180])
+        m.add('Walls Back', obj / 'walls_back.obj', [207, 207, 207])
+        m.add('Walls Front', obj / 'walls_front.obj', [207, 207, 207])
+        m.add('Walls Side', obj / 'walls_side.obj', [207, 207, 207])
         m.add('Windows', obj / 'windows.obj', [137, 207, 240], reverse=True)
         m.add_source('S1', s1)
         m.add_source('S2', s2)

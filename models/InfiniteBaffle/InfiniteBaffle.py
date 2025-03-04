@@ -8,8 +8,8 @@ from pffdtd.sim3d.setup import Setup3D
 class InfiniteBaffle(Setup3D):
     """Point source on infinite baffle in an anechoic chamber
     """
-    fmax = 4000
-    ppw = 7.7
+    fmax = 2500
+    ppw = 10.5
     fcc = False
     model_file = 'model.json'
     mat_folder = '../../sim_data/InfiniteBaffle/materials'
@@ -24,7 +24,7 @@ class InfiniteBaffle(Setup3D):
     draw_backend = 'polyscope'
     compress = 0
     rot_az_el = [0, 0]
-    bmax = [17.15, 2.0, 17.15]
+    bmax = [10.0, 2.0, 10.0]
     bmin = [0, 0, 0]
 
     def generate_model(self, constants):
@@ -42,7 +42,7 @@ class InfiniteBaffle(Setup3D):
                         [0, 2, 1],
                         [0, 3, 2],
                         [1, 5, 4],
-                        [1, 3, 5]
+                        [1, 2, 5]
                     ],
                     'pts': [
                         [0.0, length, 0.0],
