@@ -14,7 +14,6 @@ a.out
 imgui.ini
 mmap_dat
 /models/CP
-/playground
 
 /venv
 __pycache__# Byte-compiled / optimized / DLL files
