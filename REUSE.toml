@@ -34,7 +34,6 @@ path = [
     "models/ProStudio/model.json",
     "models/Studio/model.json",
     "models/**/*.obj",
-    "playground/*.csv",
 ]
 SPDX-FileCopyrightText = "2024 Tobias Hienzsch"
 SPDX-License-Identifier = "MIT"

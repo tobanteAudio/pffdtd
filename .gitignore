@@ -13,6 +13,7 @@ a.out
 .polyscope.ini
 imgui.ini
 mmap_dat
+/models/Atmos
 /models/CP
 
 /venv
