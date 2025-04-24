@@ -3,7 +3,6 @@
 
 #include "engine_sycl_2d.hpp"
 
-#include "pffdtd/assert.hpp"
 #include "pffdtd/double.hpp"
 #include "pffdtd/exception.hpp"
 #include "pffdtd/print.hpp"
