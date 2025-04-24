@@ -31,13 +31,14 @@ def print_cluster_stats(
     cluster_rental_roi = np.ceil(cluster_price/(cluster_rental_revenue))
 
     print(f'--- {title} ---')
-    print(f'ram    = {device_memory:.0f} GB')
-    print(f'device = {device_count:.0f} x {device_name}')
-    print(f'server = {node_count:.0f} with {devices_per_node}x{device_name}')
-    print(f'price  = ${cluster_price/1e3:.3f} Thousand')
-    print(f'energy = {cluster_power:.3f} kW - ${daily_energy_cost*365/1e3:.2f} Thousand/year')
-    # print(f'rental = ${cluster_rental_revenue*365/1e6:.2f} Million/year')
-    # print(f'roi    = {cluster_rental_roi} days')
+    print(f'ram/dev  = {device_memory:.0f} GB')
+    print(f'ram/node = {device_memory*devices_per_node:.0f} GB')
+    print(f'device   = {device_count:.0f} x {device_name}')
+    print(f'server   = {node_count:.0f} with {devices_per_node}x{device_name}')
+    print(f'price    = ${cluster_price/1e6:.3f} Million')
+    # print(f'energy   = {cluster_power:.3f} kW - ${daily_energy_cost*365/1e3:.2f} Thousand/year')
+    # print(f'rental   = ${cluster_rental_revenue*365/1e6:.3f} Million/year')
+    # print(f'roi      = {cluster_rental_roi} days')
     print('')
 
 
@@ -60,8 +61,8 @@ def missing_notes(fmax):
     print('')
 
     print('--- MISSING ---')
-    print(len(audible_range)-len(sim_range))
-    print(f'{len(sim_range)/len(audible_range)*100:.2f}%')
+    print(f'{len(audible_range)-len(sim_range)}/{len(audible_range)}')
+    print(f'{(len(audible_range)-len(sim_range))/len(audible_range)*100:.2f}%')
     print('')
 
 
@@ -69,9 +70,12 @@ def main():
     bmin = [0, 0, 0]
 
     bmax = [11.2, 7.3, 3.2]
+    bmax = [12, 8, 6]
     bmax = [9, 7, 5]
-    bmax = [20, 20, 10]
-    fmax = 3_000.0
+    bmax = [6, 3.65, 3.12]  # Tobi Office
+    bmax = [17, 15, 9]
+    bmax = [7, 8, 3.2]
+    fmax = 20_000.0
     ppw = 10.5
     fcc = False
 
@@ -79,24 +83,25 @@ def main():
     # bmax = [300, 250, 75]  # Generic Stadium
     # bmax = [100, 100, 60]  # Generic Arena
     # bmax = [315, 280, 133]  # Wembley
-    # fmax = 10_000.0
+    # fmax = 20_000.0
     # ppw = 3.21
     # fcc = False
 
     constants = SimConstants(20, 50, fmax=fmax, PPW=ppw, fcc=fcc)
     grid = CartGrid(constants.h, 3.0, bmin, bmax, fcc)
-    _, ram_f64 = grid.memory_requirements()
+    ram_f32, ram_f64 = grid.memory_requirements()
 
     missing_notes(fmax)
 
     print('--- GENERAL ---')
-    print(f'memory = {ram_f64:.3f} GB')
-    print(f'memory = {ram_f64/1000:.3f} TB')
+    print(f'float32 = {ram_f32:.3f} GB / {ram_f32/1e3:.3f} TB')
+    print(f'float64 = {ram_f64:.3f} GB / {ram_f64/1e3:.3f} TB')
     print('')
 
-    print_cluster_stats(ram_f64, 'NVIDIA', 'H200', 141, 8, 700*8+1000, 300000, 20)
-    print_cluster_stats(ram_f64, 'AMD', 'MI325X', 256, 8, 750*8+1000, 20000*8+10000, 20)
-    print_cluster_stats(ram_f64, 'CPU', 'EPYC 9005F', 32*12, 2, 2600, 20300, 3.5)
+    print_cluster_stats(ram_f64, 'NVIDIA', 'H200', 141, 8, 700*8+2500, 300000, 30)
+    print_cluster_stats(ram_f64, 'AMD', 'MI325X', 256, 8, 1000*8+2500, 20000*8+10000, 20)
+    print_cluster_stats(ram_f64, 'CPU', 'EPYC 9005F', 64*12, 2, 2600, 28000, 6.0)
 
 
-main()
+if __name__ == '__main__':
+    main()
