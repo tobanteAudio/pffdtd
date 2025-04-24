@@ -1,11 +1,11 @@
 # SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: 2025 Tobias Hienzsch
-
-
+import click
 from decimal import Decimal
 import numpy as np
 
 
+@click.command(name='precision', help='Float precision')
 def main():
     for bits in [8, 16, 24, 32, 64, 128, 256]:
         dynamic_range = (Decimal(2)**bits).log10()*20
@@ -23,7 +23,3 @@ def main():
     print()
     print(f'16-bit step-size: {20.0*np.log10(1+(2.0/(2**16))):.10f}dB')
     print(f'24-bit step-size: {20.0*np.log10(1+(2.0/(2**24))):.10f}dB')
-
-
-if __name__ == '__main__':
-    main()

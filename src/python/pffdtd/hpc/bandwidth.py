@@ -1,8 +1,10 @@
 # SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: 2025 Tobias Hienzsch
+import click
 import pandas as pd
 
 
+@click.command(name='bandwidth', help='RAM Bandwidth')
 def main():
     speed = 5600
     pumps = 2
@@ -99,7 +101,3 @@ def main():
     df = pd.DataFrame.from_records(devices)
     df['Memory/Cost'] = df['System GB']/(df['System Cost']/1e3)
     print(df.to_markdown(index=False))
-
-
-if __name__ == '__main__':
-    main()

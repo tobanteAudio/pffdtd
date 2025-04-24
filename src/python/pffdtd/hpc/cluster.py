@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: 2025 Tobias Hienzsch
-
+import click
 import numpy as np
 
 from pffdtd.sim3d.constants import SimConstants
@@ -66,6 +66,7 @@ def missing_notes(fmax):
     print('')
 
 
+@click.command(name='cluster', help='Multi-node clusters')
 def main():
     bmin = [0, 0, 0]
 
@@ -101,7 +102,3 @@ def main():
     print_cluster_stats(ram_f64, 'NVIDIA', 'H200', 141, 8, 700*8+2500, 300000, 30)
     print_cluster_stats(ram_f64, 'AMD', 'MI325X', 256, 8, 1000*8+2500, 20000*8+10000, 20)
     print_cluster_stats(ram_f64, 'CPU', 'EPYC 9005F', 64*12, 2, 2600, 28000, 6.0)
-
-
-if __name__ == '__main__':
-    main()
