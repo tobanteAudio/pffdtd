@@ -1,13 +1,12 @@
 # SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: 2024 Tobias Hienzsch
 
-import glob
-import os
 import pathlib
 
 import click
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 from scipy.signal import find_peaks, windows
 from scipy.io import wavfile
 
@@ -47,8 +46,7 @@ def hz_to_note(frequency):
     return f"{note_name}{octave}"
 
 
-def room_mode(L, W, H, m, n, p):
-    c = 343
+def room_mode(L, W, H, m, n, p, c=343):
     return c*0.5*np.sqrt((m/L)**2 + (n/W)**2 + (p/H)**2)
 
 
@@ -61,7 +59,7 @@ def room_mode_kind(m, n, p):
     return 'oblique'
 
 
-def room_modes(L, W, H, max_order=6):
+def room_modes(L, W, H, max_order=6, c=343):
     modes = []
     for m in range(max_order+1):
         for n in range(max_order+1):
@@ -71,7 +69,8 @@ def room_modes(L, W, H, max_order=6):
                         'm': m,
                         'n': n,
                         'p': p,
-                        'frequency': room_mode(L, W, H, m, n, p)
+                        'frequency': room_mode(L, W, H, m, n, p, c=c),
+                        'kind': room_mode_kind(m, n, p)
                     })
 
     return sorted(modes, key=lambda x: x['frequency'])
@@ -117,7 +116,7 @@ def detect_room_modes(
     S = 2*(L*W+L*H+W*H)
 
     max_order = 8
-    modes = room_modes(L, W, H, max_order=max_order)[:25]
+    modes = room_modes(L, W, H, max_order=max_order, c=343.20)[:25]
 
     print(f"{L=:.3f}m {W=:.3f}m {H=:.3f}m")
     print(f"{A=:.2f}m^2 {S=:.2f}m^2 {V=:.2f}m^3")
@@ -170,11 +169,19 @@ def detect_room_modes(
             plt.plot(measured_mode_freqs, dB[peaks], 'r.',
                      markersize=10, label='Peaks')
 
+        errors = []
         for mode in calculated_mode_freqs:
             nearest = find_nearest(measured_mode_freqs, mode)
             error = mode-nearest
             error_pct = np.abs(error)/mode*100
-            print(f"{mode=:03.3f} Hz - {nearest=:03.3f} Hz = {error:03.3f} Hz / {error_pct:.3f} %")
+            errors.append({
+                'Mode Hz': round(mode, 3),
+                'Nearest Peak Hz': round(nearest, 3),
+                'Error Hz': round(error, 3),
+                'Error %': round(error_pct, 3),
+            })
+
+        print(pd.DataFrame.from_records(errors).to_markdown(index=False))
 
     plt.title('')
     plt.xlabel('Frequency [Hz]')

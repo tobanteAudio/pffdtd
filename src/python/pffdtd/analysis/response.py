@@ -104,7 +104,7 @@ def main(filename, fmin, fmax, label_a, label_b, smoothing, target):
     ax[1].semilogx(freqs, difference, linestyle='-', label=label)
     if target != 0.0:
         ax[1].hlines(target, fmin, fmax, linestyle='--',
-                     label=f"Target {target} dB")
+                     label=f"Target {target} dB", color='red')
     ax[1].set_title('Difference')
     ax[1].set_xlabel('Frequency [Hz]')
     ax[1].set_ylabel('Amplitude [dB]')
