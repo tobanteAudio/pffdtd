@@ -11,7 +11,7 @@ import pandas as pd
 
 def load_database(path):
     def column_filter(col):
-        if type(col) == str:
+        if isinstance(col, str):
             col = col.strip()
             if col in ['No.', 'description', 'type', 'trade name', 'layer thickness', 'flow resistance', 'character of absorption', 'reference']:
                 return True

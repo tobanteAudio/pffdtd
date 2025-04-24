@@ -15,8 +15,8 @@ class TimerDict:
         self.t = {}  # to check toc'ed
 
     def __del__(self):
-        for key in self.t.keys():
-            if not self.t[key]:
+        for key, val in self.t.items():
+            if not val:
                 print(f'TimerDict: "{key}" never toc\'ed')
 
     # tic (start)
@@ -29,7 +29,7 @@ class TimerDict:
 
     # toc and print
     def toc(self, key=0, print_elapsed=True):
-        assert key in self.d.keys()
+        assert key in self.d
         delta = time.time()-self.d[key]
         self.t[key] = True
         if print_elapsed:
@@ -38,13 +38,13 @@ class TimerDict:
 
     # toc and pass back f-string
     def ftoc(self, key=0):
-        assert key in self.d.keys()
+        assert key in self.d
         delta = time.time()-self.d[key]
         self.t[key] = True
         return f'** TIMED {key}: elapsed = {delta:.4f} s'
 
     # toc quietly
     def tocq(self, key=0):
-        assert key in self.d.keys()
+        assert key in self.d
         self.t[key] = True
         return time.time()-self.d[key]

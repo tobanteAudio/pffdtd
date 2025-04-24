@@ -32,7 +32,7 @@ class CartGrid():
             Nx += (Nx % 2)
             Ny += (Ny % 2)
             Nz += (Nz % 2)
-            self.print(f'To use FCC subgrid')
+            self.print('To use FCC subgrid')
 
         # grid vectors
         xv, yv, zv = np.ogrid[0.:Nx, 0.:Ny, 0.:Nz]
@@ -127,8 +127,7 @@ class CartGrid():
         NGbytes = Nbytes/1e9
         if self.fcc:
             return NGbytes/4, NGbytes/2
-        else:
-            return NGbytes/2, NGbytes
+        return NGbytes/2, NGbytes
 
     def print(self, fstring):
         print(f'--CART_GRID: {fstring}')

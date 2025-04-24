@@ -117,7 +117,7 @@ class VoxGridBase:
 
             if Nprocs == 1:  # keep separate for debug purposes
                 # process without intermediate files
-                pbar = tqdm(total=Nvox, desc=f'single process voxgrid processing', ascii=True, leave=False)
+                pbar = tqdm(total=Nvox, desc='single process voxgrid processing', ascii=True, leave=False)
                 for vox_idx in range(Nvox):
                     vox = self.voxels[vox_idx]
                     tri_idxs_vox = process_voxel(vox)

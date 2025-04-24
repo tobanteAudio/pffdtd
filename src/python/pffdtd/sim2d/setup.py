@@ -9,7 +9,6 @@ import numpy as np
 from scipy.signal import lfilter
 
 from pffdtd.absorption.admittance import convert_R_to_Yn
-from pffdtd.geometry.math import to_ixy
 from pffdtd.sim3d.constants import SimConstants
 
 

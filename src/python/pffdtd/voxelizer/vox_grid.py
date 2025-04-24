@@ -99,7 +99,7 @@ class VoxGrid(VoxGridBase):
         vix = 0
         Nvx, Nvy, Nvz = Nvox_xyz
 
-        pbar = tqdm(total=np.prod(Nvox_xyz), desc=f'vox grid init', ascii=True, leave=False, position=0)
+        pbar = tqdm(total=np.prod(Nvox_xyz), desc='vox grid init', ascii=True, leave=False, position=0)
         for vix in range(Nvx):
             ix_start = vix*Nh
             if vix < Nvx-1:

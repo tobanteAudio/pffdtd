@@ -4,7 +4,7 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
-import scipy.signal as signal
+from scipy import signal
 
 
 def low_pass(fc, Q, fs):
@@ -75,7 +75,8 @@ def low_pass_sos(x, N, fc, fs):
 
 def peak_filter(fc, gain, Q, fs):
     assert fs > 0
-    assert fc > 0 and fc <= fs * 0.5
+    assert fc > 0
+    assert fc <= fs * 0.5
     assert Q > 0
     assert gain > 0
 

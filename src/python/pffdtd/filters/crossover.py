@@ -3,7 +3,7 @@
 
 import matplotlib.pyplot as plt
 import numpy as np
-import scipy.signal as signal
+from scipy import signal
 
 
 def linkwitz_riley_sos_filter(fc, fs, order=2):

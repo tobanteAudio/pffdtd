@@ -69,7 +69,7 @@ class VoxScene:
             self.VV = npa([[+1., +1, 0], [-1, -1, 0], [0, +1, +1], [0, -1, -1], [+1, 0, +1], [-1, 0, -1],
                            [+1, -1, 0], [-1, +1, 0], [0, +1, -1], [0, -1, +1], [+1, 0, -1], [-1, 0, +1]])
             self.uvv = self.VV/np.sqrt(2.0)  # normalised
-            self.print(f'Using FCC subgrid')
+            self.print('Using FCC subgrid')
 
         self.vvh = h * self.VV
         self.fcc = fcc
@@ -321,7 +321,7 @@ class VoxScene:
         ndist_bn = np.full((Nbt,), np.inf, dtype=np.float64)
 
         # consolidate now with single process
-        pbar = tqdm(total=Nvox_nonempty, desc=f'process 0: consolidate', ascii=True, leave=False, position=0)
+        pbar = tqdm(total=Nvox_nonempty, desc='process 0: consolidate', ascii=True, leave=False, position=0)
         bb = 0  # boundary point counter
         for idx in range(Nvox_nonempty):
             vox_idx = vg.nonempty_idx[idx]

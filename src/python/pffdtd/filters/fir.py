@@ -2,9 +2,6 @@
 # SPDX-FileCopyrightText: 2025 Tobias Hienzsch
 
 
-import numpy as np
-
-
 def main():
     fs = 96000
     taps = 3072*2+1
