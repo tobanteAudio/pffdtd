@@ -2,13 +2,15 @@
 # SPDX-FileCopyrightText: 2024 Tobias Hienzsch
 import json
 
+import numpy as np
+
 from pffdtd.sim3d.setup import Setup3D
 
 
 class InfiniteBaffle(Setup3D):
     """Point source on infinite baffle in an anechoic chamber
     """
-    fmax = 2500
+    fmax = 1000
     ppw = 10.5
     fcc = False
     model_file = 'model.json'
@@ -20,11 +22,11 @@ class InfiniteBaffle(Setup3D):
     rh = 50
     save_folder = '../../sim_data/InfiniteBaffle/cpu'
     save_folder_gpu = '../../sim_data/InfiniteBaffle/gpu'
-    draw_vox = True
+    draw_vox = False
     draw_backend = 'polyscope'
     compress = 0
     rot_az_el = [0, 0]
-    bmax = [10.0, 2.0, 10.0]
+    bmax = [343/5, 2.0, 343/5]
     bmin = [0, 0, 0]
 
     def generate_model(self, constants):
@@ -67,6 +69,12 @@ class InfiniteBaffle(Setup3D):
                 {'name': 'R5', 'xyz': [width/2, offset, height/2 + 0.75]},
             ]
         }
+
+        src = np.array(model['sources'][0]['xyz'])
+        ref = np.linalg.norm(src - np.array(model['receivers'][0]['xyz']))
+        for r in model['receivers']:
+            distance = np.linalg.norm(src - np.array(r['xyz']))
+            print(r['name'], 20*np.log10(ref/distance))
 
         with open(self.model_file, 'w') as file:
             json.dump(model, file)

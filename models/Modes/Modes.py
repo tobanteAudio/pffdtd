@@ -18,12 +18,12 @@ class Modes(Setup3D):
         'Floor': 'sabine_03.h5',
         'Walls': 'sabine_03.h5',
     }
-    duration = 3.75
+    duration = 7.0
     Tc = 20
     rh = 50
     fcc = False
     ppw = 10.5
-    fmax = 800.0
+    fmax = 1000.0
     save_folder = '../../sim_data/Modes/cpu'
     save_folder_gpu = '../../sim_data/Modes/gpu'
     compress = 0
@@ -40,9 +40,9 @@ class Modes(Setup3D):
 
     def generate_model(self, constants):
         self._print('Generate model')
-        width = 2.0
-        length = 3.0
-        height = 4.0
+        width = 3.65
+        length = 6.0
+        height = 3.12
 
         mul = 3.5 if self.fcc else 2.0
         offset = constants.h * mul
