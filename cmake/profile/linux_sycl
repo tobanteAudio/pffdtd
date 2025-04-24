@@ -3,11 +3,11 @@ arch=x86_64
 os=Linux
 compiler=intel-cc
 compiler.mode=icx
-compiler.version=2024.2
+compiler.version=2025.1
 compiler.cppstd=20
 build_type=Release
 
 [conf]
 tools.intel:installation_path=/opt/intel/oneapi
 tools.cmake.cmaketoolchain:generator=Ninja
-tools.build:compiler_executables={"c":"/opt/intel/oneapi/compiler/2024.2/bin/icx","cpp":"/opt/intel/oneapi/compiler/2024.2/bin/icpx"}
+tools.build:compiler_executables={"c":"/opt/intel/oneapi/compiler/2025.1/bin/icx","cpp":"/opt/intel/oneapi/compiler/2025.1/bin/icpx"}
