@@ -63,10 +63,13 @@ def tetrahedron_microphone_array(mic_positions, mic_sigs, fs, c=343.0, verbose=F
         print(f"TDOA between Mic3 and Mic4: {tdoa_34*1000:.4f} ms")
 
     tdoas = np.array([tdoa_12, tdoa_13, tdoa_14, tdoa_23, tdoa_24, tdoa_34])
-    initial_guess = np.array([1.25, 2.0, 1.6])
+
+    # initial_guess = np.array([1.25, 2.0, 1.6])
     # initial_guess = np.array([1, 1, 1])
+    initial_guess = np.array([2.0, 2.0, 2.0])
 
     args = (mic_positions, tdoas, c)
+    result = minimize(tdoa_residuals, initial_guess, args=args, tol=1e-10)
     # result = minimize(tdoa_residuals, initial_guess, args=args, tol=1e-10, bounds=[(-1, 4), (-1, 4), (-1, 4)])
     # result = differential_evolution(
     #     tdoa_residuals,
@@ -80,15 +83,15 @@ def tetrahedron_microphone_array(mic_positions, mic_sigs, fs, c=343.0, verbose=F
     #     # disp=True,
     # )
 
-    result = basinhopping(
-        tdoa_residuals,
-        x0=initial_guess,
-        minimizer_kwargs={'args': args},
-        # stepsize=0.001,
-        niter=1000,
-        # T=0.001,
-        # disp=True,
-    )
+    # result = basinhopping(
+    #     tdoa_residuals,
+    #     x0=initial_guess,
+    #     minimizer_kwargs={'args': args},
+    #     # stepsize=0.001,
+    #     niter=1000,
+    #     # T=0.001,
+    #     # disp=True,
+    # )
 
     return result.x
 

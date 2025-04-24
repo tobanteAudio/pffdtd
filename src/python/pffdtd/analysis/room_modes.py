@@ -4,6 +4,7 @@
 import pathlib
 
 import click
+import h5py
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -107,6 +108,9 @@ def detect_room_modes(
     if not paths:
         paths = collect_wav_files(directory, '*_out_normalised.wav')
 
+    constants = h5py.File(sim_dir / 'constants.h5', 'r')
+    c = float(constants['c'][...])
+
     L = length
     W = width
     H = height
@@ -116,7 +120,7 @@ def detect_room_modes(
     S = 2*(L*W+L*H+W*H)
 
     max_order = 8
-    modes = room_modes(L, W, H, max_order=max_order, c=343.20)[:25]
+    modes = room_modes(L, W, H, max_order=max_order, c=c)[:25]
 
     print(f"{L=:.3f}m {W=:.3f}m {H=:.3f}m")
     print(f"{A=:.2f}m^2 {S=:.2f}m^2 {V=:.2f}m^3")

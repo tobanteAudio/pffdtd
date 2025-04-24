@@ -17,7 +17,7 @@ from pffdtd.sim3d.process_outputs import process_outputs
     'room,fmax,ppw,fcc,dx_scale,tolerance_pct',
     [
         ((2.8, 2.076, 1.48), 400, 10.5, False, 2, 1.7),
-        ((3.0, 1.0, 2.0), 600, 7.7, True, 3, 3.8),
+        ((3.0, 1.0, 2.0), 800, 7.75, True, 3, 3.8),
     ]
 )
 def test_sim3d_detect_room_modes(tmp_path, engine, room, fmax, ppw, fcc, dx_scale, tolerance_pct):
