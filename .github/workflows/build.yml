@@ -136,7 +136,7 @@ jobs:
           gcovr --xml-pretty --exclude-unreachable-branches --exclude-throw-branches -r src -s build -o build/coverage.xml
 
       - name: Upload coverage report
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           fail_ci_if_error: true
