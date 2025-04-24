@@ -1,9 +1,6 @@
 # SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: 2025 Tobias Hienzsch
-
-
-import sys
-
+import click
 import numpy as np
 import pandas as pd
 
@@ -50,7 +47,9 @@ def efficiency(fs, Qes, Vas, c=343.2):
     return n0
 
 
-def main():
+@click.command(name='ts', help='Thiele/Small parameters')
+@click.argument('drivers_csv', nargs=1, type=click.Path(exists=True))
+def main(drivers_csv):
     # # RSS315HFA-8
     # Cms = 0.00027
     # Mms = 0.194
@@ -94,7 +93,7 @@ def main():
     # print(f'{Zmax=:.3f} Ohm')
     # print(f'n0={n0*100:.4f} %')
 
-    drivers = pd.read_csv(sys.argv[1], encoding='utf-8')
+    drivers = pd.read_csv(drivers_csv, encoding='utf-8')
     drivers = drivers[drivers['Type'] == 'Midrange']
     drivers = drivers.drop(columns=['fmin', 'fmax', 'f1', 'f2', 'F3_sealed', 'F3_ported', 'Volume_sealed', 'Volume_ported'])
 
@@ -109,7 +108,3 @@ def main():
     # print(drivers[['Name', 'n0_prime']].to_string(na_rep='', index=False))
     drivers.sort_values('Price', inplace=True, ascending=False)
     print(drivers.to_string(na_rep='', index=False))
-
-
-if __name__ == '__main__':
-    main()

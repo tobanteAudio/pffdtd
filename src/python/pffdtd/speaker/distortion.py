@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: 2025 Tobias Hienzsch
+import click
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -260,6 +261,7 @@ bc_14na100_104db = [
 ]
 
 
+@click.command(name='distortion', help='Driver distortion')
 def main():
     freqs_volt5 = np.asarray([f for f, _ in volt_vm_572_94db])
     dist_volt5 = np.asarray([d for _, d in volt_vm_572_94db])
@@ -342,7 +344,3 @@ def main():
     plt.show()
 
     print(mix_sig[(fftfreqs > 100.0) & (fftfreqs < 10000.0)].mean())
-
-
-if __name__ == '__main__':
-    main()

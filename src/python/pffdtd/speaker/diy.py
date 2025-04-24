@@ -1,27 +1,12 @@
 # SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: 2025 Tobias Hienzsch
-
-
-import numpy as np
+import click
 import pandas as pd
 
-
-def volts_to_dB(V, Vref=1.0):
-    return 20*np.log10(V/Vref)
+from pffdtd.common.voltage import dBV_to_volts, dBu_to_dBV
 
 
-def dBV_to_volts(dBV):
-    return 10**(dBV/20)
-
-
-def dBV_to_dBu(dBV):
-    return dBV + 20*np.log10(1/0.7746)
-
-
-def dBu_to_dBV(dBu):
-    return dBu - 20*np.log10(1/0.7746)
-
-
+@click.command(name='diy', help='DIY Speakers')
 def main():
     dayton_audio_rss315 = 315
     dayton_audio_rss390 = 390
@@ -122,12 +107,8 @@ def main():
     crossover_dac_dBu = 16
 
     print('------------------')
-    print(f'Interface DAC = {dBV_to_volts(dBu_to_dBV(interface_dac_dBu))}')
-    print(f'Crossover ADC = {dBV_to_volts(dBu_to_dBV(crossover_adc_dBu))}')
-    print(f'Crossover DAC = {dBV_to_volts(dBu_to_dBV(crossover_dac_dBu))}')
-    print(f'Crossover DAC = {dBV_to_volts(dBu_to_dBV(3.5))}')
-    print(f'Crossover DAC = {dBV_to_volts(dBu_to_dBV(4))}')
-
-
-if __name__ == '__main__':
-    main()
+    print(f'Interface DAC = {dBV_to_volts(dBu_to_dBV(interface_dac_dBu)):.2f} V')
+    print(f'Crossover ADC = {dBV_to_volts(dBu_to_dBV(crossover_adc_dBu)):.2f} V')
+    print(f'Crossover DAC = {dBV_to_volts(dBu_to_dBV(crossover_dac_dBu)):.2f} V')
+    print(f'Crossover DAC = {dBV_to_volts(dBu_to_dBV(3.5)):.2f} V')
+    print(f'Crossover DAC = {dBV_to_volts(dBu_to_dBV(4)):.2f} V')
