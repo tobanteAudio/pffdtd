@@ -1314,19 +1314,21 @@ auto run(Simulation3D const& sim) -> void { // NOLINT(readability-function-cogni
       elapsedAir += elapsedSampleAir;
       elapsedBoundary += elapsedSampleBoundary;
 
-      print(ProgressReport{
-          .n                     = n,
-          .Nt                    = sim.Nt,
-          .Npts                  = sim.Npts,
-          .Nb                    = sim.Nb,
-          .elapsed               = elapsed,
-          .elapsedSample         = elapsedSample,
-          .elapsedAir            = elapsedAir,
-          .elapsedSampleAir      = elapsedSampleAir,
-          .elapsedBoundary       = elapsedBoundary,
-          .elapsedSampleBoundary = elapsedSampleBoundary,
-          .numWorkers            = ngpus,
-      });
+      print(
+          ProgressReport{
+              .n                     = n,
+              .Nt                    = sim.Nt,
+              .Npts                  = sim.Npts,
+              .Nb                    = sim.Nb,
+              .elapsed               = elapsed,
+              .elapsedSample         = elapsedSample,
+              .elapsedAir            = elapsedAir,
+              .elapsedSampleAir      = elapsedSampleAir,
+              .elapsedBoundary       = elapsedBoundary,
+              .elapsedSampleBoundary = elapsedSampleBoundary,
+              .numWorkers            = ngpus,
+          }
+      );
     }
   }
   std::printf("\n");

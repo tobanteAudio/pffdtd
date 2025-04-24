@@ -332,19 +332,21 @@ auto run(Simulation3D const& sim) -> void {
     auto const elapsedBoundarySample = elapsedTime(boundaryStartEvent, boundaryEndEvent);
     elapsedBoundary += elapsedBoundarySample;
 
-    print(ProgressReport{
-        .n                     = n,
-        .Nt                    = Nt,
-        .Npts                  = Npts,
-        .Nb                    = Nb,
-        .elapsed               = elapsed,
-        .elapsedSample         = elapsedSample,
-        .elapsedAir            = elapsedAir,
-        .elapsedSampleAir      = elapsedAirSample,
-        .elapsedBoundary       = elapsedBoundary,
-        .elapsedSampleBoundary = elapsedBoundarySample,
-        .numWorkers            = 1,
-    });
+    print(
+        ProgressReport{
+            .n                     = n,
+            .Nt                    = Nt,
+            .Npts                  = Npts,
+            .Nb                    = Nb,
+            .elapsed               = elapsed,
+            .elapsedSample         = elapsedSample,
+            .elapsedAir            = elapsedAir,
+            .elapsedSampleAir      = elapsedAirSample,
+            .elapsedBoundary       = elapsedBoundary,
+            .elapsedSampleBoundary = elapsedBoundarySample,
+            .numWorkers            = 1,
+        }
+    );
   }
 
   // Copy output to host

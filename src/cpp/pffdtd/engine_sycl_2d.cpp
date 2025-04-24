@@ -204,19 +204,21 @@ auto run(Simulation2D const& sim) {
     auto const elapsedBoundarySample = elapsedTime(boundaryStartEvent, boundaryEndEvent);
     elapsedBoundary += elapsedBoundarySample;
 
-    print(ProgressReport{
-        .n                     = n,
-        .Nt                    = Nt,
-        .Npts                  = Npts,
-        .Nb                    = static_cast<int64_t>(Nb),
-        .elapsed               = elapsed,
-        .elapsedSample         = elapsedSample,
-        .elapsedAir            = elapsedAir,
-        .elapsedSampleAir      = elapsedAirSample,
-        .elapsedBoundary       = elapsedBoundary,
-        .elapsedSampleBoundary = elapsedBoundarySample,
-        .numWorkers            = 1,
-    });
+    print(
+        ProgressReport{
+            .n                     = n,
+            .Nt                    = Nt,
+            .Npts                  = Npts,
+            .Nb                    = static_cast<int64_t>(Nb),
+            .elapsed               = elapsed,
+            .elapsedSample         = elapsedSample,
+            .elapsedAir            = elapsedAir,
+            .elapsedSampleAir      = elapsedAirSample,
+            .elapsedBoundary       = elapsedBoundary,
+            .elapsedSampleBoundary = elapsedBoundarySample,
+            .numWorkers            = 1,
+        }
+    );
   }
 
   auto outputs = stdex::mdarray<double, stdex::dextents<size_t, 2>>(Nr, Nt);

@@ -262,19 +262,21 @@ auto run(Simulation3D const& sim) {
       auto const elapsed       = now - start;
       auto const elapsedSample = now - sampleStart;
 
-      print(ProgressReport{
-          .n                     = n,
-          .Nt                    = Nt,
-          .Npts                  = Npts,
-          .Nb                    = Nb,
-          .elapsed               = elapsed,
-          .elapsedSample         = elapsedSample,
-          .elapsedAir            = {},
-          .elapsedSampleAir      = {},
-          .elapsedBoundary       = {},
-          .elapsedSampleBoundary = {},
-          .numWorkers            = 1,
-      });
+      print(
+          ProgressReport{
+              .n                     = n,
+              .Nt                    = Nt,
+              .Npts                  = Npts,
+              .Nb                    = Nb,
+              .elapsed               = elapsed,
+              .elapsedSample         = elapsedSample,
+              .elapsedAir            = {},
+              .elapsedSampleAir      = {},
+              .elapsedBoundary       = {},
+              .elapsedSampleBoundary = {},
+              .numWorkers            = 1,
+          }
+      );
     }
 
     float* output = (float*)[u_out contents];

@@ -127,19 +127,21 @@ auto run(Simulation2D const& sim) {
     elapsedAir += elapsedAirSample;
     elapsedBoundary += elapsedBoundarySample;
 
-    print(ProgressReport{
-        .n                     = n,
-        .Nt                    = Nt,
-        .Npts                  = Nx * Ny,
-        .Nb                    = Nb,
-        .elapsed               = elapsed,
-        .elapsedSample         = elapsedSample,
-        .elapsedAir            = elapsedAir,
-        .elapsedSampleAir      = elapsedAirSample,
-        .elapsedBoundary       = elapsedBoundary,
-        .elapsedSampleBoundary = elapsedBoundarySample,
-        .numWorkers            = numWorkers,
-    });
+    print(
+        ProgressReport{
+            .n                     = n,
+            .Nt                    = Nt,
+            .Npts                  = Nx * Ny,
+            .Nb                    = Nb,
+            .elapsed               = elapsed,
+            .elapsedSample         = elapsedSample,
+            .elapsedAir            = elapsedAir,
+            .elapsedSampleAir      = elapsedAirSample,
+            .elapsedBoundary       = elapsedBoundary,
+            .elapsedSampleBoundary = elapsedBoundarySample,
+            .numWorkers            = numWorkers,
+        }
+    );
   }
 
   fmt::println("");

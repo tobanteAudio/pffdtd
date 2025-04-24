@@ -162,19 +162,21 @@ auto run(Simulation2D const& sim) {
       auto const elapsed       = now - start;
       auto const elapsedSample = now - sampleStart;
 
-      print(ProgressReport{
-          .n                     = n,
-          .Nt                    = Nt,
-          .Npts                  = Npts,
-          .Nb                    = Nb,
-          .elapsed               = elapsed,
-          .elapsedSample         = elapsedSample,
-          .elapsedAir            = {},
-          .elapsedSampleAir      = {},
-          .elapsedBoundary       = {},
-          .elapsedSampleBoundary = {},
-          .numWorkers            = 1,
-      });
+      print(
+          ProgressReport{
+              .n                     = n,
+              .Nt                    = Nt,
+              .Npts                  = Npts,
+              .Nb                    = Nb,
+              .elapsed               = elapsed,
+              .elapsedSample         = elapsedSample,
+              .elapsedAir            = {},
+              .elapsedSampleAir      = {},
+              .elapsedBoundary       = {},
+              .elapsedSampleBoundary = {},
+              .numWorkers            = 1,
+          }
+      );
     }
 
     auto outputs_f64 = stdex::mdarray<double, stdex::dextents<size_t, 2>>(Nr, Nt);

@@ -351,19 +351,21 @@ auto run(Simulation3D const& sim) -> void {
     auto const elapsed       = now - startTime;
     auto const elapsedSample = now - sampleStartTime;
 
-    print(ProgressReport{
-        .n                     = n,
-        .Nt                    = Nt,
-        .Npts                  = Npts,
-        .Nb                    = Nb,
-        .elapsed               = elapsed,
-        .elapsedSample         = elapsedSample,
-        .elapsedAir            = elapsedAir,
-        .elapsedSampleAir      = elapsedSampleAir,
-        .elapsedBoundary       = elapsedBn,
-        .elapsedSampleBoundary = elapsedSampleBn,
-        .numWorkers            = numWorkers,
-    });
+    print(
+        ProgressReport{
+            .n                     = n,
+            .Nt                    = Nt,
+            .Npts                  = Npts,
+            .Nb                    = Nb,
+            .elapsed               = elapsed,
+            .elapsedSample         = elapsedSample,
+            .elapsedAir            = elapsedAir,
+            .elapsedSampleAir      = elapsedSampleAir,
+            .elapsedBoundary       = elapsedBn,
+            .elapsedSampleBoundary = elapsedSampleBn,
+            .numWorkers            = numWorkers,
+        }
+    );
   }
   fmt::println("");
 
