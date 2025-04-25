@@ -1,32 +1,12 @@
 # SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: 2025 Tobias Hienzsch
 
-
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy import signal
 
 
-def low_pass(fc, Q, fs):
-    omega0 = 2 * np.pi * fc / fs
-    d = 1 / Q
-    cos0 = np.cos(omega0)
-    sin0 = np.sin(omega0)
-    beta = 0.5 * ((1 - (d * 0.5) * sin0) / (1 + (d * 0.5) * sin0))
-    gamma = (0.5 + beta) * cos0
-
-    b0 = (0.5 + beta - gamma) * 0.5
-    b1 = 0.5 + beta - gamma
-    b2 = b0
-
-    a0 = 1
-    a1 = -2 * gamma
-    a2 = 2 * beta
-
-    return np.array([b0, b1, b2]), np.array([a0, a1, a2])
-
-
-def butterworth_sos_qs(order, wc=1):
+def butterworth_Qs(order, wc=1):
     """
     Calculate the Q factors for each second-order section (SOS) of a Butterworth filter
     of an even order.
@@ -65,8 +45,27 @@ def butterworth_sos_qs(order, wc=1):
     return qs
 
 
+def low_pass(fc, Q, fs):
+    omega0 = 2 * np.pi * fc / fs
+    d = 1 / Q
+    cos0 = np.cos(omega0)
+    sin0 = np.sin(omega0)
+    beta = 0.5 * ((1 - (d * 0.5) * sin0) / (1 + (d * 0.5) * sin0))
+    gamma = (0.5 + beta) * cos0
+
+    b0 = (0.5 + beta - gamma) * 0.5
+    b1 = 0.5 + beta - gamma
+    b2 = b0
+
+    a0 = 1
+    a1 = -2 * gamma
+    a2 = 2 * beta
+
+    return np.array([b0, b1, b2]), np.array([a0, a1, a2])
+
+
 def low_pass_sos(x, N, fc, fs):
-    qs = butterworth_sos_qs(N)
+    qs = butterworth_Qs(N)
     for q in qs:
         b, a = low_pass(fc, q, fs)
         x = signal.lfilter(b, a, x)
