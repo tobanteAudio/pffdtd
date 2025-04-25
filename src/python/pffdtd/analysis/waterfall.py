@@ -57,7 +57,7 @@ def main(filename):
     Z -= np.max(Z)
 
     plt.figure(figsize=(10, 6))
-    plt.pcolormesh(times, frequencies, Z, shading='gouraud', vmin=-60, vmax=0)
+    plt.pcolormesh(times, frequencies, Z, shading='gouraud', vmin=-80, vmax=0)
     plt.colorbar(label='Amplitude [dB]')
     plt.title('Decay Times')
     plt.xlabel('Time [s]')

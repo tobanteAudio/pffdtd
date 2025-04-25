@@ -2,34 +2,18 @@
 # SPDX-FileCopyrightText: 2024 Tobias Hienzsch
 import json
 import pathlib
-import sys
 
+import click
 import h5py
 import numpy as np
-from scipy.optimize import minimize, basinhopping, differential_evolution
+import pandas as pd
+from scipy.optimize import minimize
 from scipy.signal import correlate
 
 from pffdtd.common.wavfile import wavread
 
 
-def _normalize(signal):
-    return signal / np.max(np.abs(signal))
-
-
-def _cross_correlation(signal1, signal2):
-    correlation = correlate(signal1, signal2, mode='full')
-    lags = np.arange(-len(signal1) + 1, len(signal1))
-    return correlation, lags
-
-
-def time_difference_of_arrival(signal1, signal2, fs):
-    correlation, lags = _cross_correlation(signal1, signal2)
-    lag_idx = np.argmax(correlation)  # Find the index of the maximum correlation
-    tdoa = lags[lag_idx] / fs  # Convert lag index to time difference
-    return tdoa
-
-
-def tdoa_residuals(source_pos, mic_positions, tdoas, c):
+def _tdoa_residuals(source_pos, mic_positions, tdoas, c):
     """Function to compute the residual between observed and estimated TDOAs.
     """
     estimated_tdoas = []
@@ -41,64 +25,45 @@ def tdoa_residuals(source_pos, mic_positions, tdoas, c):
     return np.sum((np.array(estimated_tdoas) - tdoas)**2)
 
 
-def tetrahedron_microphone_array(mic_positions, mic_sigs, fs, c=343.0, verbose=False):
-    mic1 = _normalize(mic_sigs[0])
-    mic2 = _normalize(mic_sigs[1])
-    mic3 = _normalize(mic_sigs[2])
-    mic4 = _normalize(mic_sigs[3])
+def time_difference_of_arrival(signal1, signal2, fs):
+    correlation = correlate(signal1, signal2, mode='full')
+    lags = np.arange(-len(signal1) + 1, len(signal1))
+    lag_idx = np.argmax(correlation)  # Find the index of the maximum correlation
+    tdoa = lags[lag_idx] / fs         # Convert lag index to time difference
+    return tdoa
 
-    tdoa_12 = time_difference_of_arrival(mic1, mic2, fs)
-    tdoa_13 = time_difference_of_arrival(mic1, mic3, fs)
-    tdoa_14 = time_difference_of_arrival(mic1, mic4, fs)
-    tdoa_23 = time_difference_of_arrival(mic2, mic3, fs)
-    tdoa_24 = time_difference_of_arrival(mic2, mic4, fs)
-    tdoa_34 = time_difference_of_arrival(mic3, mic4, fs)
 
-    if verbose:
-        print(f"TDOA between Mic1 and Mic2: {tdoa_12*1000:.4f} ms")
-        print(f"TDOA between Mic1 and Mic3: {tdoa_13*1000:.4f} ms")
-        print(f"TDOA between Mic1 and Mic4: {tdoa_14*1000:.4f} ms")
-        print(f"TDOA between Mic2 and Mic3: {tdoa_23*1000:.4f} ms")
-        print(f"TDOA between Mic2 and Mic4: {tdoa_24*1000:.4f} ms")
-        print(f"TDOA between Mic3 and Mic4: {tdoa_34*1000:.4f} ms")
+def tetrahedron_microphone_array(mic_positions, mic_sigs, fs, c=343.0):
+    norm = np.max(np.abs(mic_sigs))
 
-    tdoas = np.array([tdoa_12, tdoa_13, tdoa_14, tdoa_23, tdoa_24, tdoa_34])
+    mic1 = mic_sigs[0]/norm
+    mic2 = mic_sigs[1]/norm
+    mic3 = mic_sigs[2]/norm
+    mic4 = mic_sigs[3]/norm
 
-    # initial_guess = np.array([1.25, 2.0, 1.6])
-    # initial_guess = np.array([1, 1, 1])
-    initial_guess = np.array([2.0, 2.0, 2.0])
+    tdoas = np.array([
+        time_difference_of_arrival(mic1, mic2, fs),
+        time_difference_of_arrival(mic1, mic3, fs),
+        time_difference_of_arrival(mic1, mic4, fs),
+        time_difference_of_arrival(mic2, mic3, fs),
+        time_difference_of_arrival(mic2, mic4, fs),
+        time_difference_of_arrival(mic3, mic4, fs),
+    ])
 
     args = (mic_positions, tdoas, c)
-    result = minimize(tdoa_residuals, initial_guess, args=args, tol=1e-10)
-    # result = minimize(tdoa_residuals, initial_guess, args=args, tol=1e-10, bounds=[(-1, 4), (-1, 4), (-1, 4)])
-    # result = differential_evolution(
-    #     tdoa_residuals,
-    #     bounds=[(-1, 4), (-1, 4), (-1, 4)],
-    #     args=args,
-    #     init='sobol',
-    #     # popsize=1000,
-    #     # x0=initial_guess,
-    #     # tol=0.001,
-    #     polish=False,
-    #     # disp=True,
-    # )
-
-    # result = basinhopping(
-    #     tdoa_residuals,
-    #     x0=initial_guess,
-    #     minimizer_kwargs={'args': args},
-    #     # stepsize=0.001,
-    #     niter=1000,
-    #     # T=0.001,
-    #     # disp=True,
-    # )
-
-    return result.x
+    initial_guess = np.array([2.0, 2.0, 2.0])
+    result = minimize(_tdoa_residuals, initial_guess, args=args, tol=1e-10)
+    return result.x, tdoas
 
 
-def main():
-    sim_dir = pathlib.Path(sys.argv[1])
-    model_file = sys.argv[2]
+@click.command(name='localization', help='Locate sound source.')
+@click.argument('model_json', nargs=1, type=click.Path(exists=True))
+@click.option('--sim_dir', type=click.Path(exists=True))
+def main(model_json, sim_dir):
+    sim_dir = pathlib.Path(sim_dir)
+    model_file = model_json
+    print(model_file)
+    print(sim_dir)
 
     constants = h5py.File(sim_dir / 'constants.h5', 'r')
     c = float(constants['c'][...])
@@ -129,22 +94,38 @@ def main():
     distance_2 = np.linalg.norm(source_pos-mic_pos[1])
     distance_3 = np.linalg.norm(source_pos-mic_pos[2])
     distance_4 = np.linalg.norm(source_pos-mic_pos[3])
+    actual_tdoas = [
+        (distance_1-distance_2)/c*1000,
+        (distance_1-distance_3)/c*1000,
+        (distance_1-distance_4)/c*1000,
+        (distance_2-distance_3)/c*1000,
+        (distance_2-distance_4)/c*1000,
+        (distance_3-distance_4)/c*1000,
+    ]
 
-    print(f'Distance 1-2 = {(distance_1-distance_2)/c*1000:.3f} ms')
-    print(f'Distance 1-3 = {(distance_1-distance_3)/c*1000:.3f} ms')
-    print(f'Distance 1-4 = {(distance_1-distance_4)/c*1000:.3f} ms')
-    print(f'Distance 2-3 = {(distance_2-distance_3)/c*1000:.3f} ms')
-    print(f'Distance 2-4 = {(distance_2-distance_4)/c*1000:.3f} ms')
-    print(f'Distance 3-4 = {(distance_3-distance_4)/c*1000:.3f} ms')
-    print('------------------------------')
+    estimated_pos, estimated_tdoas = tetrahedron_microphone_array(mic_pos, mic_sigs, fs, c=c)
+    estimated_tdoas *= 1000
 
-    estimated_pos = tetrahedron_microphone_array(mic_pos, mic_sigs, fs, c=c, verbose=True)
+    errors = pd.DataFrame.from_records([
+        {'A': 1, 'B': 2, 'Actual [ms]': actual_tdoas[0], 'Estimate [ms]': estimated_tdoas[0], 'Error [us]': (
+            actual_tdoas[0]-estimated_tdoas[0])*1000, 'Rel-Error [%]': np.abs(estimated_tdoas[0]-actual_tdoas[0])/actual_tdoas[0]*100},
+        {'A': 1, 'B': 3, 'Actual [ms]': actual_tdoas[1], 'Estimate [ms]': estimated_tdoas[1], 'Error [us]': (
+            actual_tdoas[1]-estimated_tdoas[1])*1000, 'Rel-Error [%]': np.abs(estimated_tdoas[1]-actual_tdoas[1])/actual_tdoas[1]*100},
+        {'A': 1, 'B': 4, 'Actual [ms]': actual_tdoas[2], 'Estimate [ms]': estimated_tdoas[2], 'Error [us]': (
+            actual_tdoas[2]-estimated_tdoas[2])*1000, 'Rel-Error [%]': np.abs(estimated_tdoas[2]-actual_tdoas[2])/actual_tdoas[2]*100},
+        {'A': 2, 'B': 3, 'Actual [ms]': actual_tdoas[3], 'Estimate [ms]': estimated_tdoas[3], 'Error [us]': (
+            actual_tdoas[3]-estimated_tdoas[3])*1000, 'Rel-Error [%]': np.abs(estimated_tdoas[3]-actual_tdoas[3])/actual_tdoas[3]*100},
+        {'A': 2, 'B': 4, 'Actual [ms]': actual_tdoas[4], 'Estimate [ms]': estimated_tdoas[4], 'Error [us]': (
+            actual_tdoas[4]-estimated_tdoas[4])*1000, 'Rel-Error [%]': np.abs(estimated_tdoas[4]-actual_tdoas[4])/actual_tdoas[4]*100},
+        {'A': 3, 'B': 4, 'Actual [ms]': actual_tdoas[5], 'Estimate [ms]': estimated_tdoas[5], 'Error [us]': (
+            actual_tdoas[5]-estimated_tdoas[5])*1000, 'Rel-Error [%]': np.abs(estimated_tdoas[5]-actual_tdoas[5])/actual_tdoas[5]*100},
+    ])
+
     print('------------------------------')
     print(f'c:        {c} m/s')
     print(f'ACTUAL:   {source_pos}')
     print(f'ESTIMATE: {estimated_pos}')
     print(f'DISTANCE: {np.linalg.norm(source_pos-estimated_pos)}')
 
-
-if __name__ == '__main__':
-    main()
+    print('------------------------------')
+    print(errors.to_markdown(index=False))

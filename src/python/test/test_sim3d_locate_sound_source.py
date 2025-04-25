@@ -78,7 +78,7 @@ def test_sim3d_locate_sound_source(tmp_path, engine):
 
     process_outputs(
         sim_dir=sim_dir,
-        resample_fs=48_000,
+        resample_fs=96_000,
         fcut_lowcut=fmin,
         order_lowcut=4,
         fcut_lowpass=fmax,
@@ -111,5 +111,5 @@ def test_sim3d_locate_sound_source(tmp_path, engine):
     ])
 
     actual = model['sources'][0]['xyz']
-    estimated = tetrahedron_microphone_array(mic_pos, mic_sigs, fs, verbose=True)
+    estimated, _ = tetrahedron_microphone_array(mic_pos, mic_sigs, fs)
     assert np.linalg.norm(actual-estimated) <= 0.1

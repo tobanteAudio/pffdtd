@@ -3,6 +3,7 @@
 
 import click
 
+from pffdtd.analysis import localization
 from pffdtd.analysis import response
 from pffdtd.analysis import room_modes
 from pffdtd.analysis import signals
@@ -15,6 +16,7 @@ def analysis():
     pass
 
 
+analysis.add_command(localization.main)
 analysis.add_command(response.main)
 analysis.add_command(room_modes.main)
 analysis.add_command(signals.main)

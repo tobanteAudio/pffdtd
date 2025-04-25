@@ -10,6 +10,7 @@ from scipy.signal import butter, lfilter, sosfilt
 
 from pffdtd.common.timerdict import TimerDict
 from pffdtd.geometry.math import iceil
+from pffdtd.analysis.signals import generate_max_len_seq
 
 
 class SimSignals:
@@ -65,8 +66,7 @@ class SimSignals:
             in_sig[0] = 1.0
         if sig_type == 'impulse-highpass':  # for RIRs
             in_sig[0] = 1.0
-            sos = butter(4, 40, 'highpass', fs=1/Ts, output='sos')
-            in_sig = sosfilt(sos, in_sig)
+            in_sig = sosfilt(butter(4, 40, 'high', fs=1/Ts, output='sos'), in_sig)
         elif sig_type == 'hann10':  # for viz
             N = 10
             n = np.arange(N)
@@ -83,6 +83,9 @@ class SimSignals:
             N = iceil(5e-3/Ts)
             n = np.arange(N)
             in_sig[:N] = 0.5*(1.0-cos(2*pi*n/N))
+        elif sig_type == 'mls-10':    # for localization
+            mls = generate_max_len_seq(10)
+            in_sig[:len(mls)] = mls
 
         in_sigs = in_alpha[:, None]*in_sig[None, :]
 

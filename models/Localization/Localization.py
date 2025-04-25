@@ -13,7 +13,7 @@ class Localization(Setup3D):
     model_file = 'model.json'
     mat_folder = '../../sim_data/Localization/materials'
     source_index = 1
-    source_signal = 'impulse'
+    source_signal = 'mls-10'
     diff_source = True
     materials = {
         'Ceiling': 'sabine_9512.h5',
@@ -24,12 +24,12 @@ class Localization(Setup3D):
     Tc = 20
     rh = 50
     fcc = False
-    ppw = 10.5
-    fmax = 800.0
+    ppw = 7.75
+    fmax = 8000.0
     save_folder = '../../sim_data/Localization/cpu'
     save_folder_gpu = '../../sim_data/Localization/gpu'
     compress = 0
-    draw_vox = True
+    draw_vox = False
     draw_backend = 'polyscope'
 
     def generate_materials(self):
