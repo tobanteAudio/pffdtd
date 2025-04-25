@@ -32,9 +32,7 @@ def apply_lowcut(y, fs, fcut, order, apply_int):
     return np.copy(y)
 
 
-def apply_lowpass(y, fs, fcut, order=8, symmetric=True):
-    # lowpass filter for fmax (to remove freqs with too much numerical dispersion)
-    dt = 1/fs
+def apply_lowpass(y: np.ndarray, fs: float, fcut: float, order: int = 8, symmetric=True):
     y_out = np.copy(y)
 
     if symmetric:  # will be run twice
@@ -42,7 +40,7 @@ def apply_lowpass(y, fs, fcut, order=8, symmetric=True):
         order = int(order//2)
 
     # design digital high-pass
-    sos = butter(order, 2*dt*fcut, btype='low', output='sos')
+    sos = butter(order, fcut, btype='low', output='sos', fs=fs)
     y_out = sosfilt(sos, y_out)
     if symmetric:  # runs again, time reversed
         y_out = sosfilt(sos, y_out[:, ::-1])[:, ::-1]
