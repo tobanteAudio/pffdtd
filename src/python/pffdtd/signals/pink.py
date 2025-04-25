@@ -18,9 +18,9 @@ def generate_pink_noise(duration, fs, dbFS=-20.0, lowcut=20.0, highcut=20000.0):
 
 def _generate_pink_noise_fft(n, fs):
     freqs = np.fft.rfftfreq(n, 1/fs)
-    amplitude = np.where(freqs == 0, 0, 1/np.sqrt(freqs+0.000001))  # Avoid divide-by-zero at DC
+    amplitude = np.zeros_like(freqs)
+    amplitude[1:] = 1/np.sqrt(freqs[1:])
     phases = np.exp(2j*np.pi*np.random.rand(len(freqs)))  # Random phase
-
     S = amplitude * phases
     x = np.fft.irfft(S, n=n)
     x = x / np.std(x)  # Normalize to unit-variance
@@ -29,7 +29,7 @@ def _generate_pink_noise_fft(n, fs):
 
 def _bandlimit(x, fs, lowcut, highcut, order=4):
     sos = butter(order, [lowcut, highcut], btype='band', fs=fs, output='sos')
-    return sosfilt(sos, x)  # for zero-phase use filtfilt if you prefer
+    return sosfilt(sos, x)
 
 
 def _normalize_to_dBFS(x, target_dBFS):
@@ -42,10 +42,14 @@ def _normalize_to_dBFS(x, target_dBFS):
 
 @click.command(name='pink', help='Generate pink noise')
 @click.argument('output', nargs=1, type=click.Path())
-@click.option('--duration', default=60.0, type=float)
+@click.option('--duration', default=10.0, type=float)
 @click.option('--fs', default=48000, type=int)
 def main(output, duration, fs):
-    pink = generate_pink_noise(duration, fs)
-    print(np.max(pink))
-    print(np.min(pink))
-    wavwrite(output, fs, pink)
+    x = generate_pink_noise(duration, fs)
+    peak = np.max(np.abs(x))
+    rms = np.sqrt(np.mean(x**2))
+    print(f'Peak:  {20*np.log10(peak):.1f} dB')
+    print(f'RMS:   {20*np.log10(rms):.1f} dB')
+    print(f'Crest: {peak/rms:.2f}')
+
+    wavwrite(output, fs, x)
