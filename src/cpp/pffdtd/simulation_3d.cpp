@@ -560,7 +560,7 @@ void writeOutputs(Simulation3D const& sim, std::filesystem::path const& simDir) 
   // write outputs in correct order
   for (auto nr = size_t{0}; nr < Nr; ++nr) {
     for (auto n = size_t{0}; n < Nt; ++n) {
-      u_out(nr, n) = sim.u_out[out_reorder[nr] * Nt + n];
+      u_out[nr, n] = sim.u_out[out_reorder[nr] * Nt + n];
     }
   }
 
