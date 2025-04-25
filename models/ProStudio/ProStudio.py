@@ -15,7 +15,7 @@ class ProStudio(Setup3D):
     model_file = 'model.json'
     mat_folder = '../../sim_data/ProStudio/materials'
     source_index = 1
-    source_signal = 'impulse'
+    source_signal = 'impulse-highpass'
     diff_source = True
     materials = {
         'ATC Left': 'wood.h5',
@@ -37,8 +37,8 @@ class ProStudio(Setup3D):
     Tc = 20
     rh = 50
     fcc = False
-    ppw = 7.7
-    fmax = 2000.0
+    ppw = 10.5
+    fmax = 1000.0
     save_folder = '../../sim_data/ProStudio/cpu'
     save_folder_gpu = '../../sim_data/ProStudio/gpu'
     draw_vox = True

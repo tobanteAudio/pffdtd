@@ -83,9 +83,12 @@ class SimSignals:
             N = iceil(5e-3/Ts)
             n = np.arange(N)
             in_sig[:N] = 0.5*(1.0-cos(2*pi*n/N))
-        elif sig_type == 'mls-10':    # for localization
-            mls = generate_max_len_seq(10)
+        elif 'mls' in sig_type:      # for localization
+            nbits = int(sig_type.split('-')[-1])
+            mls = generate_max_len_seq(nbits)
+            assert len(mls) <= len(in_sig)
             in_sig[:len(mls)] = mls
+            self.print(f'Generate MLS with nbits = {nbits} and len = {len(mls)}')
 
         in_sigs = in_alpha[:, None]*in_sig[None, :]
 

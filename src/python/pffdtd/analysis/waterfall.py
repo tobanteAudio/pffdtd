@@ -1,63 +1,30 @@
 # SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: 2024 Tobias Hienzsch
-
 import click
 import numpy as np
 import matplotlib.pyplot as plt
-import plotly.graph_objects as go
 from scipy.signal import stft
-from scipy.io import wavfile
+
+from pffdtd.common.wavfile import wavread
 
 
-@click.command(name='waterfall', help='Plot waterfall decay plot.')
+@click.command(name='waterfall', help='Waterfall decay plot.')
 @click.argument('filename', nargs=1, type=click.Path(exists=True))
-def main(filename):
-    fs, rir = wavfile.read(filename)
-    rir = rir / np.max(np.abs(rir))  # Normalize
-    nfft = 1024
-    frequencies, times, Zxx = stft(rir, fs=fs, nperseg=nfft)
+@click.option('--color_map', default='gouraud')
+@click.option('--min_db', default=-100)
+def main(filename, color_map, min_db):
+    fs, ir = wavread(filename)
+    ir = ir / np.max(np.abs(ir))
 
-    decay_time = np.zeros(frequencies.shape)
-    for i, _ in enumerate(frequencies):
-        magnitude = np.abs(Zxx[i, :])
-        magnitude_db = 20 * np.log10(magnitude / np.max(magnitude))
-        try:
-            decay_index = np.where(magnitude_db <= -20)[0][0]
-            decay_time[i] = times[decay_index]
-        except IndexError:
-            decay_time[i] = times[-1]  # If it never decays by 60 dB
+    nperseg = 512
+    nfft = nperseg*4
+    frequencies, times, Zxx = stft(ir, fs=fs, nperseg=nperseg, nfft=nfft)
 
-    # Waterfall Plot
-    X, Y = np.meshgrid(times, frequencies)
-    Z = 20 * np.log10(np.abs(Zxx)/nfft)
-    Z -= np.max(Z)
-    # Z = np.clip(Z, -60, 0)
-    # Z[Z<-60] = -100
-
-    fig = go.Figure(data=[go.Surface(
-        colorscale='viridis',
-        x=X,
-        y=Y,
-        z=Z
-    )])
-    fig.update_layout(
-        title='Decay Times',
-        scene={
-            'xaxis_title': 'X: Time [s]',
-            'yaxis_title': 'Y: Frequency [Hz]',
-            'zaxis_title': 'Z: Amplitude [dB]',
-
-            'xaxis': {'range': [0, 1]},
-            'yaxis': {'type': 'log'},
-            # "zaxis": {"range": [-60, 0]},
-        }
-    )
-
-    Z = 20 * np.log10(np.abs(Zxx/nfft))
-    Z -= np.max(Z)
+    Zxx_dB = 20*np.log10((np.abs(Zxx)+np.finfo(np.float64).eps)/nfft)
+    Zxx_dB -= np.max(Zxx_dB)
 
     plt.figure(figsize=(10, 6))
-    plt.pcolormesh(times, frequencies, Z, shading='gouraud', vmin=-80, vmax=0)
+    plt.pcolormesh(times, frequencies, Zxx_dB, shading=color_map, vmin=min_db, vmax=0)
     plt.colorbar(label='Amplitude [dB]')
     plt.title('Decay Times')
     plt.xlabel('Time [s]')

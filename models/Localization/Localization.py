@@ -13,19 +13,19 @@ class Localization(Setup3D):
     model_file = 'model.json'
     mat_folder = '../../sim_data/Localization/materials'
     source_index = 1
-    source_signal = 'mls-10'
+    source_signal = 'mls-11'
     diff_source = True
     materials = {
         'Ceiling': 'sabine_9512.h5',
         'Floor': 'sabine_9512.h5',
         'Walls': 'sabine_9512.h5',
     }
-    duration = 0.4
+    duration = 0.35
     Tc = 20
     rh = 50
     fcc = False
-    ppw = 7.75
-    fmax = 8000.0
+    ppw = 10.5
+    fmax = 6000.0
     save_folder = '../../sim_data/Localization/cpu'
     save_folder_gpu = '../../sim_data/Localization/gpu'
     compress = 0
