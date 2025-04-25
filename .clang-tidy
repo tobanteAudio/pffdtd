@@ -32,6 +32,7 @@ Checks: >
   -misc-include-cleaner,
 
   modernize-*,
+  -modernize-use-std-print,
 
   openmp-*,
   -openmp-use-default-none,

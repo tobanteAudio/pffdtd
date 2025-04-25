@@ -14,6 +14,7 @@
 #include <fmt/format.h>
 
 #include <concepts>
+#include <utility>
 
 namespace pffdtd {
 
@@ -223,7 +224,7 @@ auto run(Simulation2D const& sim) {
 
   auto outputs = stdex::mdarray<double, stdex::dextents<size_t, 2>>(Nr, Nt);
   auto host    = sycl::host_accessor{out_buf, sycl::read_only};
-  for (auto it{0UL}; it < static_cast<size_t>(Nt); ++it) {
+  for (auto it{0UL}; std::cmp_less(it, Nt); ++it) {
     for (auto ir{0UL}; ir < Nr; ++ir) {
       outputs(ir, it) = static_cast<double>(host[ir][it]) * infac;
     }

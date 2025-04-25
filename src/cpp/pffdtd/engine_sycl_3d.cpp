@@ -12,6 +12,8 @@
 
 #include <fmt/format.h>
 
+#include <utility>
+
 namespace pffdtd {
 
 namespace {
@@ -351,7 +353,7 @@ auto run(Simulation3D const& sim) -> void {
 
   // Copy output to host
   auto host = sycl::host_accessor{u_out_buf, sycl::read_only};
-  for (auto i{0UL}; i < static_cast<size_t>(Nr * Nt); ++i) {
+  for (auto i{0UL}; std::cmp_less(i, Nr * Nt); ++i) {
     sim.u_out[i] = static_cast<double>(host[i]);
   }
 }

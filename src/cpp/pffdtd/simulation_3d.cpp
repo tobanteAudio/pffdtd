@@ -15,6 +15,7 @@
 #include <cstring>
 #include <limits>
 #include <numbers>
+#include <utility>
 
 namespace pffdtd {
 
@@ -166,8 +167,8 @@ void check_inside_grid(int64_t const* idx, int64_t N, int64_t Nx, int64_t Ny, in
   //////////////////
   expected_ndims   = 2;
   auto adj_bn_bool = read<bool>(vox_out, "adj_bn", expected_ndims, dims);
-  PFFDTD_ASSERT(static_cast<int64_t>(dims[0]) == Nb);
-  PFFDTD_ASSERT(dims[1] == (hsize_t)NN);
+  PFFDTD_ASSERT(std::cmp_equal(dims[0], Nb));
+  PFFDTD_ASSERT(std::cmp_equal(dims[1], NN));
 
   //////////////////
   // mat_bn dataset
@@ -344,7 +345,7 @@ void check_inside_grid(int64_t const* idx, int64_t N, int64_t Nx, int64_t Ny, in
   auto K_bn = std::vector<int8_t>(size_t(Nb));
   for (int64_t nb = 0; nb < Nb; nb++) {
     K_bn[nb] = 0;
-    for (uint8_t nn = 0; nn < NN; nn++) {
+    for (uint8_t nn = 0; std::cmp_less(nn, NN); nn++) {
       K_bn[nb] = static_cast<int8_t>(K_bn[nb] + get_bit_as<int>(adj_bn[nb], nn));
     }
   }
