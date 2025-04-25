@@ -10,7 +10,7 @@ from scipy.signal import butter, lfilter, sosfilt
 
 from pffdtd.common.timerdict import TimerDict
 from pffdtd.geometry.math import iceil
-from pffdtd.analysis.signals import generate_max_len_seq
+from pffdtd.signals.mls import generate_max_len_seq
 
 
 class SimSignals:
