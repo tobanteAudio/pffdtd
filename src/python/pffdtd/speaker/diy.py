@@ -8,31 +8,33 @@ from pffdtd.common.voltage import dBV_to_volts, dBu_to_dBV
 
 @click.command(name='diy', help='DIY Speakers')
 def main():
-    dayton_audio_rss315 = 315
-    dayton_audio_rss390 = 390
-    dayton_audio_rss460 = 560
-    tad_et_703a = 5400
-    tad_td_4001 = 5395
-    tad_td_2002 = 3295
-    tad_tl_1601b = 1925
-    tad_tl_1801 = 2195
-    radian_950_neopb_8 = 533
+    price = {
+        'dayton_audio_rss315': 315,
+        'dayton_audio_rss390': 390,
+        'dayton_audio_rss460': 560,
+        'tad_et_703a': 5400,
+        'tad_td_4001': 5395,
+        'tad_td_2002': 3295,
+        'tad_tl_1601b': 1925,
+        'tad_tl_1801': 2195,
+        'radian_950_neopb_8': 533,
 
-    supravox_285_gmf = 329
-    supravox_400_gmf = 749
-    supravox_285_exc = 1239
-    supravox_400_exc = 1359
-    volt_vm527 = 280
-    volt_vm752 = 669
-    volt_rv_3143 = 569
-    volt_rv_3863 = 779
-    morel_st_1108 = 700/2
-    morel_tsct_1044 = 850/2
-    scan_speak_32w_4878t00 = 700
-    oberton_nd72ct_hb = 380
+        'supravox_285_gmf': 329,
+        'supravox_400_gmf': 749,
+        'supravox_285_exc': 1239,
+        'supravox_400_exc': 1359,
+        'volt_vm527': 280,
+        'volt_vm752': 669,
+        'volt_rv_3143': 569,
+        'volt_rv_3863': 779,
+        'morel_st_1108': 700/2,
+        'morel_tsct_1044': 850/2,
+        'scan_speak_32w_4878t00': 700,
+        'oberton_nd72ct_hb': 380,
 
-    bryston_9B_3ch = 13339
-    bryston_9B_4ch = 16009
+        'bryston_9B_3ch': 13339,
+        'bryston_9B_4ch': 16009,
+    }
 
     # quattro = tad_td_4001+tad_tl_1601b*4+tad_tl_1801*4
     # classic = tad_td_4001+tad_tl_1601b*2+tad_tl_1801
@@ -43,19 +45,19 @@ def main():
     # toby_315v = morel_st_1108+volt_vm527+volt_rv_3143+volt_rv_3863
     # toby_solo_sr = dayton_audio_rss390+scan_speak_32w_4878t00+radian_950_neopb_8
     # toby_solo_so = dayton_audio_rss390+scan_speak_32w_4878t00+oberton_nd72ct_hb
-    toby_312dvm = dayton_audio_rss315+volt_vm752+morel_tsct_1044
-    toby_312svm = scan_speak_32w_4878t00+volt_vm752+morel_tsct_1044
+    toby_312dvm = price['dayton_audio_rss315']+price['volt_vm752']+price['morel_tsct_1044']
+    toby_312svm = price['scan_speak_32w_4878t00']+price['volt_vm752']+price['morel_tsct_1044']
 
     # toby_315tad = morel_st_1108+volt_vm752+tad_tl_1601b+tad_tl_1801
-    toby_315dvm = dayton_audio_rss390+volt_vm752+morel_tsct_1044
-    toby_315tvm = tad_tl_1601b+volt_vm752+morel_tsct_1044
+    toby_315dvm = price['dayton_audio_rss390']+price['volt_vm752']+price['morel_tsct_1044']
+    toby_315tvm = price['tad_tl_1601b']+price['volt_vm752']+price['morel_tsct_1044']
 
-    toby_sub12s = scan_speak_32w_4878t00
-    toby_sub12d = dayton_audio_rss315
-    toby_sub15d = dayton_audio_rss390
-    toby_sub15t = tad_tl_1601b
-    toby_sub18d = dayton_audio_rss460
-    toby_sub18t = tad_tl_1801
+    toby_sub12s = price['scan_speak_32w_4878t00']
+    toby_sub12d = price['dayton_audio_rss315']
+    toby_sub15d = price['dayton_audio_rss390']
+    toby_sub15t = price['tad_tl_1601b']
+    toby_sub18d = price['dayton_audio_rss460']
+    toby_sub18t = price['tad_tl_1801']
 
     print(pd.DataFrame.from_records([
         # {'name': 'Augspurger Quattro TAD', '1x': quattro, '2x': quattro*2},

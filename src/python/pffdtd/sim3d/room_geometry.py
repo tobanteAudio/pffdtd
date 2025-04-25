@@ -240,7 +240,6 @@ class RoomGeometry:
                 ps.init()  # gives error if run more than once (at least in ipython)
             except:
                 self.print('polyscope already initialised?')
-                pass
             # issue with saving settings on successive runs, need some close() function
 
             ps.set_SSAA_factor(4)

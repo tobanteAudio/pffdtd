@@ -40,9 +40,9 @@ class VoxGrid(VoxGridBase):
     def __init__(self, room_geo, cart_grid, Nvox_est=None, Nh=None):
         super().__init__(room_geo)
 
-        tris = self.tris
+        # tris = self.tris
         pts = self.pts
-        Npts = self.Npts
+        # Npts = self.Npts
         Ntris = self.Ntris
 
         h = cart_grid.h
@@ -69,7 +69,8 @@ class VoxGrid(VoxGridBase):
             assert Nh is None
             if Nvox_est == 0:
                 raise
-            elif Nvox_est == 1:
+
+            if Nvox_est == 1:
                 Nh = max((xv.size, yv.size, zv.size))-1
             elif Nvox_est > 1:
                 vol = np.prod(room_geo.bmax-room_geo.bmin)
@@ -94,7 +95,7 @@ class VoxGrid(VoxGridBase):
 
         self.timer.tic('initialise voxels')
         # Nh is step for voxels
-        Nvox_x, Nvox_y, Nvox_z = Nvox_xyz
+        # Nvox_x, Nvox_y, Nvox_z = Nvox_xyz
         # can vectorize most of this but not creating Voxel objects
         vix = 0
         Nvx, Nvy, Nvz = Nvox_xyz

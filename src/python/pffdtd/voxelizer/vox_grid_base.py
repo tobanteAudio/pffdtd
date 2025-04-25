@@ -196,7 +196,7 @@ class VoxGridBase:
         boxpts = np.zeros((Nvox*8, 3))
         tp = 0
         # build up a triangular mesh for all boxes in one go
-        for i in range(len(self.nonempty_idx)):
+        for i in enumerate(self.nonempty_idx):
             vox = self.voxels[self.nonempty_idx[i]]
             assert len(vox.tri_idxs) > 0
             box = Box(*(vox.bmax-vox.bmin), shift=vox.bmin, centered=False)
@@ -211,8 +211,9 @@ class VoxGridBase:
             mlab.triangular_mesh(*(boxpts.T), boxtris, representation='mesh', color=(0, 1, 0), tube_radius=tube_radius)
             mlab.draw()
         elif backend == 'polyscope':
-            import polyscope as ps
-            pmesh = ps.register_surface_mesh('voxels', boxpts, boxtris, color=(0, 1, 0), edge_color=(0, 1, 0), edge_width=tube_radius)
+            pass
+            # import polyscope as ps
+            # pmesh = ps.register_surface_mesh('voxels', boxpts, boxtris, color=(0, 1, 0), edge_color=(0, 1, 0), edge_width=tube_radius)
             # pmesh.set_transparency(0.75)
 
         self.print('boxes drawn..')

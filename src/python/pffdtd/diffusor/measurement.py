@@ -45,7 +45,7 @@ def main(sim_dir):
     files = collect_wav_files(sim_dir, '*_out_normalised.wav')
     fs, out = load_wav_files(files)
 
-    mic_angles = np.array([x for x in range(30, 152, 2)])
+    mic_angles = np.array(list(range(30, 152, 2)))
 
     constants = h5py.File(sim_dir / 'constants.h5', 'r')
     fmax = float(constants['fmax'][...])

@@ -17,27 +17,27 @@ def main():
     channel_bw = transfers * width / 1e9
     cpu_bw = channel_bw * channels
 
-    # print(f'{mhz_speed=:.1f} Mhz')
-    # print(f'transfers={transfers/1e6:.1f} MT/s')
-    # print(f'{channel_bw=:.1f} GB/s')
-    # print('')
+    print(f'{mhz_speed=:.1f} Mhz')
+    print(f'transfers={transfers/1e6:.1f} MT/s')
+    print(f'{channel_bw=:.1f} GB/s')
+    print('')
 
-    # cpu_ram = 64*12
-    # cpu_it = cpu_bw/cpu_ram
-    # print(f'{cpu_bw=:.1f} GB/s')
-    # print(f'{cpu_ram=:.0f} GB')
-    # print(f'{cpu_it=:.2f} it/s')
-    # print('')
+    cpu_ram = 64*12
+    cpu_it = cpu_bw/cpu_ram
+    print(f'{cpu_bw=:.1f} GB/s')
+    print(f'{cpu_ram=:.0f} GB')
+    print(f'{cpu_it=:.2f} it/s')
+    print('')
 
-    # gpu_ram = 256
-    # gpu_bw = 6000
-    # gpu_it = gpu_bw/gpu_ram
-    # print(f'{gpu_bw=:.2f} GB/s')
-    # print(f'{gpu_ram=:.0f} GB')
-    # print(f'{gpu_it=:.2f} it/s')
-    # print('')
+    gpu_ram = 256
+    gpu_bw = 6000
+    gpu_it = gpu_bw/gpu_ram
+    print(f'{gpu_bw=:.2f} GB/s')
+    print(f'{gpu_ram=:.0f} GB')
+    print(f'{gpu_it=:.2f} it/s')
+    print('')
 
-    # print(f'gpu_it/cpu_it={gpu_it/cpu_it:.2f}')
+    print(f'gpu_it/cpu_it={gpu_it/cpu_it:.2f}')
 
     mi325x_vram = 256
     mi325x_bandwidth = 6000
@@ -61,7 +61,7 @@ def main():
             'System GB': h200_vram*8,
             'System GB/s': h200_bandwidth*8,
             'System Cost': 300e3,
-            # 'Iterations': h200_iter,
+            'Iterations': h200_iter,
         },
         {
             'Name': 'AMD MI325x',
@@ -72,7 +72,7 @@ def main():
             'System GB': mi325x_vram*8,
             'System GB/s': mi325x_bandwidth*8,
             'System Cost': 250e3,
-            # 'Iterations': mi325x_iter,
+            'Iterations': mi325x_iter,
         },
         {
             'Name': 'AMD EPYC',
@@ -83,7 +83,7 @@ def main():
             'System GB': epyc_ram,
             'System GB/s': epyc_bandwidth,
             'System Cost': 27e3,
-            # 'Iterations': epyc_iter,
+            'Iterations': epyc_iter,
         },
         {
             'Name': 'Mac Studio M3 Ultra',
@@ -94,7 +94,7 @@ def main():
             'System GB': 512,
             'System GB/s': 800,
             'System Cost': 11e3,
-            # 'Iterations': 800/512,
+            'Iterations': 800/512,
         },
     ]
 

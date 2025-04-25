@@ -8,7 +8,7 @@ import numpy.random as npr
 from pffdtd.geometry.math import rotmatrix_ax_ang
 
 
-def mydefault(a: Any, default: Any):
+def _default(a: Any, default: Any):
     # only used in box
     if a is None:
         a = default
@@ -21,12 +21,12 @@ class Box:
 
     def __init__(self, Lx=None, Ly=None, Lz=None, Rax=None, Rang=None, shift=None, centered=True):
         # defaults
-        Lx = mydefault(Lx, 1.0)
-        Ly = mydefault(Ly, 1.0)
-        Lz = mydefault(Lz, 1.0)
-        Rax = mydefault(Rax, np.array([1., 1., 1.]))
-        Rang = mydefault(Rang, 0.)
-        shift = mydefault(shift, np.array([0., 0., 0.]))
+        Lx = _default(Lx, 1.0)
+        Ly = _default(Ly, 1.0)
+        Lz = _default(Lz, 1.0)
+        Rax = _default(Rax, np.array([1., 1., 1.]))
+        Rang = _default(Rang, 0.)
+        shift = _default(shift, np.array([0., 0., 0.]))
 
         self.centered = centered
 
@@ -148,10 +148,8 @@ def main():
     print(f'Lx = {Lx:.2f}, Ly = {Ly:.2f}, Lz = {Lz:.2f}')
 
     box = Box(Lx, Ly, Lz)
-    print('box 0 ... bmin = %.2f,%.2f,%.2f' %
-          (box.bmin[0], box.bmin[1], box.bmin[2]))
-    print('box 0 ... bmax =  %.2f,%.2f,%.2f' %
-          (box.bmax[0], box.bmax[1], box.bmax[2]))
+    print(f'box 0 ... bmin = {box.bmin[0]:.2f},{box.bmin[1]:.2f},{box.bmin[2]:.2f}')
+    print(f'box 0 ... bmax = {box.bmax[0]:.2f},{box.bmax[1]:.2f},{box.bmax[2]:.2f}')
     assert np.all(np.mean(box.verts, 0).dot(box.A.T) < box.b)
     assert np.all((box.verts*(1-1e-4)).dot(box.A.T) < box.b)
     assert np.any((box.verts*(1+1e-4)).dot(box.A.T) > box.b)
@@ -160,21 +158,17 @@ def main():
     Lx = npr.random()
     Ly = npr.random()
     Lz = npr.random()
-    print('Lx = %.2f, Ly = %.2f, Lz = %.2f' % (Lx, Ly, Lz))
+    print(f'Lx = {Lx:.2f}, Ly = {Ly:.2f}, Lz = {Lz:.2f}')
     Rax = npr.rand(3)
     Rang = (-1.0 + 2.0*npr.random())*90
-    print('Rax = %.2f,%.2f,%.2f, Rang = %.2f degrees' %
-          (Rax[0], Rax[1], Rax[2], Rang))
+    print(f'Rax = {Rax[0]:.2f}, {Rax[1]:.2f}, {Rax[2]:.2f} Rang = {Rang:.2f} degrees')
     print()
 
     box = Box(Lx, Ly, Lz, Rax, Rang)
-    print('Lx = %.2f, Ly = %.2f, Lz = %.2f' % (Lx, Ly, Lz))
-    print('Rax = %.2f,%.2f,%.2f, Rang = %.2f degrees' %
-          (Rax[0], Rax[1], Rax[2], Rang))
-    print('box 1 ... bmin = %.2f,%.2f,%.2f' %
-          (box.bmin[0], box.bmin[1], box.bmin[2]))
-    print('box 1 ... bmax =  %.2f,%.2f,%.2f' %
-          (box.bmax[0], box.bmax[1], box.bmax[2]))
+    print(f'Lx = {Lx:.2f}, Ly = {Ly:.2f}, Lz = {Lz:.2f}')
+    print(f'Rax = {Rax[0]:.2f}, {Rax[1]:.2f}, {Rax[2]:.2f} Rang = {Rang:.2f} degrees')
+    print(f'box 1 ... bmin = {box.bmin[0]:.2f}, {box.bmin[1]:.2f}, {box.bmin[2]:.2f}')
+    print(f'box 1 ... bmax = {box.bmax[0]:.2f}, {box.bmax[1]:.2f}, {box.bmax[2]:.2f}')
     assert np.all(np.mean(box.verts, 0).dot(box.A.T) < box.b)
     assert np.all((box.verts*(1-1e-4)).dot(box.A.T) < box.b)
     assert np.any((box.verts*(1+1e-4)).dot(box.A.T) > box.b)

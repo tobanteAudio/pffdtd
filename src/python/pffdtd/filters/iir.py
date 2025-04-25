@@ -122,7 +122,6 @@ def main():
     sos_out = low_pass_sos(impulse.copy(), order, fc=fc, fs=fs)
     sos_fft = np.fft.rfft(sos_out)
 
-    i_mag = 20*np.log10(np.abs(i_fft)+0.0000001)
     l_mag = 20*np.log10(np.abs(l_fft)+0.0000001)
     sos_mag = 20*np.log10(np.abs(sos_fft)+0.0000001)
 

@@ -36,9 +36,9 @@ def print_cluster_stats(
     print(f'device   = {device_count:.0f} x {device_name}')
     print(f'server   = {node_count:.0f} with {devices_per_node}x{device_name}')
     print(f'price    = ${cluster_price/1e6:.3f} Million')
-    # print(f'energy   = {cluster_power:.3f} kW - ${daily_energy_cost*365/1e3:.2f} Thousand/year')
-    # print(f'rental   = ${cluster_rental_revenue*365/1e6:.3f} Million/year')
-    # print(f'roi      = {cluster_rental_roi} days')
+    print(f'energy   = {cluster_power:.3f} kW - ${daily_energy_cost*365/1e3:.2f} Thousand/year')
+    print(f'rental   = ${cluster_rental_revenue*365/1e6:.3f} Million/year')
+    print(f'roi      = {cluster_rental_roi} days')
     print('')
 
 

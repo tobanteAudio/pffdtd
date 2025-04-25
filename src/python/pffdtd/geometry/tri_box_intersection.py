@@ -93,7 +93,6 @@ def tri_box_intersection_vec(bbmin, bbmax, tris_pre):
 
     fail3 = np.full(fail2.shape, False)
 
-    zer0 = np.zeros((v.shape[0],))
     # 2d overlap checks
     for q in [0, 1, 2]:
         xq = q % 3

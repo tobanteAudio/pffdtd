@@ -92,25 +92,25 @@ class VoxScene:
 
         h = cg.h
         hf = self.hf
-        VV = self.VV
+        # VV = self.VV
         vvh = self.vvh  # vectors scaled by h (with length gf)
         uvv = self.uvv  # normalised
-        ivv = np.int_(VV)  # integer grid steps
+        # ivv = np.int_(VV)  # integer grid steps
         face_area = self.face_area
         Nx, Ny, Nz = cg.Nxyz
         Ngridpoints = cg.Npts
         xv = cg.xv
         yv = cg.yv
         zv = cg.zv
-        xmin, ymin, zmin = cg.xyzmin
-        Nh = vg.Nh
+        # xmin, ymin, zmin = cg.xyzmin
+        # Nh = vg.Nh
         Nvox = vg.Nvox
 
         # only process non-empty voxels from vox_grid
         Nvox_nonempty = len(vg.nonempty_idx)
         self.print(f'Non-empty voxels: {Nvox_nonempty}, {Nvox_nonempty/Nvox*100.0:.2f}%')
 
-        min_vox_shape = (Nh, Nh, Nh)  # for memory calculation
+        # min_vox_shape = (Nh, Nh, Nh)  # for memory calculation
 
         # set up shared memory
         Nb_proc_shm = shared_memory.SharedMemory(create=True, size=Nprocs*np.dtype(np.int64).itemsize)
@@ -160,10 +160,10 @@ class VoxScene:
                             yv[iy_start+iy_vox.flat[:]],
                             zv[iz_start+iz_vox.flat[:]]]
             in_mask = np.full(vox_shape, False)
-            in_mask[1:-1, 1:-1, 1:-1] = True,
+            in_mask[1:-1, 1:-1, 1:-1] = True
 
             if self.fcc:
-                fcc_mask = (np.mod(ix_start+ix_vox+iy_start+iy_vox+iz_start+iz_vox, 2) == 0)
+                fcc_mask = np.mod(ix_start+ix_vox+iy_start+iy_vox+iz_start+iz_vox, 2) == 0
             else:
                 fcc_mask = np.full(vox_shape, True)
 
@@ -222,7 +222,7 @@ class VoxScene:
 
                     # indices where new nearest hit
                     nh_mask = np.full(vox_shape, False)
-                    nh_mask.flat[ii0] = (hit_dist.flat[ii0] < vox_ndist.flat[ii0])
+                    nh_mask.flat[ii0] = hit_dist.flat[ii0] < vox_ndist.flat[ii0]
                     vox_ndist[nh_mask] = hit_dist[nh_mask]  # update to abs for neg dist
                     vox_tidx[nh_mask] = tri_ind
 
@@ -487,8 +487,8 @@ class VoxScene:
         Nx, Ny, Nz = cg.Nxyz
         bn_ixyz = self.bn_ixyz
         adj_bn = self.adj_bn
-        mat_bn = self.mat_bn
-        Nb = bn_ixyz.size
+        # mat_bn = self.mat_bn
+        # Nb = bn_ixyz.size
 
         self.print('checking adj...')
         self.timer.tic('check_full')
@@ -545,7 +545,7 @@ class VoxScene:
                 mat = 'rigid'
             else:
                 sf = h/2
-                color = tuple([c/255.0 for c in colors[i]])
+                color = tuple(c/255.0 for c in colors[i])
                 mat = rg.mat_str[i]
             self.print(f'drawing mat #{i}: {mat}')
 
