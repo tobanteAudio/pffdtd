@@ -12,13 +12,14 @@ from pffdtd.common.wavfile import wavread
 @click.argument('filename', nargs=1, type=click.Path(exists=True))
 @click.option('--color_map', default='gouraud')
 @click.option('--min_db', default=-100)
-def main(filename, color_map, min_db):
+@click.option('--window', default='hann')
+def main(filename, color_map, min_db, window):
     fs, ir = wavread(filename)
     ir = ir / np.max(np.abs(ir))
 
-    nperseg = 512
-    nfft = nperseg*4
-    frequencies, times, Zxx = stft(ir, fs=fs, nperseg=nperseg, nfft=nfft)
+    nperseg = 64
+    nfft = nperseg*64
+    frequencies, times, Zxx = stft(ir, fs=fs, nperseg=nperseg, nfft=nfft, window=window)
 
     Zxx_dB = 20*np.log10((np.abs(Zxx)+np.finfo(np.float64).eps)/nfft)
     Zxx_dB -= np.max(Zxx_dB)
