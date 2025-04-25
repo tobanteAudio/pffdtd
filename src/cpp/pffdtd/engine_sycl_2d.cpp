@@ -225,7 +225,7 @@ auto run(Simulation2D const& sim) {
   auto host    = sycl::host_accessor{out_buf, sycl::read_only};
   for (auto it{0UL}; it < static_cast<size_t>(Nt); ++it) {
     for (auto ir{0UL}; ir < Nr; ++ir) {
-      outputs[ir, it] = static_cast<double>(host[ir][it]) * infac;
+      outputs(ir, it) = static_cast<double>(host[ir][it]) * infac;
     }
   }
 

@@ -6,7 +6,7 @@ project(pffdtd)
 add_library(pffdtd)
 add_library(pffdtd::pffdtd ALIAS pffdtd)
 target_include_directories(pffdtd PUBLIC ${PROJECT_SOURCE_DIR})
-target_compile_definitions(pffdtd PUBLIC _CRT_SECURE_NO_WARNINGS=1)
+target_compile_definitions(pffdtd PUBLIC _CRT_SECURE_NO_WARNINGS=1 MDSPAN_USE_BRACKET_OPERATOR=0 MDSPAN_USE_PAREN_OPERATOR=1)
 
 target_link_libraries(pffdtd
     PUBLIC

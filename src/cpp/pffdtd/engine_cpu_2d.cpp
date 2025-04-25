@@ -111,7 +111,7 @@ auto run(Simulation2D const& sim) {
 
     // Read outputs
     for (int64_t r = 0; r < Nr; ++r) {
-      out[r, n] = static_cast<double>(u0[sim.out_ixy[r]]);
+      out(r, n) = static_cast<double>(u0[sim.out_ixy[r]]);
     }
 
     // Rotate buffers
