@@ -15,19 +15,19 @@ class Diffusor3D(Setup3D):
     source_index = 1
     source_signal = 'impulse'
     diff_source = True
-    duration = 0.5
+    duration = 0.3
     Tc = 20
     rh = 50
     fcc = False
-    ppw = 10.5
-    fmax = 4000.0
+    ppw = 7.75
+    fmax = 10000.0
     save_folder = '../../sim_data/Diffusor3D/cpu'
     save_folder_gpu = '../../sim_data/Diffusor3D/gpu'
     compress = 0
     draw_vox = True
     draw_backend = 'polyscope'
-    bmin = [-3.0, -1.0, -0.1]
-    bmax = [+3.0, +3.0, +2.0]
+    bmin = [-1.1, +0.00, +0.0]
+    bmax = [+1.1, +3.25, +0.40]
 
     def generate_model(self, constants):
         print('--DIFFUSOR-3D: Generate model')
@@ -35,18 +35,21 @@ class Diffusor3D(Setup3D):
         dir = Path('.')
         obj = dir/'obj'
 
-        width = 1484.0/1000.0
-        height = 1000.0/1000.0
-        centre_x = width/2
+        height = 400.0/1000.0
 
         def point_at_angle(angle):
-            x, y = point_on_circle((centre_x, 0), 2.0, np.deg2rad(angle))
+            x, y = point_on_circle((0, 0), 1.0, np.deg2rad(angle))
             return [x, y, height/2]
+
+        s1 = point_at_angle(90)
+        s1[1] = 3.0
 
         m = MeshModelBuilder()
         m.add('_RIGID', obj / 'diffusor.obj', [25, 25, 25], reverse=True, sides=0)
-        m.add_source('S1', point_at_angle(90))
-        for i, angle in enumerate(range(1, 180)):
-            m.add_receiver(f'R{i}', point_at_angle(angle))
+        m.add_source('S1', s1)
+        for i, angle in enumerate(range(30, 152, 2)):
+            p = point_at_angle(angle)
+            print(f'R{i}: {p}')
+            m.add_receiver(f'R{i}', p)
 
         m.write(self.model_file)

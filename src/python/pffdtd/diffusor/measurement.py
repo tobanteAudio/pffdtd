@@ -11,18 +11,10 @@ from scipy import signal
 from pffdtd.common.wavfile import collect_wav_files, load_wav_files
 
 
-def bandpass_filter(y, lowcut, highcut, fs, order=8):
-    nyquist = 0.5 * fs
-    low = lowcut / nyquist
-    high = highcut / nyquist
-    sos = signal.butter(order, [low, high], btype='band', output='sos')
-    return signal.sosfilt(sos, y, axis=-1)
-
-
-def polar_response(y: np.array, fs: float, min_angle=0, max_angle=180, trim_angle=5):
+def polar_response(y: np.array, fs: float):
     octave_bands = [
         # (63, 125),
-        (125, 250),
+        # (125, 250),
         (250, 500),
         (500, 1000),
         (1000, 2000),
@@ -31,14 +23,10 @@ def polar_response(y: np.array, fs: float, min_angle=0, max_angle=180, trim_angl
         (8000, 16000),
     ]
 
-    mic_angles = np.linspace(min_angle, max_angle, y.shape[0], endpoint=True)
-    mic_angles = mic_angles[trim_angle:-trim_angle]
-
-    impulse = y[trim_angle:-trim_angle, :]
-
     bands = []
     for lowcut, highcut in octave_bands:
-        band = bandpass_filter(impulse, lowcut, highcut, fs)
+        sos = signal.butter(8, [lowcut, highcut], btype='band', output='sos', fs=fs)
+        band = signal.sosfilt(sos, y, axis=-1)
         label = f'{lowcut}-{highcut} Hz'
         bands.append((np.sqrt(np.mean(band**2, axis=1)), label))
 
@@ -47,7 +35,7 @@ def polar_response(y: np.array, fs: float, min_angle=0, max_angle=180, trim_angl
     for band in bands:
         norm.append((band[0] / scale * 100, band[1]))
 
-    return norm, mic_angles
+    return norm
 
 
 @click.command(name='measurement', help='Measure polar response.')
@@ -57,9 +45,11 @@ def main(sim_dir):
     files = collect_wav_files(sim_dir, '*_out_normalised.wav')
     fs, out = load_wav_files(files)
 
+    mic_angles = np.array([x for x in range(30, 152, 2)])
+
     constants = h5py.File(sim_dir / 'constants.h5', 'r')
     fmax = float(constants['fmax'][...])
-    trim_ms = 20
+    trim_ms = 10.5
     trim_samples = int(fs/1000*trim_ms)
 
     print(len(files))
@@ -73,52 +63,35 @@ def main(sim_dir):
     out = out[:, trim_samples:]
     times: np.ndarray = np.linspace(0.0, out.shape[-1]/fs, out.shape[-1])
 
-    plt.plot(times, out[15, :], label=f'{15}deg')
-    plt.plot(times, out[45, :], label=f'{45}deg')
-    plt.plot(times, out[90, :], label=f'{90}deg')
+    plt.plot(times, out[0, :])
+    # plt.plot(times, out[45, :], label=f'{45}deg')
+    plt.plot(times, out[-1, :])
     plt.grid(which='both')
-    plt.legend()
+    # plt.legend()
     plt.show()
 
-    rms_values, mic_angles = polar_response(out, fs, 1, 180, trim_angle=15)
+    def _plot(ax, rms, title):
+        ax.plot(np.deg2rad(mic_angles), rms)
+        ax.set_title(title)
+        ax.set_ylim((0.0, 100.0))
+        ax.set_thetamin(0)
+        ax.set_thetamax(180)
+
+    rms_values = polar_response(out, fs)
 
     fig, ax = plt.subplots(3, 2, constrained_layout=True, subplot_kw={'projection': 'polar'})
     fig.suptitle('Diffusion')
 
-    ax[0][0].plot(np.deg2rad(mic_angles), rms_values[0][0])
-    ax[0][0].set_title(rms_values[0][1])
-    ax[0][0].set_ylim((0.0, 100.0))
-    ax[0][0].set_thetamin(0)
-    ax[0][0].set_thetamax(180)
+    _plot(ax[0][0], rms_values[0][0], rms_values[0][1])
+    _plot(ax[0][1], rms_values[1][0], rms_values[1][1])
 
-    ax[0][1].plot(np.deg2rad(mic_angles), rms_values[1][0])
-    ax[0][1].set_title(rms_values[1][1])
-    ax[0][1].set_ylim((0.0, 100.0))
-    ax[0][1].set_thetamin(0)
-    ax[0][1].set_thetamax(180)
+    _plot(ax[1][0], rms_values[2][0], rms_values[2][1])
+    _plot(ax[1][1], rms_values[3][0], rms_values[3][1])
 
-    ax[1][0].plot(np.deg2rad(mic_angles), rms_values[2][0])
-    ax[1][0].set_title(rms_values[2][1])
-    ax[1][0].set_ylim((0.0, 100.0))
-    ax[1][0].set_thetamin(0)
-    ax[1][0].set_thetamax(180)
+    _plot(ax[2][0], rms_values[4][0], rms_values[4][1])
+    _plot(ax[2][1], rms_values[5][0], rms_values[5][1])
 
-    ax[1][1].plot(np.deg2rad(mic_angles), rms_values[3][0])
-    ax[1][1].set_title(rms_values[3][1])
-    ax[1][1].set_ylim((0.0, 100.0))
-    ax[1][1].set_thetamin(0)
-    ax[1][1].set_thetamax(180)
-
-    ax[2][0].plot(np.deg2rad(mic_angles), rms_values[4][0])
-    ax[2][0].set_title(rms_values[4][1])
-    ax[2][0].set_ylim((0.0, 100.0))
-    ax[2][0].set_thetamin(0)
-    ax[2][0].set_thetamax(180)
-
-    ax[2][1].plot(np.deg2rad(mic_angles), rms_values[5][0])
-    ax[2][1].set_title(rms_values[5][1])
-    ax[2][1].set_ylim((0.0, 100.0))
-    ax[2][1].set_thetamin(0)
-    ax[2][1].set_thetamax(180)
+    # _plot(ax[3][0], rms_values[6][0], rms_values[6][1])
+    # _plot(ax[3][1], rms_values[7][0], rms_values[7][1])
 
     plt.show()
