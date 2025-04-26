@@ -14,6 +14,7 @@ from pffdtd.sim3d.testing import run_engine, skip_if_native_engine_unavailable
 from pffdtd.sim3d.process_outputs import process_outputs
 
 
+@pytest.mark.slow
 @pytest.mark.parametrize('engine', ['python', 'cpu'])
 def test_sim3d_infinite_baffle(tmp_path, engine):
     skip_if_native_engine_unavailable(engine)

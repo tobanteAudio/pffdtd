@@ -64,6 +64,7 @@ addopts = ["-ra", "--strict-markers", "--strict-config"]
 xfail_strict = true
 filterwarnings = ["error"]
 testpaths = ["src/python/test/*"]
+markers = ["slow: marks tests as slow (deselect with '-m \"not slow\"')"]
 
 [tool.autopep8]
 max_line_length = 200
