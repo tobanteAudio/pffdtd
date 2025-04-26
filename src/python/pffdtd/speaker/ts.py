@@ -16,15 +16,18 @@ def compliance_equivalent_volume(Sd, Cms, rho=1.2, c=343.2):
 
 
 def diaphragm_diameter(Sd):
-    return np.sqrt(Sd/np.pi)*2
+    Dd = np.sqrt(Sd/np.pi)*2
+    return Dd
 
 
 def electrical_q_factor(Mms, fs, Re, BL):
-    return (2*np.pi*fs*Mms*Re)/(BL**2)
+    Qes = (2*np.pi*fs*Mms*Re)/(BL**2)
+    return Qes
 
 
 def mechanical_q_factor(Mms, Rms, fs):
-    return (2*np.pi*fs*Mms)/Rms
+    Qms = (2*np.pi*fs*Mms)/Rms
+    return Qms
 
 
 def mechanical_resistance(Sd, fs, Qms, Vas, rho=1.2, c=343.2):
@@ -49,53 +52,12 @@ def efficiency(fs, Qes, Vas, c=343.2):
 
 @click.command(name='ts', help='Thiele/Small parameters')
 @click.argument('drivers_csv', nargs=1, type=click.Path(exists=True))
-def main(drivers_csv):
-    # # RSS315HFA-8
-    # Cms = 0.00027
-    # Mms = 0.194
-    # Sd = 0.05067
-    # BL = 18
-    # Re = 6.5
-    # Qms = 2.5
-
-    # # Volt RV3143
-    # Cms = 0.00027
-    # Mms = 0.076
-    # Sd = 0.0473
-    # BL = 18
-    # Re = 6.1
-    # Qms = 5.35
-
-    # # Volt RV3863
-    # Cms = 0.000253
-    # Mms = 0.119
-    # Sd = 0.0760
-    # BL = 19.3
-    # Re = 5.8
-    # Qms = 3.94
-
-    # # Step 1
-    # Fs = resonance_frequency(Cms, Mms)
-
-    # # Step 2
-    # Vas = compliance_equivalent_volume(Sd, Cms)
-    # Dd = diaphragm_diameter(Sd)
-    # Qes = electrical_q_factor(Mms, Fs, Re, BL)
-    # Rms = mechanical_resistance(Sd, Fs, Qms, Vas)
-    # n0 = efficiency(Fs, Qes, Vas)
-    # Zmax = max_impedance(Qms, Qes, Re)
-
-    # print(f'{Fs=:.2f} Hz')
-    # print(f'{Vas=:.5f} m^3')
-    # print(f'{Dd=:.3f} m')
-    # print(f'{Qes=:.3f}')
-    # print(f'{Rms=:.3f} kg/s')
-    # print(f'{Zmax=:.3f} Ohm')
-    # print(f'n0={n0*100:.4f} %')
-
+@click.argument('driver_type', type=str, default='')
+def main(drivers_csv, driver_type):
     drivers = pd.read_csv(drivers_csv, encoding='utf-8')
-    drivers = drivers[drivers['Type'] == 'Midrange']
     drivers = drivers.drop(columns=['fmin', 'fmax', 'f1', 'f2', 'F3_sealed', 'F3_ported', 'Volume_sealed', 'Volume_ported'])
+    if driver_type:
+        drivers = drivers[drivers['Type'] == driver_type]
 
     # drivers['n0'] = efficiency(drivers['fs'], drivers['Qes'], drivers['Vas']/1000)*100
     # drivers['Cms_'] = mechanical_compliance(drivers['Sd'], drivers['Vas']/1000)
