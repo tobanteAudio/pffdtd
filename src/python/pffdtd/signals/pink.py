@@ -3,17 +3,31 @@
 
 import click
 import numpy as np
-from scipy.signal import butter, sosfilt
+from scipy.signal import butter, sosfilt, welch
 
 from pffdtd.common.wavfile import wavwrite
+from pffdtd.signals.level import crest_factor, normalize_to_RMS_dBFS
 
 
-def generate_pink_noise(duration, fs, dbFS=-20.0, lowcut=20.0, highcut=20000.0):
+def generate_pink_noise(duration, fs, dbFS=-20.0, lowcut=20.0, highcut=20000.0, order=8):
     n = int(fs * duration)
     x = _generate_pink_noise_fft(n, fs)
-    x = _bandlimit(x, fs, lowcut, highcut)
-    x = _normalize_to_dBFS(x, dbFS)
+    x = _bandlimit(x, fs, lowcut, highcut, order)
+    x = normalize_to_RMS_dBFS(x, dbFS)
     return x
+
+
+def pink_noise_slope(x, fs):
+    # Estimate PSD
+    f, Pxx = welch(x, fs, nperseg=4096)
+
+    # Restrict to 20 Hz–20 kHz
+    mask = (f >= 20) & (f <= 20000)
+    logf = np.log10(f[mask])
+    logP = np.log10(Pxx[mask])
+    slope, _ = np.polyfit(logf, logP, 1)
+
+    return slope
 
 
 def _generate_pink_noise_fft(n, fs):
@@ -27,17 +41,9 @@ def _generate_pink_noise_fft(n, fs):
     return x
 
 
-def _bandlimit(x, fs, lowcut, highcut, order=4):
+def _bandlimit(x, fs, lowcut, highcut, order=8):
     sos = butter(order, [lowcut, highcut], btype='band', fs=fs, output='sos')
     return sosfilt(sos, x)
-
-
-def _normalize_to_dBFS(x, target_dBFS):
-    rms = np.sqrt(np.mean(x**2))
-    current_dB = 20 * np.log10(rms)
-    gain_dB = target_dBFS - current_dB
-    gain = 10**(gain_dB / 20)
-    return x * gain
 
 
 @click.command(name='pink', help='Generate pink noise')
@@ -48,8 +54,11 @@ def main(output, duration, fs):
     x = generate_pink_noise(duration, fs)
     peak = np.max(np.abs(x))
     rms = np.sqrt(np.mean(x**2))
-    print(f'Peak:  {20*np.log10(peak):.1f} dB')
-    print(f'RMS:   {20*np.log10(rms):.1f} dB')
-    print(f'Crest: {peak/rms:.2f}')
+
+    print(f'Peak:  {20*np.log10(peak):.1f} dBFS ({105+20*np.log10(peak):.1f} dBC SPL)')
+    print(f'RMS:   {20*np.log10(rms):.1f} dBFS (85 dBC SPL)')
+    print(f'Crest: {20*np.log10(crest_factor(x)):.2f} dB')
+    print(f'Slope: {pink_noise_slope(x, fs)}')
+    print(f'Mean:  {abs(np.mean(x))}')
 
     wavwrite(output, fs, x)
