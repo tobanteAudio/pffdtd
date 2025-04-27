@@ -5,8 +5,10 @@ import click
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy.interpolate import interp1d
+from scipy.signal import sosfilt
 
-from pffdtd.filters.crossover import linkwitz_riley_crossover
+from pffdtd.filters.crossover import linkwitz_riley_sos_filter
+from pffdtd.filters.iir import minimum_phase_reconstruction
 
 sb_tw29dn_b_8_94db = [
     (0.0, 0.001),
@@ -263,84 +265,77 @@ bc_14na100_104db = [
 
 @click.command(name='distortion', help='Driver distortion')
 def main():
-    # freqs_volt5 = np.asarray([f for f, _ in volt_vm_572_94db])
-    # dist_volt5 = np.asarray([d for _, d in volt_vm_572_94db])
-
-    freqs_volt7 = np.asarray([f for f, _ in volt_vm_752_94db])
-    dist_volt7 = np.asarray([d for _, d in volt_vm_752_94db])
-
-    # freqs_sb = np.asarray([f for f, _ in sb_tw29dn_b_8_94db])
-    # dist_sb = np.asarray([d for _, d in sb_tw29dn_b_8_94db])
-
-    freqs_morel = np.asarray([f for f, _ in morel_1044_94db])
-    dist_morel = np.asarray([d for _, d in morel_1044_94db])
-
-    freqs_ss = np.asarray([f for f, _ in scan_speak_32w_4878t00_94db])
-    dist_ss = np.asarray([d for _, d in scan_speak_32w_4878t00_94db])
-
-    freqs_radian = np.asarray([f for f, _ in radian_950pb_104db])
-    dist_radian = np.asarray([d for _, d in radian_950pb_104db])
-
-    freqs_bc = np.asarray([f for f, _ in bc_14na100_104db])
-    dist_bc = np.asarray([d for _, d in bc_14na100_104db])
-
-    fs = 48000//2
+    fs = 48000
     fftfreqs = np.fft.rfftfreq(fs, 1/fs)
-    print(len(fftfreqs))
 
-    morel_resampled = interp1d(freqs_morel, dist_morel, kind='cubic', fill_value='extrapolate')(fftfreqs)
-    # volt5_resampled = interp1d(freqs_volt5, dist_volt5, kind='cubic', fill_value='extrapolate')(fftfreqs)
-    volt7_resampled = interp1d(freqs_volt7, dist_volt7, kind='cubic', fill_value='extrapolate')(fftfreqs)
-    radian_resampled = interp1d(freqs_radian, dist_radian, kind='cubic', fill_value='extrapolate')(fftfreqs)
-    bc_resampled = interp1d(freqs_bc, dist_bc, kind='cubic', fill_value='extrapolate')(fftfreqs)
-    # sb_resampled = interp1d(freqs_sb, dist_sb, kind='cubic', fill_value='extrapolate')(fftfreqs)
-    ss_resampled = interp1d(freqs_ss, dist_ss, kind='cubic', fill_value='extrapolate')(fftfreqs)
+    def interpolate(freqs, dist):
+        return np.maximum(0.0, interp1d(
+            freqs,
+            dist,
+            kind='cubic',
+            bounds_error=False,
+            fill_value=(dist[0], dist[-1]),
+        )(fftfreqs))
 
-    # plt.semilogx(fftfreqs, morel_resampled, label="Morel 1044")
-    # plt.semilogx(fftfreqs, sb_resampled, label="SB Acoustics TW29DN-B")
-    # plt.semilogx(fftfreqs, volt5_resampled, label="Volt VM572")
-    # plt.semilogx(fftfreqs, volt7_resampled, label="Volt VM752")
-    # plt.semilogx(fftfreqs, ss_resampled, label="Scan-Speak 32W 4878T00")
-    plt.semilogx(fftfreqs, radian_resampled, label='Radian 950PB')
-    plt.semilogx(fftfreqs, bc_resampled, label='B&C Speakers 14NA100-8')
-    plt.grid(which='both')
-    plt.xlim(20.0, 10000.0)
-    plt.ylim(0.0, 2.0)
-    # plt.ylim(-80, 0.0)
-    plt.legend()
+    def db_to_percent(db):
+        return 100 * 10 ** (db / 20)
+
+    def percent_to_db(pct):
+        return 20 * np.log10(pct+0.000001 / 100)
+
+    woofer = interpolate([f for f, _ in scan_speak_32w_4878t00_94db], [d for _, d in scan_speak_32w_4878t00_94db])
+    midrange = interpolate([f for f, _ in volt_vm_752_94db], [d for _, d in volt_vm_752_94db])
+    tweeter = interpolate([f for f, _ in morel_1044_94db], [d for _, d in morel_1044_94db])
+
+    ax = plt.gca()
+    ax.semilogx(fftfreqs, 20*np.log10(woofer/100+np.finfo(np.float64).eps), label='Woofer')
+    ax.semilogx(fftfreqs, 20*np.log10(midrange/100+np.finfo(np.float64).eps), label='Midrange')
+    ax.semilogx(fftfreqs, 20*np.log10(tweeter/100+np.finfo(np.float64).eps), label='Tweeter')
+    ax.set_xlim(20.0, 10000.0)
+    ax.set_ylim(-80.0, 0.0)
+    ax.set_ylabel('Frequency [Hz]')
+    ax.set_ylabel('Magnitude [dB]')
+    ax.set_title('2nd Harmonic')
+    secax = ax.secondary_yaxis('right', functions=(db_to_percent, percent_to_db))
+    secax.set_yticks([0.1, 0.2, 0.5, 1.0, 2.0, 4.0, 8.0])
+    secax.set_ylabel('Magnitude [%]')
+    ax.grid(which='both')
+    ax.legend()
+    plt.tight_layout()
     plt.show()
 
-    n = (len(fftfreqs)-1)*2
-    impulse = np.zeros(n)
-    impulse[n//2-1] = 1.0
-    filter_low, filter_mid = linkwitz_riley_crossover(impulse.copy(), fs, 700, 4)
-    filter_mid, filter_high = linkwitz_riley_crossover(filter_mid, fs, 3800, 4)
-    filter_low_fft, filter_mid_fft, filter_high_fft = np.fft.rfft(filter_low), np.fft.rfft(filter_mid), np.fft.rfft(filter_high)
+    woofer_min = minimum_phase_reconstruction(woofer/100)
+    midrange_min = minimum_phase_reconstruction(midrange/100)
+    tweeter_min = minimum_phase_reconstruction(tweeter/100)
 
-    plt.semilogx(fftfreqs, 20*np.log10(np.abs(filter_low_fft)+np.finfo(np.float64).eps), label='Low')
-    plt.semilogx(fftfreqs, 20*np.log10(np.abs(filter_mid_fft)+np.finfo(np.float64).eps), label='Mid')
-    plt.semilogx(fftfreqs, 20*np.log10(np.abs(filter_high_fft)+np.finfo(np.float64).eps), label='High')
-    plt.grid(which='both')
-    plt.xlim(20.0, 10000.0)
-    # plt.ylim(0.0, 2.0)
-    plt.ylim(-60, 10.0)
-    plt.legend()
+    lowpass_b1, highpass_b1 = linkwitz_riley_sos_filter(800, fs, 4)
+    lowpass_b2, highpass_b2 = linkwitz_riley_sos_filter(3800, fs, 4)
+
+    woofer_filt = sosfilt(lowpass_b1, woofer_min)
+    midrange_filt = sosfilt(highpass_b1, sosfilt(lowpass_b2, midrange_min))
+    tweeter_filt = sosfilt(highpass_b2, tweeter_min)
+
+    mix = woofer_filt+midrange_filt+tweeter_filt
+
+    H_woofer = np.fft.rfft(woofer_filt, fs)
+    H_midrange = np.fft.rfft(midrange_filt, fs)
+    H_tweeter = np.fft.rfft(tweeter_filt, fs)
+    H_mix = np.fft.rfft(mix, fs)
+
+    ax = plt.gca()
+    ax.semilogx(fftfreqs, 20*np.log10(np.abs(H_woofer)), linestyle='--', label='Woofer')
+    ax.semilogx(fftfreqs, 20*np.log10(np.abs(H_midrange)), linestyle='--', label='Midrange')
+    ax.semilogx(fftfreqs, 20*np.log10(np.abs(H_tweeter)), linestyle='--', label='Tweeter')
+    ax.semilogx(fftfreqs, 20*np.log10(np.abs(H_mix)), label='Mix')
+    ax.set_xlim(20.0, 10000.0)
+    ax.set_ylim(-80.0, 0.0)
+    ax.set_ylabel('Frequency [Hz]')
+    ax.set_ylabel('Magnitude [dB]')
+    ax.set_title('2nd Harmonic')
+    secax = ax.secondary_yaxis('right', functions=(db_to_percent, percent_to_db))
+    secax.set_yticks([0.1, 0.2, 0.5, 1.0, 2.0, 4.0, 8.0])
+    secax.set_ylabel('Magnitude [%]')
+    ax.grid(which='both')
+    ax.legend()
+    plt.tight_layout()
     plt.show()
-
-    low_sig = filter_low_fft*np.clip(ss_resampled, 0.0, None)
-    mid_sig = filter_mid_fft*np.clip(volt7_resampled, 0.0, None)
-    high_sig = filter_high_fft*np.clip(morel_resampled, 0.0, None)
-    mix_sig = np.abs(low_sig)+np.abs(mid_sig)+np.abs(high_sig)
-    plt.semilogx(fftfreqs, np.abs(low_sig), label='Woofer', linestyle='--')
-    plt.semilogx(fftfreqs, np.abs(mid_sig), label='Midrange', linestyle='--')
-    plt.semilogx(fftfreqs, np.abs(high_sig), label='Tweeter', linestyle='--')
-    plt.semilogx(fftfreqs, mix_sig, label='Mix')
-    plt.grid(which='both')
-    plt.xlim(20.0, 10000.0)
-    plt.ylim(0.0, 1.0)
-    # plt.ylim(-60, 10.0)
-    plt.legend()
-    plt.title('Distortion @ 94dB/1m')
-    plt.show()
-
-    print(mix_sig[(fftfreqs > 100.0) & (fftfreqs < 10000.0)].mean())

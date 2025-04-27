@@ -26,7 +26,7 @@ class InfiniteBaffle(Setup3D):
     draw_backend = 'polyscope'
     compress = 0
     rot_az_el = [0, 0]
-    bmax = [343/10, 2.0, 343/10]
+    bmax = [343.2/20, 2.0, 343.2/20]
     bmin = [0, 0, 0]
 
     def generate_model(self, constants):
@@ -62,11 +62,11 @@ class InfiniteBaffle(Setup3D):
                 {'name': 'S1', 'xyz': [width/2, length-offset, height/2]},
             ],
             'receivers': [
-                {'name': 'R1', 'xyz': [width/2, offset, height/2 - 0.75]},
+                {'name': 'R1', 'xyz': [width/2, offset, height/2 - 0.50]},
                 {'name': 'R2', 'xyz': [width/2, offset, height/2 - 0.25]},
                 {'name': 'R3', 'xyz': [width/2, offset, height/2 + 0.00]},
                 {'name': 'R4', 'xyz': [width/2, offset, height/2 + 0.25]},
-                {'name': 'R5', 'xyz': [width/2, offset, height/2 + 0.75]},
+                {'name': 'R5', 'xyz': [width/2, offset, height/2 + 0.50]},
             ]
         }
 

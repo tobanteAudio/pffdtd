@@ -48,7 +48,7 @@ def test_sim3d_infinite_baffle(tmp_path, engine):
                     [0, 2, 1],
                     [0, 3, 2],
                     [1, 5, 4],
-                    [1, 3, 5]
+                    [1, 2, 5]
                 ],
                 'pts': [
                     [0.0, depth, 0.0],

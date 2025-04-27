@@ -2,7 +2,6 @@
 # SPDX-FileCopyrightText: 2025 Tobias Hienzsch
 
 import numpy as np
-import matplotlib.pyplot as plt
 from scipy import signal
 
 
@@ -64,14 +63,6 @@ def low_pass(fc, Q, fs):
     return np.array([b0, b1, b2]), np.array([a0, a1, a2])
 
 
-def low_pass_sos(x, N, fc, fs):
-    qs = butterworth_Qs(N)
-    for q in qs:
-        b, a = low_pass(fc, q, fs)
-        x = signal.lfilter(b, a, x)
-    return x
-
-
 def peak_filter(fc, gain, Q, fs):
     assert fs > 0
     assert fc > 0
@@ -95,62 +86,43 @@ def peak_filter(fc, gain, Q, fs):
     return signal.tf2sos(b, a)
 
 
-def group_delay(X, freqs):
-    phase = np.unwrap(np.angle(X))
-    dphi = np.diff(phase)
-    dw = np.diff(freqs)
-    return -dphi / dw
+def minimum_phase_reconstruction(M_half: np.ndarray) -> np.ndarray:
+    """
+    Reconstructs a minimum phase impulse response with a magnitude
+    response matching M
 
+    Parameters:
+        - M_half: Of length (N//2 + 1), containing magnitudes at frequencies 0, 2π/N, 4π/N, …, π (Nyquist).
 
-def main():
-    fs = 96000
-    fc = 1000
-    order = 2
-    freqs = np.fft.rfftfreq(fs, 1/fs)
+    Returns:
+        Minimum phase impulse response
+    """
+    # infer full FFT length N (must be even)
+    N = (len(M_half) - 1) * 2
 
-    impulse = np.zeros(fs)
-    impulse[0] = 1.0
-    i_fft = np.fft.rfft(impulse)
+    # 1. Reconstruct full, even‐symmetric magnitude spectrum
+    #   bins 0 … N/2
+    #   then bins N/2−1 … 1
+    M_full = np.concatenate([
+        M_half,
+        M_half[-2:0:-1]   # skip the last (Nyquist) and the first (DC)
+    ])
 
-    l = signal.butter(order, fc, 'lowpass', fs=fs, output='sos')
-    l_out = signal.sosfilt(l, impulse.copy())
-    l_fft = np.fft.rfft(l_out)
+    # 2. Log‐magnitude and real cepstrum
+    eps = 1e-12                                 # avoid log(0)
+    L = np.log(np.maximum(M_full, eps))         # length-N real, symmetric
+    c = np.fft.ifft(L).real                     # real cepstrum, length N
 
-    print(l)
+    # 3. Build the minimum‐phase cepstrum
+    c_min = np.zeros_like(c)
+    c_min[0] = c[0]                             # keep the DC term
+    # double the causal part 1 … N/2−1
+    c_min[1:N//2] = 2 * c[1:N//2]
+    # if you want to preserve the Nyquist term (for even N), uncomment:
+    c_min[N//2] = c[N//2]
 
-    sos_out = low_pass_sos(impulse.copy(), order, fc=fc, fs=fs)
-    sos_fft = np.fft.rfft(sos_out)
-
-    l_mag = 20*np.log10(np.abs(l_fft)+0.0000001)
-    sos_mag = 20*np.log10(np.abs(sos_fft)+0.0000001)
-
-    sos_gdelay = group_delay(sos_fft, freqs)
-
-    plt.semilogx(freqs, l_mag, label='LFilter')
-    plt.semilogx(freqs, sos_mag, label='SOS')
-    plt.title(f'{order}th Order Butterworth ({20*np.log10(0.5)*order:.0f}dB)')
-    plt.grid(which='both')
-    plt.xlim(10, 30_000)
-    plt.ylim(-100, 10)
-    plt.legend()
-    plt.show()
-
-    plt.semilogx(freqs, np.rad2deg(np.angle(i_fft)), label='I Phase')
-    plt.semilogx(freqs, np.rad2deg(np.angle(l_fft)), label='L Phase')
-    plt.semilogx(freqs, np.rad2deg(np.angle(sos_fft)), label='SOS Phase')
-    plt.grid(which='both')
-    plt.xlim(10, 30_000)
-    # plt.ylim(-100, 10)
-    plt.legend()
-    plt.show()
-
-    plt.semilogx(freqs[:-1], sos_gdelay, label='SOS Group-Delay')
-    plt.grid(which='both')
-    # plt.xlim(10, 30_000)
-    # plt.ylim(-100, 10)
-    plt.legend()
-    plt.show()
-
-
-if __name__ == '__main__':
-    main()
+    # 4. Re‐synthesize the complex spectrum
+    #    H_min[k] = exp( FFT{c_min} )
+    H_min = np.exp(np.fft.fft(c_min))
+    h = np.fft.ifft(H_min)
+    return h.real

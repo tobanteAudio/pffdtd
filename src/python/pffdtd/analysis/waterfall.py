@@ -2,10 +2,31 @@
 # SPDX-FileCopyrightText: 2024 Tobias Hienzsch
 import click
 import numpy as np
+from matplotlib.axes import Axes
 import matplotlib.pyplot as plt
 from scipy.signal import stft
 
 from pffdtd.common.wavfile import wavread
+
+
+def plot_waterfall(x, fs, *, window='hann', min_dB=-100, color_map='gouraud', ax: Axes | None = None):
+    if not ax:
+        ax: Axes = plt.gca()
+
+    nperseg = 64
+    nfft = nperseg*64
+    frequencies, times, Zxx = stft(x, fs=fs, nperseg=nperseg, nfft=nfft, window=window)
+
+    Zxx_dB = 20*np.log10((np.abs(Zxx)+np.finfo(np.float64).eps)/nfft)
+    Zxx_dB -= np.max(Zxx_dB)
+
+    mesh = ax.pcolormesh(times, frequencies, Zxx_dB, shading=color_map, vmin=min_dB, vmax=0)
+    ax.figure.colorbar(mesh, label='Amplitude [dB]')
+    ax.set_title('Decay Times')
+    ax.set_xlabel('Time [s]')
+    ax.set_ylabel('Frequency [Hz]')
+    ax.set_yscale('log')
+    ax.set_ylim([frequencies[1], fs / 2])
 
 
 @click.command(name='waterfall', help='Waterfall decay plot.')
@@ -17,19 +38,7 @@ def main(filename, color_map, min_db, window):
     fs, ir = wavread(filename)
     ir = ir / np.max(np.abs(ir))
 
-    nperseg = 64
-    nfft = nperseg*64
-    frequencies, times, Zxx = stft(ir, fs=fs, nperseg=nperseg, nfft=nfft, window=window)
-
-    Zxx_dB = 20*np.log10((np.abs(Zxx)+np.finfo(np.float64).eps)/nfft)
-    Zxx_dB -= np.max(Zxx_dB)
-
     plt.figure(figsize=(10, 6))
-    plt.pcolormesh(times, frequencies, Zxx_dB, shading=color_map, vmin=min_db, vmax=0)
-    plt.colorbar(label='Amplitude [dB]')
-    plt.title('Decay Times')
-    plt.xlabel('Time [s]')
-    plt.ylabel('Frequency [Hz]')
-    plt.yscale('log')
-    plt.ylim([frequencies[1], fs / 2])
+    plot_waterfall(ir, fs, window=window, min_dB=min_db, color_map=color_map)
+    plt.tight_layout()
     plt.show()
