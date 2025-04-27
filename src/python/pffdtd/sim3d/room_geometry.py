@@ -40,7 +40,8 @@ class RoomGeometry:
         self.vol = None
         self.colors = None
         if model_file is None:
-            raise
+            raise RuntimeError('model_file not specified')
+
         self.area_eps = area_eps
 
         # identity 3x3 matrix by default

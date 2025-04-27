@@ -263,14 +263,14 @@ bc_14na100_104db = [
 
 @click.command(name='distortion', help='Driver distortion')
 def main():
-    freqs_volt5 = np.asarray([f for f, _ in volt_vm_572_94db])
-    dist_volt5 = np.asarray([d for _, d in volt_vm_572_94db])
+    # freqs_volt5 = np.asarray([f for f, _ in volt_vm_572_94db])
+    # dist_volt5 = np.asarray([d for _, d in volt_vm_572_94db])
 
     freqs_volt7 = np.asarray([f for f, _ in volt_vm_752_94db])
     dist_volt7 = np.asarray([d for _, d in volt_vm_752_94db])
 
-    freqs_sb = np.asarray([f for f, _ in sb_tw29dn_b_8_94db])
-    dist_sb = np.asarray([d for _, d in sb_tw29dn_b_8_94db])
+    # freqs_sb = np.asarray([f for f, _ in sb_tw29dn_b_8_94db])
+    # dist_sb = np.asarray([d for _, d in sb_tw29dn_b_8_94db])
 
     freqs_morel = np.asarray([f for f, _ in morel_1044_94db])
     dist_morel = np.asarray([d for _, d in morel_1044_94db])
@@ -289,11 +289,11 @@ def main():
     print(len(fftfreqs))
 
     morel_resampled = interp1d(freqs_morel, dist_morel, kind='cubic', fill_value='extrapolate')(fftfreqs)
-    volt5_resampled = interp1d(freqs_volt5, dist_volt5, kind='cubic', fill_value='extrapolate')(fftfreqs)
+    # volt5_resampled = interp1d(freqs_volt5, dist_volt5, kind='cubic', fill_value='extrapolate')(fftfreqs)
     volt7_resampled = interp1d(freqs_volt7, dist_volt7, kind='cubic', fill_value='extrapolate')(fftfreqs)
     radian_resampled = interp1d(freqs_radian, dist_radian, kind='cubic', fill_value='extrapolate')(fftfreqs)
     bc_resampled = interp1d(freqs_bc, dist_bc, kind='cubic', fill_value='extrapolate')(fftfreqs)
-    sb_resampled = interp1d(freqs_sb, dist_sb, kind='cubic', fill_value='extrapolate')(fftfreqs)
+    # sb_resampled = interp1d(freqs_sb, dist_sb, kind='cubic', fill_value='extrapolate')(fftfreqs)
     ss_resampled = interp1d(freqs_ss, dist_ss, kind='cubic', fill_value='extrapolate')(fftfreqs)
 
     # plt.semilogx(fftfreqs, morel_resampled, label="Morel 1044")

@@ -2,6 +2,7 @@
 # SPDX-FileCopyrightText: 2021 Brian Hamilton
 from dataclasses import dataclass
 
+import click
 import numba as nb
 import numpy as np
 from numpy import exp, pi, cos, sqrt, log
@@ -366,6 +367,7 @@ def apply_visco_filter(x, Fs, Tc, rh, NdB=120, t_start=None):
     return np.squeeze(y)  # squeeze to 1d in case
 
 
+@click.command(name='air', help='Air absorption.')
 def main():
     f = np.logspace(np.log10(1), np.log10(80e3))
     rh = 15
@@ -390,7 +392,3 @@ def main():
     print(f"{rd.frO=}")
     print(f"{rd.frN=}")
     print(f"{rd.eta=}")
-
-
-if __name__ == '__main__':
-    main()

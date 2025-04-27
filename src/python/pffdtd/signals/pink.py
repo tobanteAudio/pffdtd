@@ -9,7 +9,7 @@ from pffdtd.common.wavfile import wavwrite
 from pffdtd.signals.level import crest_factor, normalize_to_RMS_dBFS
 
 
-def generate_pink_noise(duration, fs, dbFS=-20.0, lowcut=20.0, highcut=20000.0, order=8):
+def generate_pink_noise(duration, fs, *, dbFS=-20.0, lowcut=20.0, highcut=20000.0, order=8):
     n = int(fs * duration)
     x = _generate_pink_noise_fft(n, fs)
     x = _bandlimit(x, fs, lowcut, highcut, order)

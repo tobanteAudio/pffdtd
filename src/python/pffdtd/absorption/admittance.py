@@ -130,7 +130,7 @@ def write_freq_dep_mat(DEF, filename):
     h5f.close()
 
 
-def read_mat_DEF(filename):
+def read_mat_DEF(filename) -> np.ndarray:
     """write HDF5 mat file from frequency-independent triplet (D=F=0)
     """
     h5f = h5py.File(Path(filename), 'r')
@@ -139,7 +139,7 @@ def read_mat_DEF(filename):
     return DEF
 
 
-def plot_DEF_admittance(fv, DEF, model_Rf=None, show=True):
+def plot_DEF_admittance(fv: np.ndarray, DEF: np.ndarray, model_Rf=None):
     """plot some admittance based on DEF triplets (specific admittance)
     """
     DEF = np.atleast_2d(DEF)
@@ -224,8 +224,7 @@ def plot_DEF_admittance(fv, DEF, model_Rf=None, show=True):
     ax.margins(0, 0.1)
     ax.grid(which='both', axis='both')
 
-    if show:
-        plt.show()
+    plt.show()
 
 
 def compute_Rf_from_DEF(jw, D, E, F):

@@ -3,6 +3,7 @@
 import click
 
 from pffdtd.absorption import admittance
+from pffdtd.absorption import air
 from pffdtd.absorption import porous
 
 
@@ -12,4 +13,5 @@ def absorption():
 
 
 absorption.add_command(admittance.main)
+absorption.add_command(air.main)
 absorption.add_command(porous.main)

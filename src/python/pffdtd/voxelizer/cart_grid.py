@@ -106,7 +106,7 @@ class CartGrid():
             )
             mlab.draw()
         else:
-            raise  # todo polyscope
+            raise NotImplementedError('TODO for polyscope')
 
     def print_stats(self):
         cg = self
