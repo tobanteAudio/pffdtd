@@ -7,7 +7,7 @@ set -e
 
 root_dir="$(cd "$(dirname "$0")" && pwd)"
 pffdtd_engine="$root_dir/build/src/cpp/pffdtd-engine"
-# pffdtd_engine="$root_dir/cmake-build-sycl/src/cpp/pffdtd-engine"
+# pffdtd_engine="$root_dir/cmake-build-cuda/src/cpp/pffdtd-engine"
 
 sim_name="InfiniteBaffle"
 sim_setup="${sim_name}.py"

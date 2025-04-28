@@ -25,7 +25,7 @@ project(pffdtd VERSION 0.1.0 LANGUAGES C CXX)
 
 if(PFFDTD_ENABLE_CUDA)
     enable_language(CUDA)
-    set(CMAKE_CUDA_STANDARD 23)
+    set(CMAKE_CUDA_STANDARD 20)
 endif()
 
 if(PFFDTD_ENABLE_METAL AND APPLE)
