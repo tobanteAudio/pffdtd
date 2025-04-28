@@ -42,8 +42,8 @@ pffdtd analysis summary --fmax "$fmax" $sim_dir/R001_out_normalised.wav
 # pffdtd analysis waterfall --min_db=-60 $sim_dir/R001_out_normalised.wav
 # pffdtd analysis waterfall --min_db=-60 $sim_dir/R015_out_normalised.wav
 # pffdtd analysis waterfall --min_db=-60 $sim_dir/R030_out_normalised.wav
-# pffdtd analysis t60 --fmin=$fmin --fmax="$fmax" --target=0.3 $sim_dir/R001_out_normalised.wav
-# pffdtd analysis t60 --sim_dir="$sim_dir" --fmin=$fmin --fmax="$fmax" --target=0.25
+# pffdtd analysis rt60 --fmin=$fmin --fmax="$fmax" --target=0.3 $sim_dir/R001_out_normalised.wav
+# pffdtd analysis rt60 --sim_dir="$sim_dir" --fmin=$fmin --fmax="$fmax" --target=0.25
 # pffdtd analysis room-modes --sim_dir="$sim_dir" --fmin=$fmin --num_modes=20 --width=3.65 --length=6.0 --height=3.12
 # pffdtd analysis localization --sim_dir="$sim_dir" "$model_dir/model.json"
 # pffdtd diffusor measurement "$sim_dir"

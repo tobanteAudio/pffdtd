@@ -151,7 +151,7 @@ def run(files, fmin, fmax, show_all=False, show_tolerance=True, target=None):
     plt.show()
 
 
-@click.command(name='t60', help='Plot RT60 decay times.')
+@click.command(name='rt60', help='Plot RT60 decay times.')
 @click.argument('filename', nargs=-1, type=click.Path(exists=True))
 @click.option('--sim_dir', type=click.Path(exists=True))
 @click.option('--fmin', default=1.0)
