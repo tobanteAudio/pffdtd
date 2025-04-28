@@ -23,8 +23,7 @@ jobs:
     env:
       CMAKE_PREFIX_PATH: ${{ matrix.cmake_prefix_path }}
       MACOSX_DEPLOYMENT_TARGET: ${{ matrix.osx_target }}
-      PFFDTD_ENGINE_2D: ${{ matrix.pffdtd_engine_2d }}
-      PFFDTD_ENGINE_3D: ${{ matrix.pffdtd_engine_3d }}
+      PFFDTD_ENGINE_EXE: ${{ matrix.pffdtd_engine_exe }}
     strategy:
       fail-fast: false
       matrix:
@@ -37,19 +36,7 @@ jobs:
             build_type: "Debug"
             cxx_flags: "--coverage -march=native -Og"
             python_version: "3.12"
-            pffdtd_engine_2d: "build/src/cpp/pffdtd-engine"
-            pffdtd_engine_3d: "build/src/cpp/pffdtd-engine"
-
-          - name: macOS-X64
-            os: macos-13
-            osx_target: "10.15"
-            cmake_prefix_path: ""
-            cmake_flags: '-D OpenMP_ROOT=`brew list libomp | grep libomp.a | sed -E "s/\/lib\/.*//"`'
-            build_type: "Release"
-            cxx_flags: ""
-            python_version: "3.12"
-            pffdtd_engine_2d: "build/src/cpp/pffdtd-engine"
-            pffdtd_engine_3d: ""
+            pffdtd_engine_exe: "build/src/cpp/pffdtd-engine"
 
           - name: macOS-ARM64
             os: macos-14
@@ -59,8 +46,7 @@ jobs:
             build_type: "Release"
             cxx_flags: ""
             python_version: "3.12"
-            pffdtd_engine_2d: "build/src/cpp/pffdtd-engine"
-            pffdtd_engine_3d: "build/src/cpp/pffdtd-engine"
+            pffdtd_engine_exe: "build/src/cpp/pffdtd-engine"
 
           - name: Windows
             os: windows-latest
@@ -70,8 +56,7 @@ jobs:
             build_type: "Release"
             cxx_flags: "/EHsc"
             python_version: "3.12"
-            pffdtd_engine_2d: "build/src/cpp/pffdtd-engine.exe"
-            pffdtd_engine_3d: "build/src/cpp/pffdtd-engine.exe"
+            pffdtd_engine_exe: "build/src/cpp/pffdtd-engine.exe"
 
     steps:
       - name: Checkout code

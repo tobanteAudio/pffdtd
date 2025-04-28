@@ -25,7 +25,7 @@ def model(*, Lx=None, Ly=None, Nx=None, Ny=None, dx=None, X=None, Y=None, in_mas
 
 
 @pytest.mark.slow
-@pytest.mark.skipif(os.environ.get('PFFDTD_ENGINE_2D') is None, reason='Native 2D engine not available')
+@pytest.mark.skipif(os.environ.get('PFFDTD_ENGINE_EXE') is None, reason='Native 2D engine not available')
 def test_sim2d_engines(tmp_path):
     sim_setup_2d(
         sim_dir=tmp_path,
@@ -48,7 +48,7 @@ def test_sim2d_engines(tmp_path):
     result = runner.invoke(cli, args)
     assert result.exit_code == 0
 
-    exe = pathlib.Path(os.environ.get('PFFDTD_ENGINE_2D')).absolute()
+    exe = pathlib.Path(os.environ.get('PFFDTD_ENGINE_EXE')).absolute()
     assert exe.exists()
     assert exe.is_file()
 
