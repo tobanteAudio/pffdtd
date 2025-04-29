@@ -37,6 +37,7 @@ def plot_waterfall(x, fs, *, window='hann', min_dB=-100, color_map='gouraud', ax
 def main(filename, color_map, min_db, window):
     fs, ir = wavread(filename)
     ir = ir / np.max(np.abs(ir))
+    window = ('gaussian', 7)
 
     plt.figure(figsize=(10, 6))
     plot_waterfall(ir, fs, window=window, min_dB=min_db, color_map=color_map)

@@ -8,7 +8,7 @@ import numpy as np
 import scipy.io.wavfile
 
 
-def wavread(fname):
+def wavread(fname) -> tuple[float, np.ndarray]:
     fs, data = scipy.io.wavfile.read(fname)  # reads in (Nsamples,Nchannels)
     if data.dtype == np.int16:
         data = data/32768.0

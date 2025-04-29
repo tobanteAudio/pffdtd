@@ -86,6 +86,14 @@ def peak_filter(fc, gain, Q, fs):
     return signal.tf2sos(b, a)
 
 
+def third_octave_bandpass(center, fs, order):
+    factor = 2 ** (1/6)  # One-third octave factor
+    low = center / factor
+    high = center * factor
+    sos = signal.butter(order, [low, high], btype='band', fs=fs, output='sos')
+    return sos
+
+
 def minimum_phase_reconstruction(M_half: np.ndarray) -> np.ndarray:
     """
     Reconstructs a minimum phase impulse response with a magnitude
