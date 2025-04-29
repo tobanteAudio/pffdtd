@@ -15,7 +15,7 @@ class ProStudio(Setup3D):
     model_file = 'model.json'
     mat_folder = '../../sim_data/ProStudio/materials'
     source_index = 1
-    source_signal = 'impulse-highpass'
+    source_signal = 'impulse'
     diff_source = True
     materials = {
         'ATC Left': 'wood.h5',
@@ -33,7 +33,7 @@ class ProStudio(Setup3D):
         'Walls Side': 'absorber_8000_50mm.h5',
         'Windows': 'glas_thick.h5',
     }
-    duration = 1.5
+    duration = 2.0
     Tc = 20
     rh = 50
     fcc = False

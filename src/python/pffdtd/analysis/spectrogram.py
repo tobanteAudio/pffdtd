@@ -13,8 +13,8 @@ def plot_spectrogram(x, fs, *, window='hann', min_dB=-100, color_map='gouraud', 
     if not ax:
         ax: Axes = plt.gca()
 
-    nperseg = 64
-    nfft = nperseg*64
+    nperseg = 128
+    nfft = nperseg*32
     frequencies, times, Zxx = stft(x, fs=fs, nperseg=nperseg, nfft=nfft, window=window)
 
     Zxx_dB = 20*np.log10((np.abs(Zxx)+np.finfo(np.float64).eps)/nfft)
@@ -22,7 +22,7 @@ def plot_spectrogram(x, fs, *, window='hann', min_dB=-100, color_map='gouraud', 
 
     mesh = ax.pcolormesh(times, frequencies, Zxx_dB, shading=color_map, vmin=min_dB, vmax=0)
     ax.figure.colorbar(mesh, label='Amplitude [dB]')
-    ax.set_title('Decay Times')
+    ax.set_title('Spectrogram')
     ax.set_xlabel('Time [s]')
     ax.set_ylabel('Frequency [Hz]')
     ax.set_yscale('log')
@@ -37,7 +37,6 @@ def plot_spectrogram(x, fs, *, window='hann', min_dB=-100, color_map='gouraud', 
 def main(filename, color_map, min_db, window):
     fs, ir = wavread(filename)
     ir = ir / np.max(np.abs(ir))
-    window = ('gaussian', 7)
 
     plt.figure(figsize=(10, 6))
     plot_spectrogram(ir, fs, window=window, min_dB=min_db, color_map=color_map)

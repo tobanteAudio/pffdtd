@@ -9,7 +9,7 @@ root_dir="$(cd "$(dirname "$0")" && pwd)"
 pffdtd_engine="$root_dir/build/src/cpp/pffdtd-engine"
 # pffdtd_engine="$root_dir/cmake-build-cuda/src/cpp/pffdtd-engine"
 
-sim_name="InfiniteBaffle"
+sim_name="ProStudio"
 sim_setup="${sim_name}.py"
 sim_dir="$root_dir/sim_data/$sim_name/gpu"
 

@@ -30,7 +30,7 @@ def plot_impulse_response_summary(x: np.ndarray, fs: float, *, fmax: float | Non
     impulse_plot.plot(np.linspace(0.0, n/fs, n), x)
     impulse_plot.set_xlabel('Frequency [Hz]')
     impulse_plot.set_ylabel('Amplitude [FS]')
-    impulse_plot.set_title('Impulse Response')
+    impulse_plot.set_title('Impulse')
     impulse_plot.grid(which='both')
 
     plot_spectrogram(x, fs, ax=axs[0][1])
@@ -41,7 +41,7 @@ def plot_impulse_response_summary(x: np.ndarray, fs: float, *, fmax: float | Non
     mag_plot.set_ylim(30, 90)
     mag_plot.set_xlabel('Frequency [Hz]')
     mag_plot.set_ylabel('Magnitude [dB]')
-    mag_plot.set_title('Magnitude Response')
+    mag_plot.set_title('Magnitude')
     mag_plot.grid(which='both')
 
     phase_plot: Axes = axs[2][0]
@@ -49,7 +49,7 @@ def plot_impulse_response_summary(x: np.ndarray, fs: float, *, fmax: float | Non
     phase_plot.set_xlim(10, fmax)
     phase_plot.set_xlabel('Frequency [Hz]')
     phase_plot.set_ylabel('Phase [deg]')
-    phase_plot.set_title('Phase Response')
+    phase_plot.set_title('Phase')
     phase_plot.grid(which='both')
 
     group_delay_plot: Axes = axs[1][1]
