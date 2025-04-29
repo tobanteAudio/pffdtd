@@ -4,6 +4,7 @@
 import click
 
 from pffdtd.filters import dolby
+from pffdtd.filters import phase
 
 
 @click.group(help='Filters.')
@@ -12,3 +13,4 @@ def filters():
 
 
 filters.add_command(dolby.main)
+filters.add_command(phase.main)
