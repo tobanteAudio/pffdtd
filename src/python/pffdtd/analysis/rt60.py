@@ -13,7 +13,7 @@ from scipy.signal import sosfilt
 
 from pffdtd.common.plot import plot_styles
 from pffdtd.common.wavfile import collect_wav_files, wavread
-from pffdtd.filters.iir import third_octave_bandpass
+from pffdtd.filters.iir import octave_bandpass
 
 
 def clarity(x: np.ndarray, fs: float, early_ms: float) -> float:
@@ -60,7 +60,7 @@ def decay_time(edc_dB, fs, t20=False):
 def reverberation_time(x, fs, freqs, plot=False) -> pd.DataFrame:
     results = []
     for frequency in freqs:
-        bandpass = third_octave_bandpass(frequency, fs, 2)
+        bandpass = octave_bandpass(frequency, fs, fraction=3, order=2)
         filtered = sosfilt(bandpass, x)
         edc_dB = energy_decay_curve(filtered)
         edt = early_decay_time(edc_dB, fs)

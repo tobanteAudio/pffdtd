@@ -17,4 +17,6 @@ def test_butterworth_Qs():
 @pytest.mark.parametrize('fc', [30, 100, 440, 2000])
 @pytest.mark.parametrize('fs', [24000, 44100, 48000, 88200, 96000])
 def test_low_pass(fc, fs):
-    assert np.allclose(low_pass(fc, butterworth_Qs(2)[0], fs), butter(2, fc, btype='low', fs=fs))
+    actual = low_pass(fc, butterworth_Qs(2)[0], fs)
+    expected = butter(2, fc, btype='low', fs=fs, output='sos')
+    assert np.allclose(actual, expected)

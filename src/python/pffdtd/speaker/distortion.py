@@ -7,7 +7,7 @@ import numpy as np
 from scipy.interpolate import interp1d
 from scipy.signal import sosfilt
 
-from pffdtd.filters.crossover import linkwitz_riley_sos_filter
+from pffdtd.filters.iir import linkwitz_riley_crossover
 from pffdtd.filters.phase import minimum_phase_reconstruction
 
 sb_tw29dn_b_8_94db = [
@@ -308,8 +308,8 @@ def main():
     midrange_min = minimum_phase_reconstruction(midrange/100)
     tweeter_min = minimum_phase_reconstruction(tweeter/100)
 
-    lowpass_b1, highpass_b1 = linkwitz_riley_sos_filter(800, fs, 4)
-    lowpass_b2, highpass_b2 = linkwitz_riley_sos_filter(3800, fs, 4)
+    lowpass_b1, highpass_b1 = linkwitz_riley_crossover(800, fs, 4)
+    lowpass_b2, highpass_b2 = linkwitz_riley_crossover(3800, fs, 4)
 
     woofer_filt = sosfilt(lowpass_b1, woofer_min)
     midrange_filt = sosfilt(highpass_b1, sosfilt(lowpass_b2, midrange_min))

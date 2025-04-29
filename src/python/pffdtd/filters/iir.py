@@ -44,7 +44,7 @@ def butterworth_Qs(order, wc=1):
     return qs
 
 
-def low_pass(fc, Q, fs):
+def low_pass(fc, Q, fs) -> np.ndarray:
     omega0 = 2 * np.pi * fc / fs
     d = 1 / Q
     cos0 = np.cos(omega0)
@@ -60,10 +60,10 @@ def low_pass(fc, Q, fs):
     a1 = -2 * gamma
     a2 = 2 * beta
 
-    return np.array([b0, b1, b2]), np.array([a0, a1, a2])
+    return signal.tf2sos(np.array([b0, b1, b2]), np.array([a0, a1, a2]))
 
 
-def peak_filter(fc, gain, Q, fs):
+def peak_filter(fc, gain, Q, fs) -> np.ndarray:
     assert fs > 0
     assert fc > 0
     assert fc <= fs * 0.5
@@ -86,9 +86,17 @@ def peak_filter(fc, gain, Q, fs):
     return signal.tf2sos(b, a)
 
 
-def third_octave_bandpass(center, fs, order):
-    factor = 2 ** (1/6)  # One-third octave factor
+def octave_bandpass(center: float, fs: float, fraction: float = 3, order: int = 2) -> np.ndarray:
+    """One-third octave by default"""
+    factor = 2 ** (1/(fraction*2))
     low = center / factor
     high = center * factor
-    sos = signal.butter(order, [low, high], btype='band', fs=fs, output='sos')
-    return sos
+    return signal.butter(order, [low, high], btype='band', fs=fs, output='sos')
+
+
+def linkwitz_riley_crossover(fc, fs, order=4) -> tuple[np.ndarray, np.ndarray]:
+    assert order >= 2
+    assert order % 2 == 0
+    low = signal.butter(order//2, Wn=fc, fs=fs, btype='low', output='sos')
+    high = signal.butter(order//2, Wn=fc, fs=fs, btype='high', output='sos')
+    return np.concatenate([low, low]), np.concatenate([high, high])
