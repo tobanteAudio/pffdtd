@@ -9,7 +9,7 @@ from scipy.signal import stft
 from pffdtd.common.wavfile import wavread
 
 
-def plot_waterfall(x, fs, *, window='hann', min_dB=-100, color_map='gouraud', ax: Axes | None = None):
+def plot_spectrogram(x, fs, *, window='hann', min_dB=-100, color_map='gouraud', ax: Axes | None = None):
     if not ax:
         ax: Axes = plt.gca()
 
@@ -29,7 +29,7 @@ def plot_waterfall(x, fs, *, window='hann', min_dB=-100, color_map='gouraud', ax
     ax.set_ylim([frequencies[1], fs / 2])
 
 
-@click.command(name='waterfall', help='Waterfall decay plot.')
+@click.command(name='spectrogram', help='Spectral decay plot (STFT).')
 @click.argument('filename', nargs=1, type=click.Path(exists=True))
 @click.option('--color_map', default='gouraud')
 @click.option('--min_db', default=-100)
@@ -40,6 +40,6 @@ def main(filename, color_map, min_db, window):
     window = ('gaussian', 7)
 
     plt.figure(figsize=(10, 6))
-    plot_waterfall(ir, fs, window=window, min_dB=min_db, color_map=color_map)
+    plot_spectrogram(ir, fs, window=window, min_dB=min_db, color_map=color_map)
     plt.tight_layout()
     plt.show()

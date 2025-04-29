@@ -39,9 +39,9 @@ pffdtd analysis summary --fmax "$fmax" $sim_dir/R001_out_normalised.wav
 # pffdtd analysis response --fmin=10 --target="-7.31" --smoothing=$smoothing --fmax=$fmax $sim_dir/R001_out_normalised.wav $sim_dir/R004_out_normalised.wav
 # pffdtd analysis response --fmin=10 --target="-7.62" --smoothing=$smoothing --fmax=$fmax $sim_dir/R001_out_normalised.wav $sim_dir/R005_out_normalised.wav
 # pffdtd analysis response --fmin=10 --target="-8.02" --smoothing=$smoothing --fmax=$fmax $sim_dir/R001_out_normalised.wav $sim_dir/R006_out_normalised.wav
-# pffdtd analysis waterfall --min_db=-60 $sim_dir/R001_out_normalised.wav
-# pffdtd analysis waterfall --min_db=-60 $sim_dir/R015_out_normalised.wav
-# pffdtd analysis waterfall --min_db=-60 $sim_dir/R030_out_normalised.wav
+# pffdtd analysis spectrogram --min_db=-60 $sim_dir/R001_out_normalised.wav
+# pffdtd analysis spectrogram --min_db=-60 $sim_dir/R015_out_normalised.wav
+# pffdtd analysis spectrogram --min_db=-60 $sim_dir/R030_out_normalised.wav
 # pffdtd analysis rt60 --fmin=$fmin --fmax="$fmax" --target=0.3 $sim_dir/R001_out_normalised.wav
 # pffdtd analysis rt60 --sim_dir="$sim_dir" --fmin=$fmin --fmax="$fmax" --target=0.25
 # pffdtd analysis room-modes --sim_dir="$sim_dir" --fmin=$fmin --num_modes=20 --width=3.65 --length=6.0 --height=3.12

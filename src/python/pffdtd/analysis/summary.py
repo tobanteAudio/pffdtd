@@ -6,7 +6,7 @@ from matplotlib.axes import Axes
 import matplotlib.pyplot as plt
 import numpy as np
 
-from pffdtd.analysis.waterfall import plot_waterfall
+from pffdtd.analysis.spectrogram import plot_spectrogram
 from pffdtd.common.wavfile import wavread
 from pffdtd.filters.group_delay import group_delay_seconds, excess_group_delay_seconds
 
@@ -33,7 +33,7 @@ def plot_impulse_response_summary(x: np.ndarray, fs: float, *, fmax: float | Non
     impulse_plot.set_title('Impulse Response')
     impulse_plot.grid(which='both')
 
-    plot_waterfall(x, fs, ax=axs[0][1])
+    plot_spectrogram(x, fs, ax=axs[0][1])
 
     mag_plot: Axes = axs[1][0]
     mag_plot.semilogx(freqs, mag_dB)
