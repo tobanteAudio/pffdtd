@@ -86,14 +86,6 @@ def peak_filter(fc, gain, Q, fs) -> np.ndarray:
     return signal.tf2sos(b, a)
 
 
-def octave_bandpass(center: float, fs: float, fraction: float = 3, order: int = 2) -> np.ndarray:
-    """One-third octave by default"""
-    factor = 2 ** (1/(fraction*2))
-    low = center / factor
-    high = center * factor
-    return signal.butter(order, [low, high], btype='band', fs=fs, output='sos')
-
-
 def linkwitz_riley_crossover(fc, fs, order=4) -> tuple[np.ndarray, np.ndarray]:
     assert order >= 2
     assert order % 2 == 0

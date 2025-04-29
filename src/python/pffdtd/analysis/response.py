@@ -6,38 +6,10 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import ScalarFormatter
 import numpy as np
 from scipy.io import wavfile
-from tqdm import tqdm
 
 from pffdtd.common.plot import plot_styles
 from pffdtd.geometry.math import iceil
-
-
-def fractional_octave_smoothing(magnitudes, fs, nfft, fraction=3):
-    """
-    Apply fractional octave smoothing to FFT magnitudes.
-
-    Parameters:
-    - magnitudes: Array of FFT magnitudes.
-    - fs: Sampling rate of the signal.
-    - nfft: Size of the FFT.
-    - fraction: Fraction of the octave for smoothing (e.g., 3 for 1/3 octave, 6 for 1/6 octave).
-
-    Returns:
-    - smoothed: Array of smoothed FFT magnitudes.
-    """
-
-    frequencies = np.fft.rfftfreq(nfft, 1/fs)
-    smoothed = np.zeros_like(magnitudes)
-
-    for i in tqdm(range(magnitudes.shape[-1])):
-        fc = frequencies[i]
-        fl = fc / 2**(1/(2*fraction))
-        fu = fc * 2**(1/(2*fraction))
-        indices = np.where((frequencies >= fl) & (frequencies <= fu))[0]
-        if len(indices) > 0:
-            smoothed[i] = np.mean(magnitudes[indices])
-
-    return smoothed
+from pffdtd.filters.octave import octave_smoothing
 
 
 @click.command(name='response', help='Plot frequency response.')
@@ -75,8 +47,8 @@ def main(filename, fmin, fmax, label_a, label_b, smoothing, target):
     dB_b += 75.0
 
     if smoothing > 0.0:
-        dB_a = fractional_octave_smoothing(dB_a, fs_a, nfft, smoothing)
-        dB_b = fractional_octave_smoothing(dB_b, fs_b, nfft, smoothing)
+        dB_a = octave_smoothing(dB_a, fs_a, nfft, smoothing)
+        dB_b = octave_smoothing(dB_b, fs_b, nfft, smoothing)
 
     difference = dB_b-dB_a
 
