@@ -59,7 +59,7 @@ def main():
     frequencies = np.linspace(20, 2_000, 10000)
 
     def _reflect(delta_m, gain):
-        tau = (delta_m/c)
+        tau = delta_m/c
         return gain * np.exp(-1j * 2 * np.pi * frequencies * tau)
 
     direct = 1.0 * np.ones_like(frequencies)
