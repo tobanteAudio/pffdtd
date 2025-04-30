@@ -68,7 +68,7 @@ class VoxGrid(VoxGridBase):
         if Nvox_est is not None:
             assert Nh is None
             if Nvox_est == 0:
-                raise
+                raise RuntimeError("Nvox_est can't be 0")
 
             if Nvox_est == 1:
                 Nh = max((xv.size, yv.size, zv.size))-1
