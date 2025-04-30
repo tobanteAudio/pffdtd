@@ -13,6 +13,7 @@ from pffdtd.signals.cli import signals
 from pffdtd.sim2d.cli import sim2d
 from pffdtd.sim3d.cli import sim3d
 from pffdtd.speaker.cli import speaker
+from pffdtd.voxelizer.cli import voxelizer
 
 
 @click.group()
@@ -33,3 +34,4 @@ main.add_command(signals)
 main.add_command(sim2d)
 main.add_command(sim3d)
 main.add_command(speaker)
+main.add_command(voxelizer)

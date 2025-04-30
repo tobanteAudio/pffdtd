@@ -10,7 +10,7 @@ Notes:
  - Not designed for more than 10^6 voxels (initialisation becomes bottleneck)
  - Expected to run on a powerful CPU (+4 cores with SMT).
 """
-
+import click
 import numpy as np
 from numpy import array as npa
 from tqdm import tqdm
@@ -158,54 +158,37 @@ class VoxGrid(VoxGridBase):
         super().print_stats()
 
 
-def main():
-    import argparse
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--json', type=str, help='json file to import')
-    parser.add_argument('--draw', action='store_true', help='draw')
-    parser.add_argument('--drawpoints', action='store_true', help='draw grid points')
-    parser.add_argument('--Nvox_est', type=int, help='Nvox roughly')
-    parser.add_argument('--Nh', type=int, help='Nh')
-    parser.add_argument('--h', type=float, help='h')
-    parser.add_argument('--offset', type=float, help='offset')
-    parser.add_argument('--Nprocs', type=int, help='number of processes')
-    parser.add_argument('--az_el', nargs=2, type=float, help='two angles in deg')
-    parser.set_defaults(draw=False)
-    parser.set_defaults(drawpoints=False)
-    parser.set_defaults(Nvox_est=None)
-    parser.set_defaults(Nprocs=get_default_nprocs())
-    parser.set_defaults(h=None)
-    parser.set_defaults(Razel=None)
-    parser.set_defaults(offset=3.0)
-    parser.set_defaults(Nh=None)
-    parser.set_defaults(json=None)
-    parser.set_defaults(az_el=[0., 0.])
-    args = parser.parse_args()
-    print(args)
-    assert args.Nprocs > 0
-    # assert args.Nvox_est is not None or args.Nh is not None
-    assert args.h is not None
-    assert args.json is not None
+@click.command(name='grid')
+@click.option('--az_el', nargs=2, type=float, default=[0, 0], help='two angles in deg')
+@click.option('--draw/--no-draw', default=False)
+@click.option('--draw-points/--no-draw-points', default=False, help='draw grid points')
+@click.option('--h', type=float, required=True)
+@click.option('--model_json', type=click.Path(exists=True), help='json file to import')
+@click.option('--nh', type=int, default=None, help='Nh')
+@click.option('--nvox_est', type=int, default=None, help='Nvox roughly')
+@click.option('--nprocs', type=int, default=get_default_nprocs(), help='Number of processes')
+@click.option('--offset', type=float, default=3.0)
+def main(az_el, draw, draw_points, h, model_json, nh, nvox_est, nprocs, offset):
+    assert nprocs > 0
+    # assert nvox_est is not None or nh is not None
+    assert h is not None
+    assert model_json is not None
 
-    room_geo = RoomGeometry(args.json, az_el=args.az_el)
+    room_geo = RoomGeometry(model_json, az_el=az_el)
     room_geo.print_stats()
 
-    cart_grid = CartGrid(args.h, args.offset, room_geo.bmin, room_geo.bmax)
+    cart_grid = CartGrid(h, offset, room_geo.bmin, room_geo.bmax)
     cart_grid.print_stats()
 
-    vox_grid = VoxGrid(room_geo, cart_grid, args.Nvox_est, args.Nh)
-    vox_grid.fill(Nprocs=args.Nprocs)
+    vox_grid = VoxGrid(room_geo, cart_grid, nvox_est, nh)
+    vox_grid.fill(Nprocs=nprocs)
     vox_grid.print_stats()
 
-    if args.draw:
+    if draw:
         room_geo.draw()
         vox_grid.draw_boxes(tube_radius=cart_grid.h*vox_grid.Nh/100)
         print(f'{np.prod(cart_grid.Nxyz)=}')
-        if args.drawpoints:
+        if draw_points:
             print('drawing grid points')
             cart_grid.draw_gridpoints()
         room_geo.show()
-
-
-if __name__ == '__main__':
-    main()

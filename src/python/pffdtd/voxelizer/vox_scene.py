@@ -23,11 +23,11 @@ About voxelisation:
  - this is meant for interpretation of FDTD grid as FVTD mesh of voxels/cells
  - this exports data just for boundary nodes (anything with non-adjacency to a neighbour)
 """
-
 import multiprocessing as mp
 from multiprocessing import shared_memory
 from pathlib import Path
 
+import click
 import numpy as np
 from numpy import array as npa
 import numba as nb
@@ -654,74 +654,61 @@ def nb_check_adj_full_fcc(adj, Nx, Ny, Nz):
                 assert ~(((adj[ix, iy, iz] >> 11) & 1) ^ ((adj[ix-1, iy, iz+1] >> 10) & 1))
 
 
-def main():
-    import argparse
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--json', type=str, help='json file to import')
-    parser.add_argument('--Nvox_est', type=int, help='Nvox roughly')
-    parser.add_argument('--draw', action='store_true', help='draw')
-    parser.add_argument('--Nh', type=int, help='Nh')
-    parser.add_argument('--h', type=float, help='h')
-    parser.add_argument('--fcc', action='store_true', help='fcc grid')
-    parser.add_argument('--offset', type=float, help='offset')
-    parser.add_argument('--Nprocs', type=int, help='number of processes')
-    # parser.add_argument('--draw_backend', type=str,help='mayavi or polyscope')
-    parser.add_argument('--area_eps', type=float, help='for pruning degenerate triangels')
-    parser.add_argument('--check_full', action='store_true', help='check whole adj')
-    parser.add_argument('--save_folder', type=str, help='where to save')
-    parser.add_argument('--az_el', nargs=2, type=float, help='two angles in deg')
-    parser.add_argument('--polyscope', action='store_true', help='use polyscope backend')
-    parser.set_defaults(draw=False)
-    parser.set_defaults(fcc=False)
-    # parser.set_defaults(draw_backend='mayavi')
-    parser.set_defaults(polyscope=False)
-    parser.set_defaults(Nvox_est=None)
-    parser.set_defaults(Nprocs=get_default_nprocs())
-    parser.set_defaults(offset=3.0)
-    parser.set_defaults(area_eps=1.0e-10)
-    parser.set_defaults(az_el=[0., 0.])
-    parser.set_defaults(h=None)
-    parser.set_defaults(Nh=None)
-    parser.set_defaults(json=None)
-    parser.set_defaults(check_full=False)
-    parser.set_defaults(save_folder=None)
-    args = parser.parse_args()
-    print(args)
-    assert args.Nprocs > 0
-    # assert args.Nvox_est is not None or args.Nh is not None
-    assert args.h is not None
-    assert args.json is not None
-    assert args.offset > 2.0
+@click.command(name='scene')
+@click.option('--area_eps', type=float, default=1.0e-10, help='for pruning degenerate triangels')
+@click.option('--az_el', nargs=2, type=float, default=[0, 0], help='two angles in deg')
+@click.option('--check-full/--no-check-full', default=False, help='Check whole adj')
+@click.option('--draw/--no-draw', default=False, help='Draw')
+@click.option('--draw_backend', default='polyscope', type=click.Choice(['mayavi', 'polyscope']))
+@click.option('--fcc/--no-fcc', default=False, help='FCC Grid')
+@click.option('--h', type=float, required=True)
+@click.option('--model_json', type=click.Path(exists=True), help='json file to import')
+@click.option('--nh', type=int, default=None, help='Nh')
+@click.option('--nvox_est', type=int, default=None, help='Nvox roughly')
+@click.option('--nprocs', type=int, default=get_default_nprocs(), help='Number of processes')
+@click.option('--offset', type=float, default=3.0)
+@click.option('--save_folder', default=None, type=click.Path())
+def main(
+    area_eps,
+    az_el,
+    check_full,
+    draw,
+    draw_backend,
+    fcc,
+    h,
+    model_json,
+    nh,
+    nvox_est,
+    nprocs,
+    offset,
+    save_folder,
+):
+    assert nprocs > 0
+    # assert nvox_est is not None or nh is not None
+    assert h is not None
+    assert model_json is not None
+    assert offset > 2.0
 
-    if args.polyscope:
-        draw_backend = 'polyscope'
-    else:
-        draw_backend = 'mayavi'
-
-    room_geo = RoomGeometry(args.json, az_el=args.az_el, area_eps=args.area_eps)
+    room_geo = RoomGeometry(model_json, az_el=az_el, area_eps=area_eps)
     room_geo.print_stats()
 
-    cart_grid = CartGrid(args.h, args.offset, room_geo.bmin, room_geo.bmax)
+    cart_grid = CartGrid(h, offset, room_geo.bmin, room_geo.bmax)
     cart_grid.print_stats()
 
-    vox_grid = VoxGrid(room_geo, cart_grid, args.Nvox_est, args.Nh)
-    vox_grid.fill(Nprocs=args.Nprocs)
+    vox_grid = VoxGrid(room_geo, cart_grid, nvox_est, nh)
+    vox_grid.fill(Nprocs=nprocs)
     vox_grid.print_stats()
 
-    vox_scene = VoxScene(room_geo, cart_grid, vox_grid, fcc=args.fcc)
-    vox_scene.calc_adj(Nprocs=args.Nprocs)
+    vox_scene = VoxScene(room_geo, cart_grid, vox_grid, fcc=fcc)
+    vox_scene.calc_adj(Nprocs=nprocs)
 
-    if args.check_full:
+    if check_full:
         vox_scene.check_adj_full()
 
-    if args.save_folder:
-        vox_scene.save(args.save_folder)
+    if save_folder:
+        vox_scene.save(save_folder)
 
-    if args.draw:
+    if draw:
         room_geo.draw(wireframe=False, backend=draw_backend)
         vox_scene.draw(backend=draw_backend)
         room_geo.show(backend=draw_backend)
-
-
-if __name__ == '__main__':
-    main()
