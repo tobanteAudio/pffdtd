@@ -9,9 +9,16 @@ import numpy as np
 from pffdtd.analysis.spectrogram import plot_spectrogram
 from pffdtd.common.wavfile import wavread
 from pffdtd.filters.group_delay import group_delay_seconds, excess_group_delay_seconds
+from pffdtd.filters.octave import octave_smoothing
 
 
-def plot_impulse_response_summary(x: np.ndarray, fs: float, *, fmax: float | None = None):
+def plot_impulse_response_summary(
+    x: np.ndarray,
+    fs: float,
+    *,
+    fmax: float | None = None,
+    smoothing: float = 0.0,
+):
     if not fmax:
         fmax = fs/2
 
@@ -24,6 +31,10 @@ def plot_impulse_response_summary(x: np.ndarray, fs: float, *, fmax: float | Non
     mag_dB = 20*np.log10(mag)
     mag_dB = mag_dB - np.max(mag_dB) + 85
 
+    mag_smooth_dB = mag_dB
+    if smoothing > 0:
+        mag_smooth_dB = octave_smoothing(mag_dB, fs, nfft, smoothing)
+
     fig, axs = plt.subplots(3, 2)
 
     impulse_plot: Axes = axs[0][0]
@@ -33,12 +44,20 @@ def plot_impulse_response_summary(x: np.ndarray, fs: float, *, fmax: float | Non
     impulse_plot.set_title('Impulse')
     impulse_plot.grid(which='both')
 
-    plot_spectrogram(x, fs, ax=axs[0][1])
+    impulse_dB_plot: Axes = axs[0][1]
+    impulse_dB_plot.plot(np.linspace(0.0, n/fs, n), 20*np.log10(np.abs(x)+1e-9))
+    impulse_dB_plot.set_ylim(-100, 0)
+    impulse_dB_plot.set_xlabel('Frequency [Hz]')
+    impulse_dB_plot.set_ylabel('Amplitude [dBFS]')
+    impulse_dB_plot.set_title('Impulse')
+    impulse_dB_plot.grid(which='both')
+
+    # plot_spectrogram(x, fs, ax=axs[0][1])
 
     mag_plot: Axes = axs[1][0]
-    mag_plot.semilogx(freqs, mag_dB)
+    mag_plot.semilogx(freqs, mag_smooth_dB)
     mag_plot.set_xlim(10, fmax)
-    mag_plot.set_ylim(30, 90)
+    mag_plot.set_ylim(10, 90)
     mag_plot.set_xlabel('Frequency [Hz]')
     mag_plot.set_ylabel('Magnitude [dB]')
     mag_plot.set_title('Magnitude')
@@ -77,7 +96,8 @@ def plot_impulse_response_summary(x: np.ndarray, fs: float, *, fmax: float | Non
 @click.command(name='summary', help='Quick display of IRs.')
 @click.argument('impulse_path', nargs=1, type=click.Path(exists=True))
 @click.option('--fmax', default=None, type=float)
-def main(impulse_path, fmax):
+@click.option('--smoothing', default=0.0, type=float)
+def main(impulse_path, fmax, smoothing):
     fs, ir = wavread(impulse_path)
-    plot_impulse_response_summary(ir, fs, fmax=fmax)
+    plot_impulse_response_summary(ir, fs, fmax=fmax, smoothing=smoothing)
     plt.show()

@@ -66,7 +66,7 @@ class SimSignals:
             in_sig[0] = 1.0
         if sig_type == 'impulse-highpass':  # for RIRs
             in_sig[0] = 1.0
-            in_sig = sosfilt(butter(4, 40, 'high', fs=1/Ts, output='sos'), in_sig)
+            in_sig = sosfilt(butter(4, 30, 'high', fs=1/Ts, output='sos'), in_sig)
         elif sig_type == 'hann10':  # for viz
             N = 10
             n = np.arange(N)

@@ -14,7 +14,7 @@ class LivingRoom(Setup3D):
     model_file = 'model.json'
     mat_folder = '../../sim_data/LivingRoom/materials'
     source_index = 1
-    source_signal = 'impulse'
+    source_signal = 'impulse-highpass'
     diff_source = True
     materials = {
         'Book Shelf': 'wood.h5',
@@ -35,12 +35,12 @@ class LivingRoom(Setup3D):
         'Walls': 'concrete_painted.h5',
         'Window': 'glas_thick.h5',
     }
-    duration = 2.0
+    duration = 3.0
     Tc = 20
     rh = 50
     fcc = False
     ppw = 10.5
-    fmax = 800.0
+    fmax = 1600.0
     save_folder = '../../sim_data/LivingRoom/cpu'
     save_folder_gpu = '../../sim_data/LivingRoom/gpu'
     compress = 0
