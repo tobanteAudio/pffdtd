@@ -6,7 +6,7 @@ from pathlib import Path
 import h5py
 import numpy as np
 from numpy import pi, cos, sin
-from scipy.signal import butter, lfilter, sosfilt
+from scipy.signal import butter, lfilter, sosfilt, unit_impulse
 
 from pffdtd.common.timerdict import TimerDict
 from pffdtd.geometry.math import iceil
@@ -24,6 +24,7 @@ class SimSignals:
         assert save_folder.is_dir()
         h5f = h5py.File(save_folder / Path('constants.h5'), 'r')
         self.h = h5f['h'][()]
+        self.fs = h5f['fs'][()]
         self.Ts = h5f['Ts'][()]
         self.l2 = h5f['l2'][()]
         self.fcc_flag = h5f['fcc_flag'][()]
@@ -57,16 +58,16 @@ class SimSignals:
     def prepare_source_signals(self, duration, sig_type='impulse'):
         in_alpha = self.in_alpha
         Ts = self.Ts
+        fs = self.fs
 
-        Nt = np.int_(np.ceil(duration/Ts))
+        Nt = int(np.ceil(duration*fs))
         in_sigs = np.zeros((in_alpha.size, Nt), dtype=np.float64)
-        in_sig = np.zeros((Nt,))
+        in_sig = np.zeros(Nt, dtype=np.float64)
 
-        if sig_type == 'impulse':  # for RIRs
-            in_sig[0] = 1.0
-        if sig_type == 'impulse-highpass':  # for RIRs
-            in_sig[0] = 1.0
-            in_sig = sosfilt(butter(4, 30, 'high', fs=1/Ts, output='sos'), in_sig)
+        if sig_type == 'impulse':
+            in_sig = unit_impulse(Nt, dtype=np.float64)
+        if sig_type == 'impulse-highpass':
+            in_sig = sosfilt(butter(4, 30, 'high', fs=fs, output='sos'), unit_impulse(Nt, dtype=np.float64))
         elif sig_type == 'hann10':  # for viz
             N = 10
             n = np.arange(N)
