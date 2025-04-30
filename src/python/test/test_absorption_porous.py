@@ -4,7 +4,7 @@ import numpy as np
 import pytest
 
 from pffdtd.absorption.porous import porous_absorber
-from pffdtd.filters.octave import center_frequencies
+from pffdtd.signals.octave import center_frequencies
 
 
 @pytest.mark.parametrize('offset_zeros', [True, False])

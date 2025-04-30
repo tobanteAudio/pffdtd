@@ -12,7 +12,7 @@ import h5py
 import matplotlib.pyplot as plt
 import scipy.optimize as scpo
 
-from pffdtd.filters.octave import center_frequencies
+from pffdtd.signals.octave import center_frequencies
 
 
 def convert_nabs_to_R(nabs):

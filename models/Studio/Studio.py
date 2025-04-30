@@ -6,8 +6,8 @@ import numpy as np
 
 from pffdtd.absorption.admittance import fit_to_Sabs_oct_11
 from pffdtd.absorption.porous import porous_absorber
-from pffdtd.filters.octave import center_frequencies
 from pffdtd.geometry.math import find_third_vertex
+from pffdtd.signals.octave import center_frequencies
 from pffdtd.sim3d.model_builder import RoomModelBuilder
 from pffdtd.sim3d.setup import Setup3D
 

@@ -7,8 +7,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from pffdtd.common.wavfile import wavread
-from pffdtd.filters.group_delay import group_delay_seconds, excess_group_delay_seconds
-from pffdtd.filters.octave import octave_smoothing
+from pffdtd.signals.group_delay import group_delay_seconds, excess_group_delay_seconds
+from pffdtd.signals.octave import octave_smoothing
 
 
 def plot_impulse_response_summary(

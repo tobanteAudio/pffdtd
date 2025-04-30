@@ -7,8 +7,8 @@ import numpy as np
 from scipy.interpolate import interp1d
 from scipy.signal import sosfilt
 
-from pffdtd.filters.iir import linkwitz_riley_crossover
-from pffdtd.filters.phase import minimum_phase_reconstruction
+from pffdtd.signals.iir import linkwitz_riley_crossover
+from pffdtd.signals.phase import minimum_phase_reconstruction
 
 sb_tw29dn_b_8_94db = [
     (0.0, 0.001),

@@ -9,7 +9,7 @@ from scipy.io import wavfile
 
 from pffdtd.common.plot import plot_styles
 from pffdtd.geometry.math import iceil
-from pffdtd.filters.octave import octave_smoothing
+from pffdtd.signals.octave import octave_smoothing
 
 
 @click.command(name='response', help='Plot frequency response.')
