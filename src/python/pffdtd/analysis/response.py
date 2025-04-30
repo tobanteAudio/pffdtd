@@ -8,8 +8,8 @@ import numpy as np
 from scipy.io import wavfile
 
 from pffdtd.common.plot import plot_styles
+from pffdtd.dsp.octave import octave_smoothing
 from pffdtd.geometry.math import iceil
-from pffdtd.signals.octave import octave_smoothing
 
 
 @click.command(name='response', help='Plot frequency response.')

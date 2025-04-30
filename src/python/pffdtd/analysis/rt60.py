@@ -13,7 +13,7 @@ from scipy.signal import sosfilt
 
 from pffdtd.common.plot import plot_styles
 from pffdtd.common.wavfile import collect_wav_files, wavread
-from pffdtd.signals.octave import octave_bandpass
+from pffdtd.dsp.octave import octave_bandpass
 
 
 def clarity(x: np.ndarray, fs: float, early_ms: float) -> float:

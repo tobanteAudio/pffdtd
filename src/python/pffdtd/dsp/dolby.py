@@ -5,8 +5,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-from pffdtd.signals.fir import linear_phase_from_sos
-from pffdtd.signals.iir import peak_filter
+from pffdtd.dsp.fir import linear_phase_from_sos
+from pffdtd.dsp.iir import peak_filter
 
 
 def dolby_atmos_target_curve(fs):
