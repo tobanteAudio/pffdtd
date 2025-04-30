@@ -11,7 +11,8 @@ from pffdtd.signals.sine import generate_sine_wave
 @pytest.mark.parametrize('fs', [44100, 48000, 96000, 192000])
 @pytest.mark.parametrize('duration', [1.0, 5.0, 10.0])
 def test_pink_noise(fs, duration):
-    x = generate_pink_noise(duration, fs)
+    rng = np.random.default_rng(123456)
+    x = generate_pink_noise(duration, fs, rng=rng)
 
     # Pink noise should have near-zero mean.
     assert abs(np.mean(x)) < 1e-2

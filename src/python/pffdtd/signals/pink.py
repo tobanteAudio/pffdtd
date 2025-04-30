@@ -9,11 +9,36 @@ from pffdtd.common.wavfile import wavwrite
 from pffdtd.signals.level import crest_factor, normalize_to_RMS_dBFS
 
 
-def generate_pink_noise(duration, fs, *, dbFS=-20.0, lowcut=20.0, highcut=20000.0, order=8):
+def generate_pink_noise(
+    duration: float,
+    fs: float,
+    *,
+    rms_dB: float = -20.0,
+    lowcut: float = 20.0,
+    highcut: float = 20000.0,
+    order: int = 8,
+    rng: np.random.Generator | None = None
+):
+    if not rng:
+        rng = np.random.default_rng()
+
+    # Synthesize
     n = int(fs * duration)
-    x = _generate_pink_noise_fft(n, fs)
-    x = _bandlimit(x, fs, lowcut, highcut, order)
-    x = normalize_to_RMS_dBFS(x, dbFS)
+    freqs = np.fft.rfftfreq(n, 1/fs)
+    amplitude = np.zeros_like(freqs)
+    amplitude[1:] = 1/np.sqrt(freqs[1:])
+    phases = np.exp(2j*np.pi*rng.random(len(freqs)))
+    S = amplitude * phases
+    x = np.fft.irfft(S, n=n)
+    x = x / np.std(x)  # Normalize to unit-variance
+
+    # Bandlimit
+    sos = butter(order, [lowcut, highcut], btype='band', fs=fs, output='sos')
+    x = sosfilt(sos, x)
+
+    # Normalize
+    x = normalize_to_RMS_dBFS(x, rms_dB)
+
     return x
 
 
@@ -26,24 +51,7 @@ def pink_noise_slope(x, fs):
     logf = np.log10(f[mask])
     logP = np.log10(Pxx[mask])
     slope, _ = np.polyfit(logf, logP, 1)
-
     return slope
-
-
-def _generate_pink_noise_fft(n, fs):
-    freqs = np.fft.rfftfreq(n, 1/fs)
-    amplitude = np.zeros_like(freqs)
-    amplitude[1:] = 1/np.sqrt(freqs[1:])
-    phases = np.exp(2j*np.pi*np.random.rand(len(freqs)))  # Random phase
-    S = amplitude * phases
-    x = np.fft.irfft(S, n=n)
-    x = x / np.std(x)  # Normalize to unit-variance
-    return x
-
-
-def _bandlimit(x, fs, lowcut, highcut, order=8):
-    sos = butter(order, [lowcut, highcut], btype='band', fs=fs, output='sos')
-    return sosfilt(sos, x)
 
 
 @click.command(name='pink', help='Generate pink noise')
