@@ -50,7 +50,3 @@ def main():
     plt.title(f'Dolby Target Curve Impulse @ {1000/fs*group_delay:.2f} ms Latency')
     plt.grid(which='both')
     plt.show()
-
-
-if __name__ == '__main__':
-    main()

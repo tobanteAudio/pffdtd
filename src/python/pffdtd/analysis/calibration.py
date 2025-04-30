@@ -1,17 +1,16 @@
 # SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: 2025 Tobias Hienzsch
-
-
-import sys
-
+import click
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 from scipy.interpolate import interp1d
 
 
-def main():
-    cal = pd.read_csv(sys.argv[1], sep='\t', names=['Frequency', 'Offset'])
+@click.command(name='calibration', help='Load microphone calibration file.')
+@click.argument('calibration_csv', nargs=1, type=click.Path(exists=True))
+def main(calibration_csv):
+    cal = pd.read_csv(calibration_csv, sep='\t', names=['Frequency', 'Offset'])
 
     fs = 48000
     nfft = 4096*4
@@ -31,7 +30,3 @@ def main():
     plt.semilogx(freqs, resampled, label='Resampled')
     plt.grid(which='both')
     plt.show()
-
-
-if __name__ == '__main__':
-    main()

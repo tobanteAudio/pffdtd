@@ -1,15 +1,14 @@
 # SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: 2025 Tobias Hienzsch
-"""https://www.ptb.de/cms/ptb/fachabteilungen/abt1/fb-16/ag-163/absorption-coefficient-database.html
-"""
-
 import csv
-import sys
 
+import click
 import pandas as pd
 
 
-def load_database(path):
+def read_absorption_database_excel(path) -> pd.DataFrame:
+    """https://www.ptb.de/cms/ptb/fachabteilungen/abt1/fb-16/ag-163/absorption-coefficient-database.html
+    """
     def column_filter(col):
         if isinstance(col, str):
             col = col.strip()
@@ -71,15 +70,13 @@ def load_database(path):
     return df.sort_values(['reference', 63, 80, 100, 125, 160, 200], ascending=False)
 
 
-def main():
-    df: pd.DataFrame = load_database(sys.argv[1])
+@click.command(name='database')
+@click.argument('database_excel', nargs=1, type=click.Path(exists=True))
+def main(database_excel):
+    df = read_absorption_database_excel(database_excel)
     df.to_csv('absorber.csv', sep=';', index=False, quoting=csv.QUOTE_MINIMAL)
     print(df)
     # print(df.columns)
     print('--------------------------')
     # print(df.describe())
     # print(df.memory_usage(deep=True))
-
-
-if __name__ == '__main__':
-    main()

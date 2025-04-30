@@ -3,6 +3,7 @@
 
 import click
 
+from pffdtd.analysis import calibration
 from pffdtd.analysis import localization
 from pffdtd.analysis import response
 from pffdtd.analysis import rew
@@ -17,6 +18,7 @@ def analysis():
     pass
 
 
+analysis.add_command(calibration.main)
 analysis.add_command(localization.main)
 analysis.add_command(response.main)
 analysis.add_command(rew.main)
