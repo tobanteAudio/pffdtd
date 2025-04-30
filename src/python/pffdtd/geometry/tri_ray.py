@@ -13,6 +13,7 @@ you may need to tailor for other uses (e..g, may fail for degenerate
 triangles, pruned first here)
 """
 
+import click
 import numpy as np
 from numpy import array as npa
 from pffdtd.geometry.math import dotv, normalise, vecnorm
@@ -116,31 +117,22 @@ def tri_ray_intersection_vec(ray_o, ray_d, tris_pre, d_eps=1e-6, cp_eps=1e-6):
     return ~fail, t_ret
 
 
-def main():
-    # some randomized tests
-    import numpy.random as npr
-    import argparse
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--nodraw', action='store_true', help='draw')
-    parser.add_argument('--trials', type=int, help='Nvox roughly')
-    parser.set_defaults(nodraw=False)
-    parser.set_defaults(trials=1)
-    args = parser.parse_args()
-    print(args)
-    draw = not args.nodraw
-
+@click.command(name='tri-ray', help='Triangle-Ray intersection.')
+@click.option('--draw/--no-draw', default=True)
+@click.option('--trials', default=1, type=int, help='Nvox roughly')
+def main(draw, trials):
     if draw:
         from mayavi import mlab
         from tvtk.api import tvtk  # only for z-up
-        assert args.trials < 4
+        assert trials < 4
 
-    for _ in range(args.trials):
+    for _ in range(trials):
         ####################
         # one ray many tris
         ####################
         Ntris = 5
         # generate tris
-        vv = npr.randn(Ntris, 3, 3)
+        vv = np.random.randn(Ntris, 3, 3)
         pts = vv.reshape((-1, 3))
         tris = np.arange(Ntris*3).reshape(-1, 3)
 
@@ -151,10 +143,10 @@ def main():
         tris_pre = tris_precompute(pts=pts, tris=tris)
 
         # ray direction and origin (make coming from outside and pointing in)
-        ro = normalise(npr.randn(3))*scale
+        ro = normalise(np.random.randn(3))*scale
         rd = normalise(np.mean(pts, axis=0)-ro)
 
-        swap = npr.randint(0, 2)
+        swap = np.random.randint(0, 2)
         if swap == 1:  # origin inside triangle cluster and pointing outwards
             ro, rd = rd, normalise(ro)
 
@@ -196,7 +188,7 @@ def main():
         ####################
         Nrays = 5
         # generate tris
-        pts = npr.randn(3, 3)
+        pts = np.random.randn(3, 3)
         tri = np.arange(3)
 
         bmin = np.amin(pts, axis=0)
@@ -205,10 +197,10 @@ def main():
 
         tri_pre = tris_precompute(pts=pts, tris=npa([tri]))
 
-        ro = normalise(npr.randn(Nrays, 3))*scale
-        rd = normalise(npr.random((Nrays, 3))*(bmax-bmin)+bmin - ro)
+        ro = normalise(np.random.randn(Nrays, 3))*scale
+        rd = normalise(np.random.random((Nrays, 3))*(bmax-bmin)+bmin - ro)
 
-        swap = npr.randint(0, 2)
+        swap = np.random.randint(0, 2)
         if swap == 1:
             ro, rd = rd, normalise(ro)
 
@@ -245,7 +237,3 @@ def main():
             fig.scene.interactor.interactor_style = tvtk.InteractorStyleTerrain()
     if draw:
         mlab.show()
-
-
-if __name__ == '__main__':
-    main()

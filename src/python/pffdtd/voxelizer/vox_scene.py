@@ -24,6 +24,8 @@ About voxelisation:
  - this exports data just for boundary nodes (anything with non-adjacency to a neighbour)
 """
 
+import multiprocessing as mp
+from multiprocessing import shared_memory
 from pathlib import Path
 
 import numpy as np
@@ -31,15 +33,13 @@ from numpy import array as npa
 import numba as nb
 import h5py
 import psutil
-
-import multiprocessing as mp
-from multiprocessing import shared_memory
 from tqdm import tqdm
+
 
 from pffdtd.common.misc import get_default_nprocs, clear_dat_folder, yes_or_no
 from pffdtd.common.timerdict import TimerDict
 from pffdtd.geometry.math import ind2sub3d, dotv
-from pffdtd.geometry.tri_ray_intersection import tri_ray_intersection_vec
+from pffdtd.geometry.tri_ray import tri_ray_intersection_vec
 from pffdtd.sim3d.room_geometry import RoomGeometry
 from pffdtd.voxelizer.cart_grid import CartGrid
 from pffdtd.voxelizer.vox_grid import VoxGrid

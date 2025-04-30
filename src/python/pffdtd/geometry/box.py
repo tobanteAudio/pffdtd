@@ -1,8 +1,8 @@
 # SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: 2021 Brian Hamilton
-
 from typing import Any
 
+import click
 import numpy as np
 import numpy.random as npr
 from pffdtd.geometry.math import rotmatrix_ax_ang
@@ -140,6 +140,7 @@ class Box:
             raise RuntimeError(f"invalid backend {backend}")
 
 
+@click.command(name='box')
 def main():
     # no shift, no rotation
     Lx = npr.random()
@@ -192,7 +193,3 @@ def main():
     assert np.all((((box.verts-shift)*(1-1e-4))+shift).dot(box.A.T) < box.b)
     assert np.any((((box.verts-shift)*(1+1e-4))+shift).dot(box.A.T) > box.b)
     box.draw()
-
-
-if __name__ == '__main__':
-    main()

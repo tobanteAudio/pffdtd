@@ -8,7 +8,7 @@ some tests (__main__ entry). Returns boolean for hit
 
 Following Schwarz-Seidel method (2010)
 """
-
+import click
 import numpy as np
 
 from pffdtd.geometry.math import dotv
@@ -113,25 +113,19 @@ def tri_box_intersection_vec(bbmin, bbmax, tris_pre):
     return ~(fail1 | fail2 | fail3)
 
 
-def main():
+@click.command(name='tri-box', help='Triangle-Box intersection.')
+@click.option('--draw/--no-draw', default=True)
+@click.option('--trials', default=1, type=int, help='Nvox roughly')
+def main(draw, trials):
     import numpy.random as npr
     from pffdtd.geometry.box import Box
-    import argparse
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--nodraw', action='store_true', help='don''t draw')
-    parser.add_argument('--trials', type=int, help='Nvox roughly')
-    parser.set_defaults(nodraw=False)
-    parser.set_defaults(trials=1)
-    args = parser.parse_args()
-    print(args)
-    draw = not args.nodraw
 
     if draw:
         from mayavi import mlab
         from tvtk.api import tvtk  # only for z-up
-        assert args.trials < 4
+        assert trials < 4
 
-    for _ in range(args.trials):
+    for _ in range(trials):
         Ntris = 4
         # points for tris
         vv = npr.randn(Ntris, 3, 3)
@@ -174,7 +168,3 @@ def main():
     print('all good')
     if draw:
         mlab.show()
-
-
-if __name__ == '__main__':
-    main()

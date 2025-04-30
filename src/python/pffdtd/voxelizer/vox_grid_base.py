@@ -11,7 +11,7 @@ from tqdm import tqdm
 from pffdtd.common.misc import clear_dat_folder, get_default_nprocs
 from pffdtd.common.timerdict import TimerDict
 from pffdtd.geometry.box import Box
-from pffdtd.geometry.tri_box_intersection import tri_box_intersection_vec
+from pffdtd.geometry.tri_box import tri_box_intersection_vec
 
 
 class VoxBase:

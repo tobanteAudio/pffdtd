@@ -7,6 +7,7 @@ from pffdtd.absorption.cli import absorption
 from pffdtd.analysis.cli import analysis
 from pffdtd.diffusor.cli import diffusor
 from pffdtd.filters.cli import filters
+from pffdtd.geometry.cli import geometry
 from pffdtd.hpc.cli import hpc
 from pffdtd.signals.cli import signals
 from pffdtd.sim2d.cli import sim2d
@@ -26,6 +27,7 @@ main.add_command(absorption)
 main.add_command(analysis)
 main.add_command(diffusor)
 main.add_command(filters)
+main.add_command(geometry)
 main.add_command(hpc)
 main.add_command(signals)
 main.add_command(sim2d)
