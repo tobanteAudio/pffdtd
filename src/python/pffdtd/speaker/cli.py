@@ -5,6 +5,7 @@ import click
 
 from pffdtd.speaker import distortion
 from pffdtd.speaker import diy
+from pffdtd.speaker import horn
 from pffdtd.speaker import ts
 
 
@@ -15,4 +16,5 @@ def speaker():
 
 speaker.add_command(distortion.main)
 speaker.add_command(diy.main)
+speaker.add_command(horn.main)
 speaker.add_command(ts.main)

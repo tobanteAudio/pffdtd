@@ -3,8 +3,8 @@
 import numpy as np
 import pytest
 
-from pffdtd.absorption.air import Air, air_density, sound_velocity
 from pffdtd.absorption.porous import porous_absorber
+from pffdtd.filters.octave import center_frequencies
 
 
 @pytest.mark.parametrize('offset_zeros', [True, False])
@@ -22,7 +22,7 @@ from pffdtd.absorption.porous import porous_absorber
     ]
 )
 def test_absorption_porous(offset_zeros, thickness, flow_resistivity, air, expected):
-    frequency = 1000*(2.0**np.arange(-6, 5))
+    frequency = center_frequencies(1, 1000, 6, 5)
     absorber = porous_absorber(
         thickness=thickness,
         flow_resistivity=flow_resistivity,

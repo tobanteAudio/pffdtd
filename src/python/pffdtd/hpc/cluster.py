@@ -3,6 +3,7 @@
 import click
 import numpy as np
 
+from pffdtd.filters.octave import center_frequencies
 from pffdtd.sim3d.constants import SimConstants
 from pffdtd.voxelizer.cart_grid import CartGrid
 
@@ -43,8 +44,7 @@ def print_cluster_stats(
 
 
 def missing_notes(fmax):
-    note = np.arange(200)
-    freqs = 440.0 * 2**((note-69)/12)
+    freqs = center_frequencies(12, 440, 6, 6)
     audible_range = freqs[(freqs > 20.0) & (freqs < 20_000.0)]
     sim_range = freqs[(freqs > 20.0) & (freqs < fmax)]
 

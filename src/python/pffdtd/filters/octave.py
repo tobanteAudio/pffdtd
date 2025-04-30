@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: 2025 Tobias Hienzsch
 
+import click
 import numpy as np
 from scipy import signal
 
@@ -67,3 +68,21 @@ def octave_smoothing(magnitudes, fs, nfft, fraction=3):
     smoothed[valid] = (sum_u[valid] - sum_l[valid]) / widths[valid]
 
     return smoothed
+
+
+def center_frequencies(divisions=12, f_ref=1000, oct_down=6, oct_up=5):
+    """Returns the center frequencies with `divisions` bands per octave.
+    """
+    exp = np.arange(-oct_down, oct_up, step=1.0/divisions)
+    freqs = f_ref * (2.0 ** exp)
+    return freqs
+
+
+@click.command(name='octave', help='Octave utilities.')
+def main():
+    freqs = center_frequencies(12, f_ref=440, oct_up=6)
+    freqs = freqs[(freqs >= 20.0) & (freqs <= 20_000.0)]
+    print(f"total bands: {len(freqs)}")
+    print('first 5:', np.round(freqs[:5], 2))
+    print('around 1 kHz:', freqs[np.abs(freqs-1000).argmin()])
+    print('last 5:', np.round(freqs[-5:], 2))

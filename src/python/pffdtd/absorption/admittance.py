@@ -12,6 +12,8 @@ import h5py
 import matplotlib.pyplot as plt
 import scipy.optimize as scpo
 
+from pffdtd.filters.octave import center_frequencies
+
 
 def convert_nabs_to_R(nabs):
     """normal-incidence absorption to reflection coefficient
@@ -262,7 +264,7 @@ def fit_to_Sabs_oct_11(Sabs, filename, plot=False, verbose=False):
     # frequency vector to fit over
     fv = np.logspace(np.log10(10), np.log10(20e3), 1000)
     jw = 1j*fv*2*np.pi
-    fcv = 1000*(2.0**np.arange(-6, 5))
+    fcv = center_frequencies(1, 1000, 6, 5)
     ymv = np.zeros(Noct)
     dwv = np.zeros(Noct)
     w0v = np.zeros(Noct)

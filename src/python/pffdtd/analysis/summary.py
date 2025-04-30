@@ -39,7 +39,7 @@ def plot_impulse_response_summary(
 
     impulse_plot: Axes = axs[0][0]
     impulse_plot.plot(np.linspace(0.0, n/fs, n), x)
-    impulse_plot.set_xlabel('Frequency [Hz]')
+    impulse_plot.set_xlabel('Time [s]')
     impulse_plot.set_ylabel('Amplitude [FS]')
     impulse_plot.set_title('Impulse')
     impulse_plot.grid(which='both')
@@ -47,7 +47,7 @@ def plot_impulse_response_summary(
     impulse_dB_plot: Axes = axs[0][1]
     impulse_dB_plot.plot(np.linspace(0.0, n/fs, n), 20*np.log10(np.abs(x)+1e-9))
     impulse_dB_plot.set_ylim(-100, 0)
-    impulse_dB_plot.set_xlabel('Frequency [Hz]')
+    impulse_dB_plot.set_xlabel('Time [s]')
     impulse_dB_plot.set_ylabel('Amplitude [dBFS]')
     impulse_dB_plot.set_title('Impulse')
     impulse_dB_plot.grid(which='both')

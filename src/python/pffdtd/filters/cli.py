@@ -4,6 +4,7 @@
 import click
 
 from pffdtd.filters import dolby
+from pffdtd.filters import octave
 from pffdtd.filters import phase
 
 
@@ -13,4 +14,5 @@ def filters():
 
 
 filters.add_command(dolby.main)
+filters.add_command(octave.main)
 filters.add_command(phase.main)

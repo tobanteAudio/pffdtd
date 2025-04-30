@@ -6,6 +6,7 @@ import numpy as np
 
 from pffdtd.absorption.admittance import fit_to_Sabs_oct_11
 from pffdtd.absorption.porous import porous_absorber
+from pffdtd.filters.octave import center_frequencies
 from pffdtd.sim3d.model_builder import MeshModelBuilder
 from pffdtd.sim3d.setup import Setup3D
 
@@ -49,7 +50,7 @@ class LivingRoom(Setup3D):
 
     def generate_materials(self):
         self._print('Generate materials')
-        iso_octaves = 1000*(2.0**np.arange(-6, 5))
+        iso_octaves = center_frequencies(1, 1000, 6, 5)
 
         # autopep8: off
         absorber_8000_100mm = porous_absorber(0.1, 8000.0, frequency=iso_octaves, offset_zeros=True)
