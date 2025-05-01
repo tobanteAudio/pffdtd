@@ -3,8 +3,19 @@
 import numpy as np
 import pytest
 
+from pffdtd.absorption.air import sound_attenuation
 from pffdtd.absorption.porous import porous_absorber
 from pffdtd.dsp.octave import center_frequencies
+
+
+def test_sound_attenuation():
+    assert np.allclose(sound_attenuation(95, 1, 2), 95-6.0205)
+    assert np.allclose(sound_attenuation(95, 1, 4), 95-6.0205*2)
+    assert np.allclose(sound_attenuation(95, 1, 8), 95-6.0205*3)
+
+    assert np.allclose(sound_attenuation(100, 1, 2), 100-6.0205)
+    assert np.allclose(sound_attenuation(100, 1, 4), 100-6.0205*2)
+    assert np.allclose(sound_attenuation(100, 1, 8), 100-6.0205*3)
 
 
 @pytest.mark.parametrize('offset_zeros', [True, False])

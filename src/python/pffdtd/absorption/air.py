@@ -44,6 +44,20 @@ def wave_number_in_air(air: Air, frequency):
     return air.tau_over_c * frequency
 
 
+def sound_attenuation(spl1, r1, r2):
+    """Sound attenuation with increasing distance from the sound source.
+
+    Parameters:
+        spl1: Sound pressure level at point 1
+        r1: Distance from the sound source to point 1
+        r2: Distance from the sound source to point 2
+
+    Returns:
+        spl2: Sound pressure level at point 2
+    """
+    return spl1 - 20*np.log10(r2/r1)
+
+
 @dataclass
 class AirAbsorption:
     gamma_p: np.float64
