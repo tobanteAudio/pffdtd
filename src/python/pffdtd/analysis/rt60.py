@@ -16,6 +16,19 @@ from pffdtd.common.wavfile import collect_wav_files, wavread
 from pffdtd.dsp.octave import octave_bandpass
 
 
+def recommended_rt60(volume: float) -> float:
+    """Formula given in section 2.3 of 'EBU Tech. 3276'
+
+    Parameters:
+        volume: Room volume in m^3
+
+    Returns:
+        rt60: Recommended RT60 decay time in seconds
+    """
+    rt60 = max(0.2, min(0.4, 0.25*(volume/100)**(1/3)))
+    return rt60
+
+
 def clarity(x: np.ndarray, fs: float, early_ms: float) -> float:
     """The early to late energy ratio in dB, using sound energy in the first X ms as the 'early' part.
 
