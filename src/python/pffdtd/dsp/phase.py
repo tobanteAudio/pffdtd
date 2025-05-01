@@ -17,10 +17,10 @@ def minimum_phase_reconstruction(M_half: np.ndarray) -> np.ndarray:
     response matching M
 
     Parameters:
-        - M_half: Of length (N//2 + 1), containing magnitudes at frequencies 0, 2π/N, 4π/N, …, π (Nyquist).
+        M_half: Of length (N//2 + 1), containing magnitudes at frequencies 0, 2π/N, 4π/N, …, π (Nyquist).
 
     Returns:
-        - out: Minimum phase impulse response
+        out: Minimum phase impulse response
     """
     # infer full FFT length N (must be even)
     N = (len(M_half) - 1) * 2
@@ -49,8 +49,8 @@ def minimum_phase_reconstruction(M_half: np.ndarray) -> np.ndarray:
     # 4. Re‐synthesize the complex spectrum
     #    H_min[k] = exp( FFT{c_min} )
     H_min = np.exp(np.fft.fft(c_min))
-    h = np.fft.ifft(H_min)
-    return h.real
+    out = np.fft.ifft(H_min).real
+    return out
 
 
 @click.command(name='phase', help='Plot phase mismatch.')

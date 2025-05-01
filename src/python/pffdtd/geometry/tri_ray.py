@@ -1,7 +1,8 @@
 # SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: 2021 Brian Hamilton
 
-"""Triangle-ray intersection routines.
+"""
+Triangle-ray intersection routines.
 
 One single ray / triangle, and one vectorised for one-ray-many-tri or one-tri-many-ray
 some tests (__main__ entry)
@@ -17,7 +18,6 @@ import click
 import numpy as np
 from numpy import array as npa
 from pffdtd.geometry.math import dotv, normalise, vecnorm
-from pffdtd.common.asserts import assert_np_array_float
 from pffdtd.geometry.tris_precompute import tris_precompute
 
 # d_eps is a distance eps, cp is for coplanarity (non-dimensional)
@@ -27,8 +27,8 @@ from pffdtd.geometry.tris_precompute import tris_precompute
 def tri_ray_intersection(ray_o, ray_d, tri_pre, d_eps=1e-6, cp_eps=1e-6):
     # returns hit independent of triangle orientation wrt ray
 
-    assert_np_array_float(ray_o)
-    assert_np_array_float(ray_d)
+    _assert_np_array_float(ray_o)
+    _assert_np_array_float(ray_d)
 
     assert ray_o.ndim == 1
     assert ray_d.ndim == 1
@@ -75,8 +75,8 @@ def tri_ray_intersection(ray_o, ray_d, tri_pre, d_eps=1e-6, cp_eps=1e-6):
 
 
 def tri_ray_intersection_vec(ray_o, ray_d, tris_pre, d_eps=1e-6, cp_eps=1e-6):
-    assert_np_array_float(ray_o)
-    assert_np_array_float(ray_d)
+    _assert_np_array_float(ray_o)
+    _assert_np_array_float(ray_d)
 
     assert ray_o.shape[-1] == 3
     assert ray_d.shape[-1] == 3
@@ -115,6 +115,11 @@ def tri_ray_intersection_vec(ray_o, ray_d, tris_pre, d_eps=1e-6, cp_eps=1e-6):
     t_ret[~fail] = t[~fail]
 
     return ~fail, t_ret
+
+
+def _assert_np_array_float(x):
+    assert isinstance(x, np.ndarray)
+    assert x.dtype in [np.dtype('float32'), np.dtype('float64')]
 
 
 @click.command(name='tri-ray', help='Triangle-Ray intersection.')

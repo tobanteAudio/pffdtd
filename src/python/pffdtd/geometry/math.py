@@ -1,8 +1,6 @@
 # SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: 2021 Brian Hamilton
 
-"""Miscellaneous python/numpy functions.
-"""
 import numpy as np
 
 
@@ -113,12 +111,12 @@ def point_on_circle(center, radius: float, angle: float):
     Calculate the coordinates of a point on a circle arc.
 
     Parameters:
-    center (tuple): (x, y) coordinates of the center of the circle.
-    radius: Radius of the circle.
-    angle: Angle in radians.
+        center (tuple): (x, y) coordinates of the center of the circle.
+        radius: Radius of the circle.
+        angle: Angle in radians.
 
     Returns:
-    tuple: (p_x, p_y) coordinates of the point on the circle arc.
+        tuple: (p_x, p_y) coordinates of the point on the circle arc.
     """
     x, y = center
     p_x = x + radius * np.cos(angle)
@@ -187,11 +185,14 @@ def transform_point(point, scale, rotation, translation):
     """
     Transform a 3D point by scaling, rotating, and translating.
 
-    :param point: The original 3D point as a numpy array [x, y, z].
-    :param scale: Scaling factors as a numpy array [sx, sy, sz].
-    :param rotation: Rotation angles in degrees as a numpy array [rx, ry, rz].
-    :param translation: Translation vector as a numpy array [tx, ty, tz].
-    :return: Transformed 3D point as a numpy array [x', y', z'].
+    Parameters:
+        point: The original 3D point as a numpy array [x, y, z]
+        scale: Scaling factors as a numpy array [sx, sy, sz]
+        rotation: Rotation angles in degrees as a numpy array [rx, ry, rz]
+        translation: Translation vector as a numpy array [tx, ty, tz]
+
+    Returns:
+        out: Transformed 3D point
     """
     # Scaling matrix
     S = np.diag(scale)
@@ -259,7 +260,3 @@ def make_box(W, L, H, translate, rotate=None, first_idx=0):
     ]
 
     return points, triangles
-
-
-def difference_over_sum(a, b):
-    return (a - b) / (a + b)

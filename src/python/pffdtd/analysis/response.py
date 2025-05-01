@@ -3,6 +3,7 @@
 
 import click
 import matplotlib.pyplot as plt
+from matplotlib.axes import Axes
 from matplotlib.ticker import ScalarFormatter
 import numpy as np
 from scipy.io import wavfile
@@ -36,15 +37,12 @@ def main(filename, fmin, fmax, label_a, label_b, smoothing, target):
     spectrum_a = np.fft.rfft(buf_a, nfft)
     spectrum_b = np.fft.rfft(buf_b, nfft)
 
-    dB_a = 20*np.log10(np.abs(spectrum_a)/nfft+np.spacing(1))
-    dB_b = 20*np.log10(np.abs(spectrum_b)/nfft+np.spacing(1))
+    dB_a = 20*np.log10(np.maximum(np.abs(spectrum_a), 1e-9))
+    dB_b = 20*np.log10(np.maximum(np.abs(spectrum_b), 1e-9))
 
     norm = max(np.max(dB_a), np.max(dB_b))
     dB_a -= norm
     dB_b -= norm
-
-    dB_a += 75.0
-    dB_b += 75.0
 
     if smoothing > 0.0:
         dB_a = octave_smoothing(dB_a, fs_a, nfft, smoothing)
@@ -59,32 +57,33 @@ def main(filename, fmin, fmax, label_a, label_b, smoothing, target):
     formatter = ScalarFormatter()
     formatter.set_scientific(False)
 
-    ax[0].semilogx(freqs, dB_a, linestyle='-', label=f'{label_a}')
-    ax[0].semilogx(freqs, dB_b, linestyle='-', label=f'{label_b}')
-    ax[0].set_title('Spectrum')
-    ax[0].set_xlabel('Frequency [Hz]')
-    ax[0].set_ylabel('Amplitude [dB]')
-    ax[0].set_ylim((20, 80))
-    ax[0].set_xlim((fmin, fmax))
-    ax[0].xaxis.set_major_formatter(formatter)
-    ax[0].grid(which='minor', color='#DDDDDD', linestyle=':', linewidth=0.5)
-    ax[0].minorticks_on()
-    ax[0].legend()
+    ax0: Axes = ax[0]
+    ax0.semilogx(freqs, dB_a, linestyle='-', label=f'{label_a}')
+    ax0.semilogx(freqs, dB_b, linestyle='-', label=f'{label_b}')
+    ax0.set_title('Spectrum')
+    ax0.set_xlabel('Frequency [Hz]')
+    ax0.set_ylabel('Amplitude [dB]')
+    ax0.set_ylim(-60, 0)
+    ax0.set_xlim((fmin, fmax))
+    ax0.xaxis.set_major_formatter(formatter)
+    ax0.grid(which='minor', color='#DDDDDD', linestyle=':', linewidth=0.5)
+    ax0.minorticks_on()
+    ax0.legend()
 
     label = f'{label_b}-{label_a}'
     max_diff = np.max(np.abs(difference[(freqs > 10) & (freqs < 20e3)]))
-    ax[1].semilogx(freqs, difference, linestyle='-', label=label)
+    ax1: Axes = ax[1]
+    ax1.semilogx(freqs, difference, linestyle='-', label=label)
     if target != 0.0:
-        ax[1].hlines(target, fmin, fmax, linestyle='--',
-                     label=f"Target {target} dB", color='red')
-    ax[1].set_title('Difference')
-    ax[1].set_xlabel('Frequency [Hz]')
-    ax[1].set_ylabel('Amplitude [dB]')
-    ax[1].set_xlim((fmin, fmax))
-    ax[1].set_ylim((-max_diff*1.1, max_diff*1.1))
-    ax[1].xaxis.set_major_formatter(formatter)
-    ax[1].grid(which='minor', color='#DDDDDD', linestyle=':', linewidth=0.5)
-    ax[1].minorticks_on()
-    ax[1].legend()
+        ax1.hlines(target, fmin, fmax, linestyle='--', label=f"Target {target} dB", color='red')
+    ax1.set_title('Difference')
+    ax1.set_xlabel('Frequency [Hz]')
+    ax1.set_ylabel('Amplitude [dB]')
+    ax1.set_xlim((fmin, fmax))
+    ax1.set_ylim((-max_diff*1.1, max_diff*1.1))
+    ax1.xaxis.set_major_formatter(formatter)
+    ax1.grid(which='minor', color='#DDDDDD', linestyle=':', linewidth=0.5)
+    ax1.minorticks_on()
+    ax1.legend()
 
     plt.show()

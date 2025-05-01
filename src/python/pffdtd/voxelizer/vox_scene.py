@@ -1,7 +1,8 @@
 # SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: 2021 Brian Hamilton
 
-"""A scene voxelizer for FDTD
+"""
+A scene voxelizer for FDTD
 
 Sets up primary input for FDTD (adjacencies, materials, boundary nodes)
 CPU-based and uses multiprocessing.
@@ -23,6 +24,7 @@ About voxelisation:
  - this is meant for interpretation of FDTD grid as FVTD mesh of voxels/cells
  - this exports data just for boundary nodes (anything with non-adjacency to a neighbour)
 """
+
 import multiprocessing as mp
 from multiprocessing import shared_memory
 from pathlib import Path

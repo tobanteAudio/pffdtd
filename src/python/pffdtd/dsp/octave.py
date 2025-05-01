@@ -4,6 +4,7 @@
 import click
 import numpy as np
 from scipy import signal
+from tqdm import tqdm
 
 
 def octave_bandpass(center: float, fs: float, fraction: float = 3, order: int = 2) -> np.ndarray:
@@ -15,30 +16,33 @@ def octave_bandpass(center: float, fs: float, fraction: float = 3, order: int = 
     return signal.butter(order, [low, high], btype='band', fs=fs, output='sos')
 
 
-def octave_smoothing(magnitudes, fs, nfft, fraction=3):
+def octave_smoothing(magnitudes, fs, nfft, fraction=3, method='fast'):
     """
     Apply fractional octave smoothing to FFT magnitudes.
 
     Parameters:
-        - magnitudes: Array of FFT magnitudes.
-        - fs: Sampling rate of the signal.
-        - nfft: Size of the FFT.
-        - fraction: Fraction of the octave for smoothing (e.g., 3 for 1/3 octave, 6 for 1/6 octave).
+        magnitudes: Array of FFT magnitudes.
+        fs: Sampling rate of the signal.
+        nfft: Size of the FFT.
+        fraction: Fraction of the octave for smoothing (e.g., 3 for 1/3 octave, 6 for 1/6 octave).
 
     Returns:
-        - smoothed: Array of smoothed FFT magnitudes.
+        smoothed: Array of smoothed FFT magnitudes.
     """
-    # smoothed = np.zeros_like(magnitudes)
+    if method != 'fast':
+        frequencies = np.fft.rfftfreq(nfft, 1/fs)
+        smoothed = np.zeros_like(magnitudes)
 
-    # for i in tqdm(range(magnitudes.shape[-1])):
-    #     fc = frequencies[i]
-    #     fl = fc / 2**(1/(2*fraction))
-    #     fu = fc * 2**(1/(2*fraction))
-    #     indices = np.where((frequencies >= fl) & (frequencies <= fu))[0]
-    #     if len(indices) > 0:
-    #         smoothed[i] = np.mean(magnitudes[indices])
+        for i in tqdm(range(magnitudes.shape[-1])):
+            fc = frequencies[i]
+            fl = fc / 2**(1/(2*fraction))
+            fu = fc * 2**(1/(2*fraction))
+            idx_l = np.searchsorted(frequencies, fl, side='left')
+            idx_u = np.searchsorted(frequencies, fu, side='right')
+            if idx_u >= idx_l:
+                smoothed[i] = np.mean(magnitudes[idx_l:idx_u])
 
-    # return smoothed
+        return smoothed
 
     # 1) Compute center freqs and their lower/upper band edges
     freqs = np.fft.rfftfreq(nfft, 1/fs)

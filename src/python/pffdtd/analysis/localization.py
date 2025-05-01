@@ -106,19 +106,23 @@ def main(model_json, sim_dir):
     estimated_pos, estimated_tdoas = tetrahedron_microphone_array(mic_pos, mic_sigs, fs, c=c)
     estimated_tdoas *= 1000
 
+    def report_error(a, b, actual, estimate):
+        return {
+            'A': a,
+            'B': b,
+            'Actual [ms]': actual,
+            'Estimate [ms]': estimate,
+            'Error [us]': (actual-estimate)*1000,
+            'Rel-Error [%]': (estimate-actual)/actual*100,
+        }
+
     errors = pd.DataFrame.from_records([
-        {'A': 1, 'B': 2, 'Actual [ms]': actual_tdoas[0], 'Estimate [ms]': estimated_tdoas[0], 'Error [us]': (
-            actual_tdoas[0]-estimated_tdoas[0])*1000, 'Rel-Error [%]': np.abs(estimated_tdoas[0]-actual_tdoas[0])/actual_tdoas[0]*100},
-        {'A': 1, 'B': 3, 'Actual [ms]': actual_tdoas[1], 'Estimate [ms]': estimated_tdoas[1], 'Error [us]': (
-            actual_tdoas[1]-estimated_tdoas[1])*1000, 'Rel-Error [%]': np.abs(estimated_tdoas[1]-actual_tdoas[1])/actual_tdoas[1]*100},
-        {'A': 1, 'B': 4, 'Actual [ms]': actual_tdoas[2], 'Estimate [ms]': estimated_tdoas[2], 'Error [us]': (
-            actual_tdoas[2]-estimated_tdoas[2])*1000, 'Rel-Error [%]': np.abs(estimated_tdoas[2]-actual_tdoas[2])/actual_tdoas[2]*100},
-        {'A': 2, 'B': 3, 'Actual [ms]': actual_tdoas[3], 'Estimate [ms]': estimated_tdoas[3], 'Error [us]': (
-            actual_tdoas[3]-estimated_tdoas[3])*1000, 'Rel-Error [%]': np.abs(estimated_tdoas[3]-actual_tdoas[3])/actual_tdoas[3]*100},
-        {'A': 2, 'B': 4, 'Actual [ms]': actual_tdoas[4], 'Estimate [ms]': estimated_tdoas[4], 'Error [us]': (
-            actual_tdoas[4]-estimated_tdoas[4])*1000, 'Rel-Error [%]': np.abs(estimated_tdoas[4]-actual_tdoas[4])/actual_tdoas[4]*100},
-        {'A': 3, 'B': 4, 'Actual [ms]': actual_tdoas[5], 'Estimate [ms]': estimated_tdoas[5], 'Error [us]': (
-            actual_tdoas[5]-estimated_tdoas[5])*1000, 'Rel-Error [%]': np.abs(estimated_tdoas[5]-actual_tdoas[5])/actual_tdoas[5]*100},
+        report_error(1, 2, actual_tdoas[0], estimated_tdoas[0]),
+        report_error(1, 3, actual_tdoas[1], estimated_tdoas[1]),
+        report_error(1, 4, actual_tdoas[2], estimated_tdoas[2]),
+        report_error(2, 3, actual_tdoas[3], estimated_tdoas[3]),
+        report_error(2, 4, actual_tdoas[4], estimated_tdoas[4]),
+        report_error(3, 4, actual_tdoas[5], estimated_tdoas[5]),
     ])
 
     print('------------------------------')

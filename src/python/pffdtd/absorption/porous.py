@@ -12,7 +12,6 @@ import pandas as pd
 from pffdtd.absorption.admittance import convert_nabs_to_R
 from pffdtd.absorption.air import Air, air_density, sound_velocity, wave_number_in_air
 from pffdtd.common.plot import plot_styles
-from pffdtd.geometry.math import difference_over_sum
 
 
 def porous_absorber(
@@ -57,7 +56,7 @@ def porous_absorber(
     z_abs_surface = minus_i * z_abs * (wave_no_abs / wave_no_abs_x) * cot_porous_wave_no
 
     # Calculate absorption coefficient for porous absorber with no air gap
-    abs_refl = difference_over_sum((z_abs_surface / air.impedance) * cos_phi, 1.0)
+    abs_refl = _difference_over_sum((z_abs_surface / air.impedance) * cos_phi, 1.0)
     abs_alpha = _reflectivity_as_alpha(abs_refl)
 
     if offset_zeros:
@@ -84,7 +83,7 @@ def porous_absorber(
     abs_air_z = ((air_gap_z * intermediate3) + (z_abs * z_abs)) / (air_gap_z + intermediate3)
 
     # Absorption coefficient for porous absorber with air gap
-    abs_air_refl = difference_over_sum((abs_air_z / air.impedance) * cos_phi, 1.0)
+    abs_air_refl = _difference_over_sum((abs_air_z / air.impedance) * cos_phi, 1.0)
     abs_air_alpha = _reflectivity_as_alpha(abs_air_refl)
 
     if offset_zeros:
@@ -115,6 +114,10 @@ def _reflectivity_as_alpha(refl):
     alpha = 1.0 - np.abs(refl)**2.0
     alpha[alpha < 0.0] = 0.0
     return alpha
+
+
+def _difference_over_sum(a, b):
+    return (a - b) / (a + b)
 
 
 @click.command(name='porous', help='Plot porous absorption properties.')

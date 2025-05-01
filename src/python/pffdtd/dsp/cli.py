@@ -3,7 +3,6 @@
 
 import click
 
-from pffdtd.dsp import dolby
 from pffdtd.dsp import mls
 from pffdtd.dsp import octave
 from pffdtd.dsp import phase
@@ -16,7 +15,6 @@ def dsp():
     pass
 
 
-dsp.add_command(dolby.main)
 dsp.add_command(mls.main)
 dsp.add_command(octave.main)
 dsp.add_command(phase.main)

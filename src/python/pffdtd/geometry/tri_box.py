@@ -1,7 +1,8 @@
 # SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: 2021 Brian Hamilton
 
-"""Triangle-box intersection routines.
+"""
+Triangle-box intersection routines.
 
 One single box / triangle, and one vectorised for one-ray-many-box or one-tri-many-box
 some tests (__main__ entry). Returns boolean for hit

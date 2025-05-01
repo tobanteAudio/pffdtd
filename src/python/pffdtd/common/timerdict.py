@@ -1,13 +1,11 @@
 # SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: 2021 Brian Hamilton
-"""This is a timer in a dict. Makes it easy to set up little timers.
-Has a deconstructor to let you know if a timer started (tic) didn't end (toc).
-"""
 import time
 
 
 class TimerDict:
-    """timer class using dict for sub-timers
+    """This is a timer in a dict. Makes it easy to set up little timers.
+    Has a deconstructor to let you know if a timer started (tic) didn't end (toc).
     """
 
     def __init__(self):

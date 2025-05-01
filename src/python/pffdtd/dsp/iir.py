@@ -5,17 +5,16 @@ import numpy as np
 from scipy import signal
 
 
-def butterworth_Qs(order, wc=1):
+def butterworth_Qs(order: int) -> np.ndarray:
     """
     Calculate the Q factors for each second-order section (SOS) of a Butterworth filter
     of an even order.
 
     Parameters:
-        order (int): The filter order (must be even: 4, 6, 8, ...).
-        wc (float): The cutoff frequency (default is 1 for a normalized filter).
+        order: The filter order (must be even: 4, 6, 8, ...).
 
     Returns:
-        qs (list): A list of Q factors for each SOS.
+        qs: A list of Q factors for each SOS.
     """
     if order % 2 != 0:
         raise ValueError('Order must be even.')
@@ -23,6 +22,7 @@ def butterworth_Qs(order, wc=1):
     poles = []
     # Calculate all poles using the standard Butterworth formula:
     # s_k = wc * exp(j * (pi/2 + (2k+1)*pi/(2*order))), for k = 0, ..., order-1
+    wc = 1
     for k in range(order):
         theta = np.pi/2 + (2*k + 1) * np.pi / (2 * order)
         s = wc * np.exp(1j * theta)
@@ -41,7 +41,7 @@ def butterworth_Qs(order, wc=1):
         Q = omega_0 / (2 * sigma)
         qs.append(Q)
 
-    return qs
+    return np.array(qs)
 
 
 def low_pass(fc, Q, fs) -> np.ndarray:
@@ -92,3 +92,17 @@ def linkwitz_riley_crossover(fc, fs, order=4) -> tuple[np.ndarray, np.ndarray]:
     low = signal.butter(order//2, Wn=fc, fs=fs, btype='low', output='sos')
     high = signal.butter(order//2, Wn=fc, fs=fs, btype='high', output='sos')
     return np.concatenate([low, low]), np.concatenate([high, high])
+
+
+def dolby_atmos_target_curve(fs):
+    """Returns an SOS filter matching the Dolby Atmos Target Curve with a maximum error of +/-0.5dB
+
+    - https://gracedesign.com/support/manuals/m908_Atmos_Target_Curve_EQ.pdf
+    """
+    return np.concatenate([
+        peak_filter(16, 10**(-2.3/20), 1.52, fs),
+        peak_filter(71, 10**(+1.2/20), 0.44, fs),
+        peak_filter(185, 10**(-0.6/20), 0.86, fs),
+        peak_filter(5770, 10**(-1.4/20), 0.6, fs),
+        peak_filter(20000, 10**(-6.4/20), 0.2, fs),
+    ])
