@@ -3,56 +3,53 @@
 
 """Miscellaneous python/numpy functions.
 """
-from typing import Any
-
-
 import numpy as np
-import numpy.linalg as npl
-from numpy import cos, sin, pi
 
 
-EPS = np.finfo(np.float64).eps
-
-
-def rotmatrix_ax_ang(Rax: Any, Rang: float):
+def rotmatrix_ax_ang(Rax: np.ndarray, Rang: float) -> np.ndarray:
+    # see https://en.wikipedia.org/wiki/Rotation_matrix
     assert isinstance(Rax, np.ndarray)
     assert Rax.shape == (3,)
     assert isinstance(Rang, float)
 
-    Rax = Rax/npl.norm(Rax)  # to be sure
+    Rax = Rax/np.linalg.norm(Rax)  # to be sure
+    theta = np.deg2rad(Rang)
+    ct = np.cos(theta)
+    st = np.sin(theta)
+    R = np.array([
+        [ct + Rax[0]*Rax[0]*(1-ct), Rax[0]*Rax[1]*(1-ct) - Rax[2]*st, Rax[0]*Rax[2]*(1-ct) + Rax[1]*st],
+        [Rax[1]*Rax[0]*(1-ct) + Rax[2]*st, ct + Rax[1]*Rax[1]*(1-ct), Rax[1]*Rax[2]*(1-ct) - Rax[0]*st],
+        [Rax[2]*Rax[0]*(1-ct) - Rax[1]*st, Rax[2]*Rax[1]*(1-ct) + Rax[0]*st, ct + Rax[2]*Rax[2]*(1-ct)],
+    ])
 
-    theta = Rang/180.0*pi  # in rad
-    # see https://en.wikipedia.org/wiki/Rotation_matrix
-    R = np.array([[cos(theta) + Rax[0]*Rax[0]*(1-cos(theta)), Rax[0]*Rax[1]*(1-cos(theta)) - Rax[2]*sin(theta), Rax[0]*Rax[2]*(1-cos(theta)) + Rax[1]*sin(theta)],
-                  [Rax[1]*Rax[0]*(1-cos(theta)) + Rax[2]*sin(theta), cos(theta) + Rax[1]*Rax[1]*(
-                      1-cos(theta)), Rax[1]*Rax[2]*(1-cos(theta)) - Rax[0]*sin(theta)],
-                  [Rax[2]*Rax[0]*(1-cos(theta)) - Rax[1]*sin(theta), Rax[2]*Rax[1]*(1-cos(theta)) + Rax[0]*sin(theta), cos(theta) + Rax[2]*Rax[2]*(1-cos(theta))]])
-    assert npl.norm(npl.inv(R)-R.T) < 1e-8
+    assert np.linalg.norm(np.linalg.inv(R)-R.T) < 1e-8
     return R
 
 
 def rotate_xyz_deg(thx_d, thy_d, thz_d):
     # R applies Rz then Ry then Rx (opposite to wikipedia)
     # rotations about x,y,z axes, right hand rule
-
     thx = np.deg2rad(thx_d)
     thy = np.deg2rad(thy_d)
     thz = np.deg2rad(thz_d)
 
-    Rx = np.array([[1, 0, 0],
-                   [0, np.cos(thx), -np.sin(thx)],
-                   [0, np.sin(thx), np.cos(thx)]])
-
-    Ry = np.array([[np.cos(thy), 0, np.sin(thy)],
-                   [0, 1, 0],
-                   [-np.sin(thy), 0, np.cos(thy)]])
-
-    Rz = np.array([[np.cos(thz), -np.sin(thz), 0],
-                   [np.sin(thz), np.cos(thz), 0],
-                   [0, 0, 1]])
+    Rx = np.array([
+        [1, 0, 0],
+        [0, np.cos(thx), -np.sin(thx)],
+        [0, np.sin(thx), np.cos(thx)],
+    ])
+    Ry = np.array([
+        [np.cos(thy), 0, np.sin(thy)],
+        [0, 1, 0],
+        [-np.sin(thy), 0, np.cos(thy)],
+    ])
+    Rz = np.array([
+        [np.cos(thz), -np.sin(thz), 0],
+        [np.sin(thz), np.cos(thz), 0],
+        [0, 0, 1],
+    ])
 
     R = Rx @ Ry @ Rz
-
     return R, Rx, Ry, Rz
 
 
@@ -66,7 +63,6 @@ def rotate_az_el_deg(az_d, el_d):
     Rel = Ry
     Raz = Rz
     R = Raz @ Rel
-
     return R, Raz, Rel
 
 
@@ -82,7 +78,7 @@ def vecnorm(v1):
     return np.sqrt(dot2(v1))
 
 
-def normalise(v1, eps=EPS):
+def normalise(v1, eps=np.finfo(np.float64).eps):
     return (v1.T/(vecnorm(v1)+eps)).T
 
 
