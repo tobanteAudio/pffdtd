@@ -11,7 +11,6 @@ from matplotlib.ticker import ScalarFormatter
 import pandas as pd
 from scipy.signal import sosfilt
 
-from pffdtd.common.plot import plot_styles
 from pffdtd.common.wavfile import collect_wav_files, wavread
 from pffdtd.dsp.octave import octave_bandpass
 
@@ -213,8 +212,6 @@ def run(files, fmin, fmax, target=None):
 @click.option('--fmax', default=1000.0)
 @click.option('--target', default=0.0)
 def main(filename, sim_dir, fmin, fmax, target):
-    plt.rcParams.update(plot_styles)
-
     if sim_dir and len(filename) > 0:
         raise RuntimeError('--sim_dir not valid, when comparing IRs')
 

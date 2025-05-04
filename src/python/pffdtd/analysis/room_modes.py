@@ -12,7 +12,6 @@ from scipy.signal import find_peaks, windows
 from scipy.io import wavfile
 
 from pffdtd.geometry.math import iceil
-from pffdtd.common.plot import plot_styles
 from pffdtd.common.wavfile import collect_wav_files
 
 
@@ -136,8 +135,6 @@ def detect_room_modes(
         note = hz_to_note(freq)
         kind = room_mode_kind(m, n, p)
         print(f"[{m},{n},{p}] = {freq:.2f}Hz ({note}) {kind}")
-
-    plt.rcParams.update(plot_styles)
 
     for file in paths:
         file = pathlib.Path(file)

@@ -2,6 +2,9 @@
 # SPDX-FileCopyrightText: 2024 Tobias Hienzsch
 
 import click
+import matplotlib.pyplot as plt
+
+from pffdtd.common.plot import plot_styles
 
 from pffdtd.absorption.cli import absorption
 from pffdtd.analysis.cli import analysis
@@ -21,6 +24,7 @@ from pffdtd.voxelizer.cli import voxelizer
 def main(ctx, verbose):
     ctx.ensure_object(dict)
     ctx.obj['VERBOSE'] = verbose
+    plt.rcParams.update(plot_styles)
 
 
 main.add_command(absorption)

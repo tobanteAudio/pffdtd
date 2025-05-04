@@ -8,8 +8,6 @@ from matplotlib.axes import Axes
 from matplotlib.ticker import ScalarFormatter
 from scipy.signal import find_peaks
 
-from pffdtd.common.plot import plot_styles
-
 
 def minimum_phase_reconstruction(M_half: np.ndarray) -> np.ndarray:
     """
@@ -73,7 +71,6 @@ def main():
     minima, _ = find_peaks(-magnitude_dB, height=0)
     print(frequencies[minima])
 
-    plt.rcParams.update(plot_styles)
     _, axs = plt.subplots(2, 1, sharex='all')
     ax0: Axes = axs[0]
     ax1: Axes = axs[1]

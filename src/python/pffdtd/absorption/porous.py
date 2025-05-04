@@ -11,7 +11,6 @@ import pandas as pd
 
 from pffdtd.absorption.admittance import convert_nabs_to_R
 from pffdtd.absorption.air import Air, air_density, sound_velocity, wave_number_in_air
-from pffdtd.common.plot import plot_styles
 
 
 def porous_absorber(
@@ -131,8 +130,6 @@ def main(csv_file, angle, reflection, temperature):
 
     _, ax = plt.subplots(1, 1)
     ax: Axes = ax
-
-    plt.rcParams.update(plot_styles)
     ax.set_title(csv_file)
 
     for _, spec in absorbers.iterrows():
