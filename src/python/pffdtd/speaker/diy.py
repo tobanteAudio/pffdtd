@@ -36,19 +36,17 @@ def main():
         'bryston_9B_4ch': 16009,
     }
 
-    # quattro = tad_td_4001+tad_tl_1601b*4+tad_tl_1801*4
-    # classic = tad_td_4001+tad_tl_1601b*2+tad_tl_1801
-    # duo = tad_td_4001+tad_tl_1601b*2+tad_tl_1801
-    # toby_duo_tad = tad_td_2002+tad_tl_1601b*2+tad_tl_1801
-    # toby_duo_da = radian_950_neopb_8+dayton_audio_rss390*2+dayton_audio_rss460
+    quattro_t = price['tad_td_4001']+price['tad_tl_1601b']*4
+    quattro_s = price['radian_950_neopb_8']+price['scan_speak_32w_4878t00']*4
+    quattro_d = price['radian_950_neopb_8']+price['dayton_audio_rss390']*4
 
-    # toby_315v = morel_st_1108+volt_vm527+volt_rv_3143+volt_rv_3863
-    # toby_solo_sr = dayton_audio_rss390+scan_speak_32w_4878t00+radian_950_neopb_8
-    # toby_solo_so = dayton_audio_rss390+scan_speak_32w_4878t00+oberton_nd72ct_hb
+    duo_t = price['tad_td_4001']+price['tad_tl_1601b']*2
+    duo_s = price['radian_950_neopb_8']+price['scan_speak_32w_4878t00']*2
+    duo_d = price['radian_950_neopb_8']+price['dayton_audio_rss390']*2
+
     toby_312dvm = price['dayton_audio_rss315']+price['volt_vm752']+price['morel_tsct_1044']
     toby_312svm = price['scan_speak_32w_4878t00']+price['volt_vm752']+price['morel_tsct_1044']
 
-    # toby_315tad = morel_st_1108+volt_vm752+tad_tl_1601b+tad_tl_1801
     toby_315dvm = price['dayton_audio_rss390']+price['volt_vm752']+price['morel_tsct_1044']
     toby_315tvm = price['tad_tl_1601b']+price['volt_vm752']+price['morel_tsct_1044']
 
@@ -60,26 +58,25 @@ def main():
     toby_sub18t = price['tad_tl_1801']
 
     print(pd.DataFrame.from_records([
-        # {'name': 'Augspurger Quattro TAD', '1x': quattro, '2x': quattro*2},
-        # {'name': 'Augspurger Classic TAD', '1x': classic, '2x': classic*2},
-        # {'name': 'Augspurger Duo TAD', '1x': duo, '2x': duo*2},
-        # {'name': 'DUO-TAD', '1x': toby_duo_tad, '2x': toby_duo_tad*2},
-        # {'name': 'DUO-DA', '1x': toby_duo_da, '2x': toby_duo_da*2},
-        # {'name': '315-DA', '1x': toby_315da, '2x': toby_315da*2},
-        # {'name': '315-V', '1x': toby_315v, '2x': toby_315v*2},
+        {'name': 'Quattro-T', '1x': quattro_t, '2x': quattro_t*2},
+        {'name': 'Quattro-S', '1x': quattro_s, '2x': quattro_s*2},
+        {'name': 'Quattro-D', '1x': quattro_d, '2x': quattro_d*2},
+
+        {'name': 'Duo-T', '1x': duo_t, '2x': duo_t*2},
+        {'name': 'Duo-S', '1x': duo_s, '2x': duo_s*2},
+        {'name': 'Duo-D', '1x': duo_d, '2x': duo_d*2},
+
         {'name': '312-SVM', '1x': toby_312svm, '2x': toby_312svm*2},
         {'name': '312-DVM', '1x': toby_312dvm, '2x': toby_312dvm*2},
         {'name': '315-DVM', '1x': toby_315dvm, '2x': toby_315dvm*2},
         {'name': '315-TVM', '1x': toby_315tvm, '2x': toby_315tvm*2},
+
         {'name': 'S12-D', '1x': toby_sub12d, '2x': toby_sub12d*2},
         {'name': 'S15-D', '1x': toby_sub15d, '2x': toby_sub15d*2},
         {'name': 'S18-D', '1x': toby_sub18d, '2x': toby_sub18d*2},
         {'name': 'S12-S', '1x': toby_sub12s, '2x': toby_sub12s*2},
         {'name': 'S15-T', '1x': toby_sub15t, '2x': toby_sub15t*2},
         {'name': 'S18-T', '1x': toby_sub18t, '2x': toby_sub18t*2},
-        # {'name': '315-TAD', '1x': toby_315tad, '2x': toby_315tad*2},
-        # {'name': 'Solo-SO', '1x': toby_solo_so, '2x': toby_solo_so*2},
-        # {'name': 'Solo-SR', '1x': toby_solo_sr, '2x': toby_solo_sr*2},
     ]).to_markdown(index=False))
 
     # 884 x 498 x 568mm
@@ -104,13 +101,13 @@ def main():
     print(f'Driver Weight = {driver_weight:.3f}kg')
     print(f'Total Weight  = {mdf_weight+driver_weight:.3f}kg')
 
-    interface_dac_dBu = 16
-    crossover_adc_dBu = 22
-    crossover_dac_dBu = 16
+    # interface_dac_dBu = 16
+    # crossover_adc_dBu = 22
+    # crossover_dac_dBu = 16
 
-    print('------------------')
-    print(f'Interface DAC = {dBV_to_volts(dBu_to_dBV(interface_dac_dBu)):.2f} V')
-    print(f'Crossover ADC = {dBV_to_volts(dBu_to_dBV(crossover_adc_dBu)):.2f} V')
-    print(f'Crossover DAC = {dBV_to_volts(dBu_to_dBV(crossover_dac_dBu)):.2f} V')
-    print(f'Crossover DAC = {dBV_to_volts(dBu_to_dBV(3.5)):.2f} V')
-    print(f'Crossover DAC = {dBV_to_volts(dBu_to_dBV(4)):.2f} V')
+    # print('------------------')
+    # print(f'Interface DAC = {dBV_to_volts(dBu_to_dBV(interface_dac_dBu)):.2f} V')
+    # print(f'Crossover ADC = {dBV_to_volts(dBu_to_dBV(crossover_adc_dBu)):.2f} V')
+    # print(f'Crossover DAC = {dBV_to_volts(dBu_to_dBV(crossover_dac_dBu)):.2f} V')
+    # print(f'Crossover DAC = {dBV_to_volts(dBu_to_dBV(3.5)):.2f} V')
+    # print(f'Crossover DAC = {dBV_to_volts(dBu_to_dBV(4)):.2f} V')
