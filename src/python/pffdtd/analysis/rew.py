@@ -21,20 +21,22 @@ def main(impulse_path, stimulus):
     assert fs_ir == fs_sweep
 
     def _summary(x, name):
+        dB_ref = 120.0
         peak = np.max(np.abs(x))
         rms = np.sqrt(np.mean(x**2))
 
         print(f'{name}:')
         print(f'  - Samples:  {len(x)}')
         print(f'  - Duration: {len(x)/fs_ir:.3f} s')
-        print(f'  - Peak:     {20*np.log10(peak):.2f} dB')
-        print(f'  - RMS:      {20*np.log10(rms):.2f} dB')
+        print(f'  - Peak:     {20*np.log10(peak):.2f} dBFS')
+        print(f'  - RMS:      {20*np.log10(rms):.2f} dBFS')
+        print(f'  - Peak:     {20*np.log10(peak)+dB_ref:.2f} dBSPL')
+        print(f'  - RMS:      {20*np.log10(rms)+dB_ref:.2f} dBSPL')
 
     pink = generate_pink_noise(10.0, fs_ir)
     level_ref = oaconvolve(pink, ir, mode='full')
     measurement = oaconvolve(sweep, ir, mode='full')
-    measurement = normalize_to_RMS_dBFS(measurement, -32)
-    measurement = (measurement/np.max(np.abs(measurement)))*(10**((85-120)/20))
+    measurement = normalize_to_RMS_dBFS(measurement, -35, x_ref=level_ref)
 
     _summary(ir, 'IR')
     _summary(sweep, 'Sweep')

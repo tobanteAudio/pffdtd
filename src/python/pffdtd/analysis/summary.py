@@ -22,13 +22,14 @@ def plot_impulse_response_summary(
         fmax = fs/2
 
     n = x.shape[-1]
-    nfft = n*4
+    nfft = n
     freqs = np.fft.rfftfreq(nfft, 1/fs)
     H = np.fft.rfft(x, nfft)
 
-    mag = np.maximum(np.abs(H), 1e-9)
+    mag = np.maximum(np.abs(H), 1e-9)/nfft
+    mag[1:-1] *= 2
     mag_dB = 20*np.log10(mag)
-    mag_dB = mag_dB - np.max(mag_dB) + 85
+    # mag_dB = mag_dB - np.max(mag_dB) + 120
 
     mag_smooth_dB = mag_dB
     if smoothing > 0:
@@ -54,7 +55,8 @@ def plot_impulse_response_summary(
     mag_plot: Axes = axs[1][0]
     mag_plot.semilogx(freqs, mag_smooth_dB)
     mag_plot.set_xlim(10, fmax)
-    mag_plot.set_ylim(10, 90)
+    mag_plot.set_ylim(-120, 0)
+    # mag_plot.set_ylim(10, 130)
     mag_plot.set_xlabel('Frequency [Hz]')
     mag_plot.set_ylabel('Magnitude [dB]')
     mag_plot.set_title('Magnitude')
