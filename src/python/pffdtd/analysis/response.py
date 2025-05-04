@@ -8,22 +8,75 @@ from matplotlib.ticker import ScalarFormatter
 import numpy as np
 from scipy.io import wavfile
 
-from pffdtd.common.plot import plot_styles
-from pffdtd.dsp.octave import octave_smoothing
+from pffdtd.common.wavfile import wavread
+from pffdtd.dsp.octave import center_frequencies, octave_smoothing
+from pffdtd.dsp.music import midi_key_color
 from pffdtd.geometry.math import iceil
 
 
-@click.command(name='response', help='Plot frequency response.')
-@click.argument('filename', nargs=2, type=click.Path(exists=True))
-@click.option('--fmin', default=1.0)
-@click.option('--fmax', default=1000.0)
-@click.option('--label_a', default='A')
-@click.option('--label_b', default='B')
-@click.option('--smoothing', default=0.0)
-@click.option('--target', default=0.0)
-def main(filename, fmin, fmax, label_a, label_b, smoothing, target):
-    file_a = filename[0]
-    file_b = filename[1]
+def plot_musical_response(
+    file,
+    *,
+    ax=None,
+    fmin=20,
+    fmax=20000.0,
+    fraction=12,
+    pitch_ref=440.0,
+    key_colors=True,
+    verbose=False,
+):
+    fs, buf = wavread(file)
+    fmax = fmax if fmax != 0.0 else fs/2
+    nfft = buf.shape[-1]
+    freqs = np.fft.rfftfreq(nfft, 1/fs)
+    spectrum = np.fft.rfft(buf, nfft)
+
+    dB = 20*np.log10(np.maximum(np.abs(spectrum), 1e-9))
+    dB -= np.max(dB)
+
+    all_centre = center_frequencies(fraction, pitch_ref, 6, 6)
+    centre = all_centre[(all_centre >= fmin) & (all_centre <= fmax)]
+    smoothed = np.zeros_like(centre)
+
+    for i in range(centre.shape[-1]):
+        fc = centre[i]
+        fl = fc / 2**(1/(2*fraction))
+        fu = fc * 2**(1/(2*fraction))
+        idx_l = np.searchsorted(freqs, fl, side='left')
+        idx_u = np.searchsorted(freqs, fu, side='right')
+        if idx_u >= idx_l:
+            smoothed[i] = np.mean((dB[idx_l:idx_u+1]+85))
+
+    if verbose:
+        print(centre)
+        print(smoothed)
+
+    if not ax:
+        ax = plt.gca()
+
+    if key_colors:
+        note_numbers = np.arange(centre.shape[-1])+16
+        note_colors = [midi_key_color(int(n)) for n in note_numbers]
+        note_colors = ['blue' if color == 'white' else color for color in note_colors]
+        ax.bar(note_numbers, smoothed, facecolor=note_colors)
+    else:
+        ax.bar(note_numbers, smoothed)
+
+    ax.set_xlabel('Note Number [MIDI]')
+    ax.set_ylabel('Magnitude [dB]')
+    ax.set_ylim(48, 92)
+    ax.grid(which='major', color='#DDDDDD', linestyle=':', linewidth=0.5)
+
+
+def plot_response_compare(files, labels, *, fmin=20.0, fmax=20000.0, smoothing=0.0, target=None):
+    assert len(files) == 2
+    assert len(labels) == 2
+
+    file_a = files[0]
+    file_b = files[1]
+
+    label_a = labels[0]
+    label_b = labels[1]
 
     fs_a, buf_a = wavfile.read(file_a)
     fs_b, buf_b = wavfile.read(file_b)
@@ -49,8 +102,6 @@ def main(filename, fmin, fmax, label_a, label_b, smoothing, target):
         dB_b = octave_smoothing(dB_b, fs_b, nfft, smoothing)
 
     difference = dB_b-dB_a
-
-    plt.rcParams.update(plot_styles)
 
     fig, ax = plt.subplots(2, 1, constrained_layout=True)
     fig.suptitle(f"{label_a} vs. {label_b}")
@@ -86,4 +137,29 @@ def main(filename, fmin, fmax, label_a, label_b, smoothing, target):
     ax1.minorticks_on()
     ax1.legend()
 
-    plt.show()
+
+@click.command(name='response', help='Plot frequency response.')
+@click.argument('files', nargs=-1, type=click.Path(exists=True))
+@click.option('--fmin', default=1.0)
+@click.option('--fmax', default=1000.0)
+@click.option('--label_a', default='A')
+@click.option('--label_b', default='B')
+@click.option('--smoothing', default=0.0)
+@click.option('--target', default=0.0)
+@click.option('--musical', is_flag=True)
+def main(files, fmin, fmax, label_a, label_b, smoothing, target, musical):
+    if len(files) == 2:
+        plot_response_compare(
+            files,
+            [label_a, label_b],
+            fmin=fmin,
+            fmax=fmax,
+            smoothing=smoothing,
+            target=target,
+        )
+        plt.show()
+
+    if musical:
+        plot_musical_response(files[0], fmin=fmin, fmax=fmax, fraction=12)
+        plt.title('Musical Response')
+        plt.show()

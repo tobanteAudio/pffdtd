@@ -11,6 +11,7 @@ import pandas as pd
 from scipy.signal import find_peaks, windows
 from scipy.io import wavfile
 
+from pffdtd.dsp.music import hz_to_note
 from pffdtd.geometry.math import iceil
 from pffdtd.common.wavfile import collect_wav_files
 
@@ -19,31 +20,6 @@ def find_nearest(array, value):
     array = np.asarray(array)
     idx = (np.abs(array - value)).argmin()
     return array[idx]
-
-
-def hz_to_note(frequency):
-    # Reference frequency for A4
-    A4_frequency = 440.0
-    # Reference position for A4 in the note list
-    A4_position = 9
-    # List of note names
-    note_names = ['C', 'C#', 'D', 'D#', 'E',
-                  'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
-
-    # Calculate the number of semitones between the given frequency and A4
-    semitones_from_A4 = 12 * np.log2(frequency / A4_frequency)
-    # Round to the nearest semitone
-    semitone_offset = round(semitones_from_A4)
-
-    # Calculate the octave
-    octave = 4 + (A4_position + semitone_offset) // 12
-    # Calculate the note position
-    note_position = (A4_position + semitone_offset) % 12
-
-    # Get the note name
-    note_name = note_names[note_position]
-
-    return f"{note_name}{octave}"
 
 
 def room_mode(L, W, H, m, n, p, c=343):
