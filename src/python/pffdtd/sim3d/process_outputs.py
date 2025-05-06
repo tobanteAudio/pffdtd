@@ -17,7 +17,7 @@ from pffdtd.absorption.air import apply_visco_filter
 from pffdtd.absorption.air import apply_modal_filter
 from pffdtd.absorption.air import apply_ola_filter
 from pffdtd.common.filter import apply_lowcut, apply_lowpass
-from pffdtd.common.wavfile import save_as_wav_files
+from pffdtd.dsp.wavfile import save_as_wav_files
 from pffdtd.geometry.math import iceil
 
 

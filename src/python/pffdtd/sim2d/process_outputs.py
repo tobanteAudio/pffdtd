@@ -9,7 +9,7 @@ import numpy as np
 from resampy import resample
 from scipy import signal
 
-from pffdtd.common.wavfile import save_as_wav_files
+from pffdtd.dsp.wavfile import save_as_wav_files
 
 
 @click.command(name='process-outputs', help='Process raw simulation output.')

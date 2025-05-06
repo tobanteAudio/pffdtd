@@ -5,9 +5,9 @@ import click
 import numpy as np
 from scipy.signal import oaconvolve
 
-from pffdtd.common.wavfile import wavread, wavwrite
 from pffdtd.dsp.level import normalize_to_RMS_dBFS
 from pffdtd.dsp.pink import generate_pink_noise
+from pffdtd.dsp.wavfile import wavread, wavwrite
 
 
 @click.command(name='rew', help='Export IR as REW offline measurement.')

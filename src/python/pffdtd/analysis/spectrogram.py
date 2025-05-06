@@ -6,7 +6,7 @@ from matplotlib.axes import Axes
 import matplotlib.pyplot as plt
 from scipy.signal import stft
 
-from pffdtd.common.wavfile import wavread
+from pffdtd.dsp.wavfile import wavread
 
 
 def plot_spectrogram(x, fs, *, window='hann', min_dB=-100, color_map='gouraud', ax: Axes | None = None):

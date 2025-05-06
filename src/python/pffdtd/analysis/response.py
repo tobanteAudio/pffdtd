@@ -8,9 +8,9 @@ from matplotlib.ticker import ScalarFormatter
 import numpy as np
 from scipy.io import wavfile
 
-from pffdtd.common.wavfile import wavread
-from pffdtd.dsp.octave import center_frequencies, octave_smoothing
 from pffdtd.dsp.music import midi_key_color
+from pffdtd.dsp.octave import center_frequencies, octave_smoothing
+from pffdtd.dsp.wavfile import wavread
 from pffdtd.geometry.math import iceil
 
 

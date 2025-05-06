@@ -12,8 +12,8 @@ from scipy.signal import find_peaks, windows
 from scipy.io import wavfile
 
 from pffdtd.dsp.music import hz_to_note
+from pffdtd.dsp.wavfile import collect_wav_files
 from pffdtd.geometry.math import iceil
-from pffdtd.common.wavfile import collect_wav_files
 
 
 def find_nearest(array, value):
