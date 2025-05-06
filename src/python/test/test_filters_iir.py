@@ -4,7 +4,7 @@ import numpy as np
 import pytest
 from scipy.signal import butter, sosfilt, unit_impulse
 
-from pffdtd.dsp.iir import butterworth_Qs, low_pass, peak_filter
+from pffdtd.signals.iir import butterworth_Qs, low_pass, peak_filter
 
 
 def test_butterworth_Qs():

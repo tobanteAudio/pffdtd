@@ -4,8 +4,8 @@
 import numpy as np
 import pytest
 
-from pffdtd.dsp.pink import generate_pink_noise, pink_noise_slope
-from pffdtd.dsp.sine import generate_sine_wave
+from pffdtd.signals.pink import generate_pink_noise, pink_noise_slope
+from pffdtd.signals.sine import generate_sine_wave
 
 
 @pytest.mark.parametrize('fs', [44100, 48000, 96000, 192000])

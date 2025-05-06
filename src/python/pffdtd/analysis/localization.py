@@ -10,7 +10,7 @@ import pandas as pd
 from scipy.optimize import minimize
 from scipy.signal import correlate
 
-from pffdtd.dsp.wavfile import wavread
+from pffdtd.signals.wavfile import wavread
 
 
 def _tdoa_residuals(source_pos, mic_positions, tdoas, c):

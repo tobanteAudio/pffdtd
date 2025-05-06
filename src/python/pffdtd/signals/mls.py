@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from scipy.signal import max_len_seq
 
-from pffdtd.dsp.wavfile import wavwrite
+from pffdtd.signals.wavfile import wavwrite
 
 
 def generate_max_len_seq(nbits) -> np.ndarray:

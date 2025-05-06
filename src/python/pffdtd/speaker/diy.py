@@ -3,7 +3,7 @@
 import click
 import pandas as pd
 
-from pffdtd.dsp.voltage import dBV_to_volts, dBu_to_dBV
+from pffdtd.signals.voltage import dBV_to_volts, dBu_to_dBV
 
 
 @click.command(name='diy', help='DIY Speakers')

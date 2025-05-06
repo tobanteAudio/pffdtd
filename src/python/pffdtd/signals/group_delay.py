@@ -3,7 +3,7 @@
 
 import numpy as np
 
-from pffdtd.dsp.phase import minimum_phase_reconstruction
+from pffdtd.signals.phase import minimum_phase_reconstruction
 
 
 def group_delay_seconds(H, freqs):

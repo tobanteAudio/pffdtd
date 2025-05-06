@@ -8,7 +8,7 @@ import pytest
 
 from pffdtd.absorption.admittance import write_freq_ind_mat_from_Yn, convert_Sabs_to_Yn
 from pffdtd.analysis.localization import tetrahedron_microphone_array
-from pffdtd.dsp.wavfile import wavread
+from pffdtd.signals.wavfile import wavread
 from pffdtd.sim3d.model_builder import RoomModelBuilder
 from pffdtd.sim3d.setup import sim_setup_3d
 from pffdtd.sim3d.testing import run_engine, skip_if_native_engine_unavailable

@@ -4,8 +4,8 @@
 import click
 import numpy as np
 
-from pffdtd.dsp.pink import crest_factor, normalize_to_RMS_dBFS
-from pffdtd.dsp.wavfile import wavwrite
+from pffdtd.signals.pink import crest_factor, normalize_to_RMS_dBFS
+from pffdtd.signals.wavfile import wavwrite
 
 
 def generate_sine_wave(frequency, duration, fs, dB_rms=-20.0):

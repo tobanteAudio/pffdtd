@@ -6,9 +6,9 @@ from matplotlib.axes import Axes
 import matplotlib.pyplot as plt
 import numpy as np
 
-from pffdtd.dsp.group_delay import group_delay_seconds, excess_group_delay_seconds
-from pffdtd.dsp.octave import octave_smoothing
-from pffdtd.dsp.wavfile import wavread
+from pffdtd.signals.group_delay import group_delay_seconds, excess_group_delay_seconds
+from pffdtd.signals.octave import octave_smoothing
+from pffdtd.signals.wavfile import wavread
 
 
 def plot_impulse_response_summary(

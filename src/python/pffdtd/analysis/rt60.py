@@ -11,8 +11,8 @@ from matplotlib.ticker import ScalarFormatter
 import pandas as pd
 from scipy.signal import sosfilt
 
-from pffdtd.dsp.octave import octave_bandpass
-from pffdtd.dsp.wavfile import collect_wav_files, wavread
+from pffdtd.signals.octave import octave_bandpass
+from pffdtd.signals.wavfile import collect_wav_files, wavread
 
 
 def recommended_rt60(volume: float) -> float:

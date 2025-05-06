@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from scipy import signal
 
-from pffdtd.dsp.wavfile import collect_wav_files, load_wav_files
+from pffdtd.signals.wavfile import collect_wav_files, load_wav_files
 
 
 def polar_response(y: np.array, fs: float):

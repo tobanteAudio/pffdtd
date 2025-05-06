@@ -5,7 +5,7 @@ import pytest
 
 from pffdtd.absorption.air import sound_attenuation
 from pffdtd.absorption.porous import porous_absorber
-from pffdtd.dsp.octave import center_frequencies
+from pffdtd.signals.octave import center_frequencies
 
 
 def test_sound_attenuation():

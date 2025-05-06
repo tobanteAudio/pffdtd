@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: 2025 Tobias Hienzsch
 
-from pffdtd.dsp.music import hz_to_note, midi_key_color
+from pffdtd.signals.music import hz_to_note, midi_key_color
 
 
 def test_midi_key_color():

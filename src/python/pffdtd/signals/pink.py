@@ -5,8 +5,8 @@ import click
 import numpy as np
 from scipy.signal import butter, sosfilt, welch
 
-from pffdtd.dsp.level import crest_factor, normalize_to_RMS_dBFS
-from pffdtd.dsp.wavfile import wavwrite
+from pffdtd.signals.level import crest_factor, normalize_to_RMS_dBFS
+from pffdtd.signals.wavfile import wavwrite
 
 
 def generate_pink_noise(

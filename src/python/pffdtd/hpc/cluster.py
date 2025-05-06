@@ -3,7 +3,7 @@
 import click
 import numpy as np
 
-from pffdtd.dsp.octave import center_frequencies
+from pffdtd.signals.octave import center_frequencies
 from pffdtd.sim3d.constants import SimConstants
 from pffdtd.voxelizer.cart_grid import CartGrid
 
