@@ -22,19 +22,18 @@ class SimSignals:
         save_folder = Path(save_folder)
         assert save_folder.exists()
         assert save_folder.is_dir()
-        h5f = h5py.File(save_folder / Path('constants.h5'), 'r')
-        self.h = h5f['h'][()]
-        self.fs = h5f['fs'][()]
-        self.Ts = h5f['Ts'][()]
-        self.l2 = h5f['l2'][()]
-        self.fcc_flag = h5f['fcc_flag'][()]
-        h5f.close()
 
-        h5f = h5py.File(save_folder / Path('cart_grid.h5'), 'r')
-        self.xv = h5f['xv'][()]
-        self.yv = h5f['yv'][()]
-        self.zv = h5f['zv'][()]
-        h5f.close()
+        with h5py.File(save_folder / Path('constants.h5'), 'r') as h5f:
+            self.h = h5f['h'][()]
+            self.fs = h5f['fs'][()]
+            self.Ts = h5f['Ts'][()]
+            self.l2 = h5f['l2'][()]
+            self.fcc_flag = h5f['fcc_flag'][()]
+
+        with h5py.File(save_folder / Path('cart_grid.h5'), 'r') as h5f:
+            self.xv = h5f['xv'][()]
+            self.yv = h5f['yv'][()]
+            self.zv = h5f['zv'][()]
 
         self.fcc = self.fcc_flag > 0
 
@@ -154,21 +153,20 @@ class SimSignals:
         out_reorder = np.arange(out_ixyz.size)  # no sorting here
         in_sigs = self.in_sigs
 
+        kw = {}
         if compress is not None:
             kw = {'compression': 'gzip', 'compression_opts': compress}
-        else:
-            kw = {}
-        h5f = h5py.File(save_folder / Path('signals.h5'), 'w')
-        h5f.create_dataset('in_ixyz', data=in_ixyz, **kw)
-        h5f.create_dataset('out_ixyz', data=out_ixyz, **kw)
-        h5f.create_dataset('out_alpha', data=out_alpha, **kw)
-        h5f.create_dataset('out_reorder', data=out_reorder, **kw)
-        h5f.create_dataset('in_sigs', data=in_sigs, **kw)
-        h5f.create_dataset('Ns', data=np.int64(in_ixyz.size))
-        h5f.create_dataset('Nr', data=np.int64(out_ixyz.size))
-        h5f.create_dataset('Nt', data=np.int64(in_sigs.shape[-1]))
-        h5f.create_dataset('diff', data=np.int8(self._diff))
-        h5f.close()
+
+        with h5py.File(save_folder / Path('signals.h5'), 'w') as h5f:
+            h5f.create_dataset('in_ixyz', data=in_ixyz, **kw)
+            h5f.create_dataset('out_ixyz', data=out_ixyz, **kw)
+            h5f.create_dataset('out_alpha', data=out_alpha, **kw)
+            h5f.create_dataset('out_reorder', data=out_reorder, **kw)
+            h5f.create_dataset('in_sigs', data=in_sigs, **kw)
+            h5f.create_dataset('Ns', data=np.int64(in_ixyz.size))
+            h5f.create_dataset('Nr', data=np.int64(out_ixyz.size))
+            h5f.create_dataset('Nt', data=np.int64(in_sigs.shape[-1]))
+            h5f.create_dataset('diff', data=np.int8(self._diff))
 
         # reattach updated values
         self.out_ixyz = out_ixyz

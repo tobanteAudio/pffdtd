@@ -263,12 +263,11 @@ class VoxScene:
             bn_ixyz_loc_vox = qq
 
             # store vox info on disk (variable size, can't use shared mem), no compression for speed
-            h5f_vox = h5py.File(Path(DAT_FOLDER) / Path(f'vox_data_{vox.idx}.h5'), 'w')
-            h5f_vox.create_dataset('adj_bn', data=adj_bn_vox)
-            h5f_vox.create_dataset('tidx_bn', data=tidx_bn_vox)
-            h5f_vox.create_dataset('ndist_bn', data=ndist_bn_vox)
-            h5f_vox.create_dataset('bn_ixyz_loc', data=bn_ixyz_loc_vox)
-            h5f_vox.close()
+            with h5py.File(Path(DAT_FOLDER) / Path(f'vox_data_{vox.idx}.h5'), 'w') as h5f_vox:
+                h5f_vox.create_dataset('adj_bn', data=adj_bn_vox)
+                h5f_vox.create_dataset('tidx_bn', data=tidx_bn_vox)
+                h5f_vox.create_dataset('ndist_bn', data=ndist_bn_vox)
+                h5f_vox.create_dataset('bn_ixyz_loc', data=bn_ixyz_loc_vox)
 
         def process_voxels(idx_list, proc_idx):
             # using one progress bar because tqdm has problems with multiple, and cleaner
@@ -336,12 +335,11 @@ class VoxScene:
                 continue
 
             # extract boundary points only
-            h5f_vox = h5py.File(Path(DAT_FOLDER) / Path(f'vox_data_{vox.idx}.h5'), 'r')
-            adj_bn_vox = h5f_vox['adj_bn'][...]
-            tidx_bn_vox = h5f_vox['tidx_bn'][...]
-            ndist_bn_vox = h5f_vox['ndist_bn'][...]
-            bn_ixyz_loc_vox = h5f_vox['bn_ixyz_loc'][...]
-            h5f_vox.close()
+            with h5py.File(Path(DAT_FOLDER) / Path(f'vox_data_{vox.idx}.h5'), 'r') as h5f_vox:
+                adj_bn_vox = h5f_vox['adj_bn'][...]
+                tidx_bn_vox = h5f_vox['tidx_bn'][...]
+                ndist_bn_vox = h5f_vox['ndist_bn'][...]
+                bn_ixyz_loc_vox = h5f_vox['bn_ixyz_loc'][...]
 
             qq = bn_ixyz_loc_vox
 
@@ -462,25 +460,24 @@ class VoxScene:
             kw = {'compression': 'gzip', 'compression_opts': compress}
         else:
             kw = {}
-        h5f = h5py.File(save_folder / Path('vox_out.h5'), 'w')
-        h5f.create_dataset('bn_ixyz', data=bn_ixyz, **kw)
-        h5f.create_dataset('adj_bn', data=adj_bn, **kw)
-        h5f.create_dataset('mat_bn', data=mat_bn, **kw)
-        h5f.create_dataset('saf_bn', data=saf_bn, **kw)
-        h5f.create_dataset('xv', data=xv, **kw)  # also in cart_grid, but this one can get transformed
-        h5f.create_dataset('yv', data=yv, **kw)
-        h5f.create_dataset('zv', data=zv, **kw)
-        h5f.create_dataset('h', data=np.float64(h))  # giving types just to be clear
-        h5f.create_dataset('Nx', data=np.int64(Nx))
-        h5f.create_dataset('Ny', data=np.int64(Ny))
-        h5f.create_dataset('Nz', data=np.int64(Nz))
-        h5f.create_dataset('Nb', data=np.int64(bn_ixyz.size))
-        h5f.close()
+
+        with h5py.File(save_folder / Path('vox_out.h5'), 'w') as h5f:
+            h5f.create_dataset('bn_ixyz', data=bn_ixyz, **kw)
+            h5f.create_dataset('adj_bn', data=adj_bn, **kw)
+            h5f.create_dataset('mat_bn', data=mat_bn, **kw)
+            h5f.create_dataset('saf_bn', data=saf_bn, **kw)
+            h5f.create_dataset('xv', data=xv, **kw)  # also in cart_grid, but this one can get transformed
+            h5f.create_dataset('yv', data=yv, **kw)
+            h5f.create_dataset('zv', data=zv, **kw)
+            h5f.create_dataset('h', data=np.float64(h))  # giving types just to be clear
+            h5f.create_dataset('Nx', data=np.int64(Nx))
+            h5f.create_dataset('Ny', data=np.int64(Ny))
+            h5f.create_dataset('Nz', data=np.int64(Nz))
+            h5f.create_dataset('Nb', data=np.int64(bn_ixyz.size))
 
         # uncomment if importing data to Matlab (Matlab reads HDF5 bool data as strings)
-        # h5f = h5py.File(save_folder / Path('adj_bn.h5'),'w')
-        # h5f.create_dataset('adj_bn', data=adj_bn.astype(np.int8), **kw)
-        # h5f.close()
+        # with h5py.File(save_folder / Path('adj_bn.h5'),'w') as h5f:
+        #     h5f.create_dataset('adj_bn', data=adj_bn.astype(np.int8), **kw)
 
     def check_adj_full(self):
         # check full adjacency map (pre-req for stability)

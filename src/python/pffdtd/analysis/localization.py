@@ -65,8 +65,8 @@ def main(model_json, sim_dir):
     print(model_file)
     print(sim_dir)
 
-    constants = h5py.File(sim_dir / 'constants.h5', 'r')
-    c = float(constants['c'][...])
+    with h5py.File(sim_dir / 'constants.h5', 'r') as constants:
+        c = float(constants['c'][...])
 
     fs1, mic1 = wavread(sim_dir/'R001_out_normalised.wav')
     fs2, mic2 = wavread(sim_dir/'R002_out_normalised.wav')

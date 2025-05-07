@@ -34,26 +34,24 @@ class SimMaterials:
         read_folder = Path(read_folder)
         DEF_list = []
         for mat in mat_list:
-            h5f = h5py.File(Path(read_folder / Path(mat_files_dict[mat])), 'r')
-            DEF_list.append(h5f['DEF'][()])
-            h5f.close()
+            with h5py.File(Path(read_folder / Path(mat_files_dict[mat])), 'r') as h5f:
+                DEF_list.append(h5f['DEF'][()])
 
         Nmat = len(DEF_list)
         Mb = np.zeros((Nmat,), dtype=np.int8)  # number of circuit branches
-        h5f = h5py.File(Path(save_folder / Path('materials.h5')), 'w')
-        h5f.create_dataset('Nmat', data=np.int8(Nmat))
-        for i in range(Nmat):
-            mat = mat_list[i]
-            DEF = DEF_list[i]
-            assert DEF.ndim == 2
-            assert DEF.shape[1] == 3
+        with h5py.File(Path(save_folder / Path('materials.h5')), 'w') as h5f:
+            h5f.create_dataset('Nmat', data=np.int8(Nmat))
+            for i in range(Nmat):
+                mat = mat_list[i]
+                DEF = DEF_list[i]
+                assert DEF.ndim == 2
+                assert DEF.shape[1] == 3
 
-            print(f'{mat=} {DEF=}')
-            h5f.create_dataset(f'mat_{i:02d}_DEF', data=DEF)
-            Mb[i] = DEF.shape[0]
+                print(f'{mat=} {DEF=}')
+                h5f.create_dataset(f'mat_{i:02d}_DEF', data=DEF)
+                Mb[i] = DEF.shape[0]
 
-        h5f.create_dataset('Mb', data=Mb)
-        h5f.close()
+            h5f.create_dataset('Mb', data=Mb)
 
     def print(self, fstring):
         print(f'--MATS: {fstring}')

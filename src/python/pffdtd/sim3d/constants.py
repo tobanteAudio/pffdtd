@@ -92,16 +92,14 @@ class SimConstants:
         else:
             assert save_folder.is_dir()
 
-        h5f = h5py.File(save_folder / Path('constants.h5'), 'w')
-        h5f.create_dataset('c', data=np.float64(c))
-        h5f.create_dataset('h', data=np.float64(h))
-        h5f.create_dataset('Ts', data=np.float64(Ts))
-        h5f.create_dataset('fs', data=np.float64(fs))
-        h5f.create_dataset('fmax', data=np.float64(fmax))
-        h5f.create_dataset('l', data=np.float64(l))
-        h5f.create_dataset('l2', data=np.float64(l2))
-        h5f.create_dataset('fcc_flag', data=np.int8(fcc))
-        h5f.create_dataset('Tc', data=np.float64(Tc))
-        h5f.create_dataset('rh', data=np.float64(rh))
-
-        h5f.close()
+        with h5py.File(save_folder / Path('constants.h5'), 'w') as h5f:
+            h5f.create_dataset('c', data=np.float64(c))
+            h5f.create_dataset('h', data=np.float64(h))
+            h5f.create_dataset('Ts', data=np.float64(Ts))
+            h5f.create_dataset('fs', data=np.float64(fs))
+            h5f.create_dataset('fmax', data=np.float64(fmax))
+            h5f.create_dataset('l', data=np.float64(l))
+            h5f.create_dataset('l2', data=np.float64(l2))
+            h5f.create_dataset('fcc_flag', data=np.int8(fcc))
+            h5f.create_dataset('Tc', data=np.float64(Tc))
+            h5f.create_dataset('rh', data=np.float64(rh))

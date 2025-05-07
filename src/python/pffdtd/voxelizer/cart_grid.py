@@ -79,12 +79,11 @@ class CartGrid():
             assert folder.is_dir()
 
         compression = {'compression': 'gzip', 'compression_opts': 9}
-        file = h5py.File(folder / filename, 'w')
-        file.create_dataset('xv', data=xv, **compression)
-        file.create_dataset('yv', data=yv, **compression)
-        file.create_dataset('zv', data=zv, **compression)
-        file.create_dataset('h', data=np.float64(h))
-        file.close()
+        with h5py.File(folder / filename, 'w') as file:
+            file.create_dataset('xv', data=xv, **compression)
+            file.create_dataset('yv', data=yv, **compression)
+            file.create_dataset('zv', data=zv, **compression)
+            file.create_dataset('h', data=np.float64(h))
 
     def draw_gridpoints(self, backend='mayavi'):
         """Don't use this unless grid is small

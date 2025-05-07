@@ -16,18 +16,18 @@ class Engine2D:
         self.video = video
         self.output_file = out
 
-        h5f = h5py.File(self.sim_dir / 'sim.h5', 'r')
-        self.fps = h5f['video_fps'][()]
-        self.loss_factor = h5f['loss_factor'][()]
-        self.Nt = h5f['Nt'][()]
-        self.Nx = h5f['Nx'][()]
-        self.Ny = h5f['Ny'][()]
-        self.adj_bn = h5f['adj_bn'][...]
-        self.bn_ixy = h5f['bn_ixy'][...]
-        self.in_mask = h5f['in_mask'][...]
-        self.in_sigs = h5f['in_sigs'][...]
-        self.in_ixy = h5f['in_ixy'][...]
-        self.out_ixy = h5f['out_ixy'][...]
+        with h5py.File(self.sim_dir / 'sim.h5', 'r') as h5f:
+            self.fps = h5f['video_fps'][()]
+            self.loss_factor = h5f['loss_factor'][()]
+            self.Nt = h5f['Nt'][()]
+            self.Nx = h5f['Nx'][()]
+            self.Ny = h5f['Ny'][()]
+            self.adj_bn = h5f['adj_bn'][...]
+            self.bn_ixy = h5f['bn_ixy'][...]
+            self.in_mask = h5f['in_mask'][...]
+            self.in_sigs = h5f['in_sigs'][...]
+            self.in_ixy = h5f['in_ixy'][...]
+            self.out_ixy = h5f['out_ixy'][...]
 
         print(self.in_mask.shape)
 
@@ -89,9 +89,8 @@ class Engine2D:
         print(f"last: u0={u0.flat[in_ixy]} u1={u1.flat[in_ixy]} u2={u2.flat[in_ixy]}")
 
     def save_output(self):
-        h5f = h5py.File(self.sim_dir / self.output_file, 'w')
-        h5f.create_dataset('out', data=self.out)
-        h5f.close()
+        with h5py.File(self.sim_dir / self.output_file, 'w') as h5f:
+            h5f.create_dataset('out', data=self.out)
 
 
 @nb.njit(parallel=True)

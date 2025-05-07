@@ -91,12 +91,11 @@ def write_freq_ind_mat_from_Zn(Zn, filename):
     assert ~np.isinf(Zn)  # rigid should be specified in scene (no material)
     assert Zn >= 0
     filename = Path(filename)
-    h5f = h5py.File(filename, 'w')
-    DEF = np.array([0, Zn, 0])
-    assert np.all(np.sum(DEF > 0, axis=-1))  # at least one non-zero
-    _print(f'{DEF=}')
-    h5f.create_dataset('DEF', data=np.atleast_2d(DEF))
-    h5f.close()
+    with h5py.File(filename, 'w') as h5f:
+        DEF = np.array([0, Zn, 0])
+        assert np.all(np.sum(DEF > 0, axis=-1))  # at least one non-zero
+        _print(f'{DEF=}')
+        h5f.create_dataset('DEF', data=np.atleast_2d(DEF))
 
 
 def write_freq_ind_mat_from_Yn(Yn, filename):
@@ -126,18 +125,16 @@ def write_freq_dep_mat(DEF, filename):
     assert np.all(np.sum(DEF > 0, axis=-1))  # at least one non-zero
     assert DEF.shape[1] == 3
     filename = Path(filename)
-    h5f = h5py.File(filename, 'w')
-    _print(f'{DEF=}')
-    h5f.create_dataset('DEF', data=DEF)
-    h5f.close()
+    with h5py.File(filename, 'w') as h5f:
+        _print(f'{DEF=}')
+        h5f.create_dataset('DEF', data=DEF)
 
 
 def read_mat_DEF(filename) -> np.ndarray:
     """write HDF5 mat file from frequency-independent triplet (D=F=0)
     """
-    h5f = h5py.File(Path(filename), 'r')
-    DEF = h5f['DEF'][()]
-    h5f.close()
+    with h5py.File(Path(filename), 'r') as h5f:
+        DEF = h5f['DEF'][()]
     return DEF
 
 
@@ -336,10 +333,9 @@ def fit_to_Sabs_oct_11(Sabs, filename, plot=False, verbose=False):
     DEF = np.c_[D, E, F]
 
     # now save
-    h5f = h5py.File(filename, 'w')
-    assert np.all(np.sum(DEF > 0, axis=-1))  # at least one non-zero
-    h5f.create_dataset('DEF', data=np.atleast_2d(DEF))
-    h5f.close()
+    with h5py.File(filename, 'w') as h5f:
+        assert np.all(np.sum(DEF > 0, axis=-1))  # at least one non-zero
+        h5f.create_dataset('DEF', data=np.atleast_2d(DEF))
 
     print(f'--MATERIALS: Fit {Path(filename).stem}')
     if verbose:

@@ -58,43 +58,40 @@ class EnginePython3D:
         # bnl: bn-lossy (fd updates)
         # bnl ∩ bnr = ø , bnl ∪ bnr = bn
 
-        h5f = h5py.File(sim_dir / Path('vox_out.h5'), 'r')
-        self.adj_bn = h5f['adj_bn'][...]  # full
-        self.bn_ixyz = h5f['bn_ixyz'][...]  # full
-        self.Nx = h5f['Nx'][()]
-        self.Ny = h5f['Ny'][()]
-        self.Nz = h5f['Nz'][()]
-        self.xv = h5f['xv'][()]  # for plotting
-        self.yv = h5f['yv'][()]  # for plotting
-        self.zv = h5f['zv'][()]  # for plotting
-        mat_bn = h5f['mat_bn'][...]
-        saf_bn = h5f['saf_bn'][...]
-        h5f.close()
+        with h5py.File(sim_dir / Path('vox_out.h5'), 'r') as h5f:
+            self.adj_bn = h5f['adj_bn'][...]  # full
+            self.bn_ixyz = h5f['bn_ixyz'][...]  # full
+            self.Nx = h5f['Nx'][()]
+            self.Ny = h5f['Ny'][()]
+            self.Nz = h5f['Nz'][()]
+            self.xv = h5f['xv'][()]  # for plotting
+            self.yv = h5f['yv'][()]  # for plotting
+            self.zv = h5f['zv'][()]  # for plotting
+            mat_bn = h5f['mat_bn'][...]
+            saf_bn = h5f['saf_bn'][...]
 
         ii = mat_bn > -1
         self.saf_bnl = saf_bn[ii]
         self.mat_bnl = mat_bn[ii]
         self.bnl_ixyz = self.bn_ixyz[ii]
 
-        h5f = h5py.File(sim_dir / Path('signals.h5'), 'r')
-        self.in_ixyz = h5f['in_ixyz'][...]
-        self.out_ixyz = h5f['out_ixyz'][...]
-        self.out_alpha = h5f['out_alpha'][...]
-        self.out_reorder = h5f['out_reorder'][...]
-        self.in_sigs = h5f['in_sigs'][...]
-        self.Ns = h5f['Ns'][()]
-        self.Nr = h5f['Nr'][()]
-        self.Nt = h5f['Nt'][()]
-        h5f.close()
+        with h5py.File(sim_dir / Path('signals.h5'), 'r') as h5f:
+            self.in_ixyz = h5f['in_ixyz'][...]
+            self.out_ixyz = h5f['out_ixyz'][...]
+            self.out_alpha = h5f['out_alpha'][...]
+            self.out_reorder = h5f['out_reorder'][...]
+            self.in_sigs = h5f['in_sigs'][...]
+            self.Ns = h5f['Ns'][()]
+            self.Nr = h5f['Nr'][()]
+            self.Nt = h5f['Nt'][()]
 
-        h5f = h5py.File(sim_dir / Path('constants.h5'), 'r')
-        self.c = h5f['c'][()]
-        self.h = h5f['h'][()]
-        self.Ts = h5f['Ts'][()]
-        self.l = h5f['l'][()]
-        self.l2 = h5f['l2'][()]
-        self.fcc_flag = h5f['fcc_flag'][()]
-        h5f.close()
+        with h5py.File(sim_dir / Path('constants.h5'), 'r') as h5f:
+            self.c = h5f['c'][()]
+            self.h = h5f['h'][()]
+            self.Ts = h5f['Ts'][()]
+            self.l = h5f['l'][()]
+            self.l2 = h5f['l2'][()]
+            self.fcc_flag = h5f['fcc_flag'][()]
 
         self.fcc = self.fcc_flag > 0
         if self.fcc:
@@ -120,18 +117,17 @@ class EnginePython3D:
             assert self.l <= np.sqrt(1/3)
             assert self.l2 <= 1/3
 
-        h5f = h5py.File(Path(sim_dir / Path('materials.h5')), 'r')
-        Nmat = h5f['Nmat'][()]
-        DEF = np.zeros((Nmat, MMb, 3))
-        Mb = h5f['Mb'][...]
-        for i in range(Nmat):
-            dataset = h5f[f'mat_{i:02d}_DEF'][...]
-            assert Mb[i] == dataset.shape[0]
-            assert Mb[i] <= MMb
-            assert dataset.shape[1] == 3
-            DEF[i, :Mb[i]] = dataset
-            self.print(f'mat {i}, Mb={Mb[i]}, DEF={DEF[i, :Mb[i]]}')
-        h5f.close()
+        with h5py.File(Path(sim_dir / Path('materials.h5')), 'r') as h5f:
+            Nmat = h5f['Nmat'][()]
+            DEF = np.zeros((Nmat, MMb, 3))
+            Mb = h5f['Mb'][...]
+            for i in range(Nmat):
+                dataset = h5f[f'mat_{i:02d}_DEF'][...]
+                assert Mb[i] == dataset.shape[0]
+                assert Mb[i] <= MMb
+                assert dataset.shape[1] == 3
+                DEF[i, :Mb[i]] = dataset
+                self.print(f'mat {i}, Mb={Mb[i]}, DEF={DEF[i, :Mb[i]]}')
 
         self.DEF = DEF
         self.Nm = Nmat
@@ -699,9 +695,8 @@ class EnginePython3D:
         u_out = self.u_out
         out_reorder = self.out_reorder
         # just raw outputs, recombine elsewhere
-        h5f = h5py.File(sim_dir / Path('sim_outs.h5'), 'w')
-        h5f.create_dataset('u_out', data=u_out[out_reorder, :])
-        h5f.close()
+        with h5py.File(sim_dir / Path('sim_outs.h5'), 'w') as h5f:
+            h5f.create_dataset('u_out', data=u_out[out_reorder, :])
         self.print('saved outputs in {sim_dir}')
 
 

@@ -19,16 +19,17 @@ def main(sim_dir, out_file):
     out_file = out_file[0]
     sim_dir = Path(sim_dir)
 
-    constants = h5py.File(sim_dir / 'constants.h5', 'r')
-    fs = float(constants['fs'][...])
-    fmax = float(constants['fmax'][...])
+    with h5py.File(sim_dir / 'constants.h5', 'r') as constants:
+        fs = float(constants['fs'][...])
+        fmax = float(constants['fmax'][...])
+
     Ts = 1/fs
     fmin = 20.0
     trim_ms = 20
     trim_samples = int(fs/1000*trim_ms)
 
-    file = h5py.File(out_file, 'r')
-    out = file['out'][...]
+    with h5py.File(out_file, 'r') as file:
+        out = file['out'][...]
 
     print(f"{out_file=}")
     print(f"{fs=:.3f} Hz")

@@ -83,8 +83,8 @@ def detect_room_modes(
     if not paths:
         paths = collect_wav_files(directory, '*_out_normalised.wav')
 
-    constants = h5py.File(sim_dir / 'constants.h5', 'r')
-    c = float(constants['c'][...])
+    with h5py.File(sim_dir / 'constants.h5', 'r') as constants:
+        c = float(constants['c'][...])
 
     L = length
     W = width

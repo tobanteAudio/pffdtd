@@ -60,13 +60,11 @@ def test_sim2d_engines(tmp_path):
     )
     assert result.returncode == 0
 
-    out_file = h5py.File(tmp_path / 'out-py.h5', 'r')
-    out_py = out_file['out'][...]
-    out_file.close()
+    with h5py.File(tmp_path / 'out-py.h5', 'r') as f:
+        out_py = f['out'][...]
 
-    out_file = h5py.File(tmp_path / 'out-cpp.h5', 'r')
-    out_cpp = out_file['out'][...]
-    out_file.close()
+    with h5py.File(tmp_path / 'out-cpp.h5', 'r') as f:
+        out_cpp = f['out'][...]
 
     assert not np.isnan(out_py).any()
     assert not np.isinf(out_py).any()

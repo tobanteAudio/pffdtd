@@ -20,13 +20,14 @@ from pffdtd.signals.wavfile import save_as_wav_files
 def main(fmin, diff, sim_dir, out_file):
     sim_dir = pathlib.Path(sim_dir)
 
-    constants = h5py.File(sim_dir / 'constants.h5', 'r')
-    fs = float(constants['fs'][...])
-    fmax = float(constants['fmax'][...])
+    with h5py.File(sim_dir / 'constants.h5', 'r') as constants:
+        fs = float(constants['fs'][...])
+        fmax = float(constants['fmax'][...])
+
     Ts = 1/fs
 
-    h5f = h5py.File(out_file, 'r')
-    out: np.ndarray = h5f['out'][...]
+    with h5py.File(out_file, 'r') as h5f:
+        out: np.ndarray = h5f['out'][...]
 
     print(f"{out_file=}")
     print(f"{fs=:.3f} Hz")

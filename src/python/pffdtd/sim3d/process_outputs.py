@@ -29,24 +29,21 @@ class ProcessOutputs:
 
         # get some integers from signals
         self.sim_dir = sim_dir
-        h5f = h5py.File(sim_dir / Path('signals.h5'), 'r')
-        out_alpha = h5f['out_alpha'][...]
-        Nr = h5f['Nr'][()]
-        Nt = h5f['Nt'][()]
-        diff = h5f['diff'][()]
-        h5f.close()
+        with h5py.File(sim_dir / Path('signals.h5'), 'r') as h5f:
+            out_alpha = h5f['out_alpha'][...]
+            Nr = h5f['Nr'][()]
+            Nt = h5f['Nt'][()]
+            diff = h5f['diff'][()]
 
         # get some sim constants (floats) from constants
-        h5f = h5py.File(sim_dir / Path('constants.h5'), 'r')
-        Ts = h5f['Ts'][()]
-        Tc = h5f['Tc'][()]
-        rh = h5f['rh'][()]
-        h5f.close()
+        with h5py.File(sim_dir / Path('constants.h5'), 'r') as h5f:
+            Ts = h5f['Ts'][()]
+            Tc = h5f['Tc'][()]
+            rh = h5f['rh'][()]
 
         # read the raw outputs from sim_outs
-        h5f = h5py.File(sim_dir / Path('sim_outs.h5'), 'r')
-        u_out = h5f['u_out'][...]
-        h5f.close()
+        with h5py.File(sim_dir / Path('sim_outs.h5'), 'r') as h5f:
+            u_out = h5f['u_out'][...]
         self.print('loading done...')
 
         assert out_alpha.size == Nr
@@ -88,14 +85,13 @@ class ProcessOutputs:
         r_out = np.sum(
             (u_out*out_alpha.flat[:][:, None]).reshape((*out_alpha.shape, -1)), axis=1)
 
-        h5f = h5py.File(sim_dir / Path('sim_outs.h5'), 'r+')
-        try:
-            del h5f['r_out']
-            self.print('overwrite r_out dataset (native sample rate)')
-        except:
-            pass
-        h5f.create_dataset('r_out', data=r_out)
-        h5f.close()
+        with h5py.File(sim_dir / Path('sim_outs.h5'), 'r+') as h5f:
+            try:
+                del h5f['r_out']
+                self.print('overwrite r_out dataset (native sample rate)')
+            except:
+                pass
+            h5f.create_dataset('r_out', data=r_out)
 
         r_out_f = apply_lowcut(r_out, 1/Ts, fcut, N_order, apply_int)
         self.print('initial process done')
@@ -242,10 +238,9 @@ class ProcessOutputs:
         # saw processed outputs in .h5 (with native scaling)
         # saves processed outputs
         self.print('saving H5 data..')
-        h5f = h5py.File(self.sim_dir / Path('sim_outs_processed.h5'), 'w')
-        h5f.create_dataset('r_out_f', data=self.r_out_f)
-        h5f.create_dataset('Fs_f', data=self.Fs_f)
-        h5f.close()
+        with h5py.File(self.sim_dir / Path('sim_outs_processed.h5'), 'w') as h5f:
+            h5f.create_dataset('r_out_f', data=self.r_out_f)
+            h5f.create_dataset('Fs_f', data=self.Fs_f)
 
 
 def process_outputs(
