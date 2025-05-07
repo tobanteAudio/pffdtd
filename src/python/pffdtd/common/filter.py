@@ -5,7 +5,7 @@ import numpy as np
 from scipy.signal import butter, bilinear_zpk, zpk2sos, sosfilt, lfilter
 
 
-def apply_lowcut(y, fs, fcut, order, apply_int):
+def apply_lowcut(y, fs, fcut, order, apply_int) -> np.ndarray:
     dt = 1/fs
 
     if fcut > 0:
@@ -32,7 +32,7 @@ def apply_lowcut(y, fs, fcut, order, apply_int):
     return np.copy(y)
 
 
-def apply_lowpass(y: np.ndarray, fs: float, fcut: float, order: int = 8, symmetric=True):
+def apply_lowpass(y: np.ndarray, fs: float, fcut: float, order: int = 8, symmetric=True) -> np.ndarray:
     y_out = np.copy(y)
 
     if symmetric:  # will be run twice

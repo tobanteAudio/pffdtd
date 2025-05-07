@@ -6,6 +6,7 @@ This gets called from command line with cmdline arguments (run after simulation)
 """
 
 from pathlib import Path
+from typing import Literal
 
 import click
 import h5py
@@ -102,10 +103,9 @@ class ProcessOutputs:
         self.r_out = r_out
         self.r_out_f = r_out_f
 
-    def apply_lowpass(self, fcut, N_order=8, symmetric=True):
+    def apply_lowpass(self, fcut: float, N_order=8, symmetric=True):
         # lowpass filter for fmax (to remove freqs with too much numerical dispersion)
-        self.r_out_f = apply_lowpass(
-            self.r_out_f, self.Fs_f, fcut, N_order, symmetric)
+        self.r_out_f = apply_lowpass(self.r_out_f, self.Fs_f, fcut, N_order, symmetric)
 
     def resample(self, Fs_f=48e3):
         # resample with resampy, 48kHz default
@@ -249,18 +249,18 @@ class ProcessOutputs:
 
 
 def process_outputs(
+    sim_dir: str,
     *,
-    sim_dir=None,
-    resample_fs=None,
-    fcut_lowcut=None,
-    order_lowcut=None,
-    fcut_lowpass=None,
-    order_lowpass=None,
-    symmetric_lowpass=None,
-    air_abs_filter=None,
-    save_wav=None,
-    plot_raw=None,
-    plot=None,
+    resample_fs: float | None = None,
+    fcut_lowcut: float = 10.0,
+    order_lowcut: int = 4,
+    fcut_lowpass: float = 0.0,
+    order_lowpass: int = 8,
+    symmetric_lowpass: bool = True,
+    air_abs_filter: Literal['modal'] | Literal['stokes'] | Literal['ola'] | None = None,
+    save_wav: bool = True,
+    plot_raw: bool = False,
+    plot: bool = False,
 ):
     po = ProcessOutputs(sim_dir)
 
@@ -299,7 +299,7 @@ def process_outputs(
 @click.option('--plot', is_flag=True)
 @click.option('--plot_raw', is_flag=True)
 @click.option('--save_wav', is_flag=True)
-@click.option('--resample_fs', default=48_000.0)
+@click.option('--resample_fs', default=None)
 @click.option('--fcut_lowcut', default=10.0)
 @click.option('--fcut_lowpass', default=0.0)
 @click.option('--order_lowcut', default=8)

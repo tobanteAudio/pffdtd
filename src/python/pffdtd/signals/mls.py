@@ -11,7 +11,7 @@ from pffdtd.signals.wavfile import wavwrite
 
 def generate_max_len_seq(nbits) -> np.ndarray:
     binary: np.ndarray = max_len_seq(nbits)[0]
-    return binary.astype(np.float64) * 2 - 1
+    return binary.astype(np.float64)
 
 
 @click.command(name='mls', help='Generate maximum length sequence.')
