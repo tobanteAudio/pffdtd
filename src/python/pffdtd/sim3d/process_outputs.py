@@ -13,13 +13,11 @@ import h5py
 import matplotlib.pyplot as plt
 import numpy as np
 from resampy import resample
+from scipy.signal import butter, bilinear_zpk, zpk2sos, sosfilt, lfilter
 
-from pffdtd.absorption.air import apply_visco_filter
-from pffdtd.absorption.air import apply_modal_filter
-from pffdtd.absorption.air import apply_ola_filter
-from pffdtd.common.filter import apply_lowcut, apply_lowpass
-from pffdtd.signals.wavfile import save_as_wav_files
+from pffdtd.absorption.air import apply_modal_filter, apply_ola_filter, apply_visco_filter
 from pffdtd.geometry.math import iceil
+from pffdtd.signals.wavfile import save_as_wav_files
 
 
 class ProcessOutputs:
@@ -93,7 +91,7 @@ class ProcessOutputs:
                 pass
             h5f.create_dataset('r_out', data=r_out)
 
-        r_out_f = apply_lowcut(r_out, 1/Ts, fcut, N_order, apply_int)
+        r_out_f = _apply_lowcut(r_out, 1/Ts, fcut, N_order, apply_int)
         self.print('initial process done')
 
         self.r_out = r_out
@@ -101,7 +99,7 @@ class ProcessOutputs:
 
     def apply_lowpass(self, fcut: float, N_order=8, symmetric=True):
         # lowpass filter for fmax (to remove freqs with too much numerical dispersion)
-        self.r_out_f = apply_lowpass(self.r_out_f, self.Fs_f, fcut, N_order, symmetric)
+        self.r_out_f = _apply_lowpass(self.r_out_f, self.Fs_f, fcut, N_order, symmetric)
 
     def resample(self, Fs_f=48e3):
         # resample with resampy, 48kHz default
@@ -226,9 +224,6 @@ class ProcessOutputs:
         ax.minorticks_on()
         ax.legend()
 
-    def show_plots(self):
-        plt.show()
-
     def save_wav(self):
         # save in WAV files, with native scaling and normalised across group of receivers
         # saves processed outputs
@@ -243,6 +238,60 @@ class ProcessOutputs:
             h5f.create_dataset('Fs_f', data=self.Fs_f)
 
 
+def _apply_lowcut(
+    y: np.ndarray,
+    fs: float,
+    fcut: float,
+    order: int,
+    apply_int: bool,
+) -> np.ndarray:
+    dt = 1/fs
+
+    if fcut > 0:
+        if apply_int:
+            # design combined butter filter with integrator
+            Wn = fcut*2*np.pi
+            z, p, k = butter(order, Wn, btype='high', analog=True, output='zpk')
+            assert np.all(z == 0.0)
+            z = z[1:]  # remove one zero
+            zd, pd, kd = bilinear_zpk(z, p, k, 1/dt)
+            sos = zpk2sos(zd, pd, kd)
+        else:
+            # design digital high-pass
+            sos = butter(order, 2*dt*fcut, btype='high', output='sos')
+        return sosfilt(sos, y)
+
+    if apply_int:
+        # shouldn't really use this without lowcut, but here in case
+        b = dt/2*np.array([1, 1])
+        a = np.array([1, -1])
+        return lfilter(b, a, y)
+
+    return np.copy(y)
+
+
+def _apply_lowpass(
+    y: np.ndarray,
+    fs: float,
+    fcut: float,
+    order: int = 8,
+    symmetric=True,
+) -> np.ndarray:
+    y_out = np.copy(y)
+
+    if symmetric:  # will be run twice
+        assert order % 2 == 0
+        order = int(order//2)
+
+    # design digital high-pass
+    sos = butter(order, fcut, btype='low', output='sos', fs=fs)
+    y_out = sosfilt(sos, y_out)
+    if symmetric:  # runs again, time reversed
+        y_out = sosfilt(sos, y_out[:, ::-1])[:, ::-1]
+
+    return y_out
+
+
 def process_outputs(
     sim_dir: str,
     *,
@@ -252,7 +301,8 @@ def process_outputs(
     fcut_lowpass: float = 0.0,
     order_lowpass: int = 8,
     symmetric_lowpass: bool = True,
-    air_abs_filter: Literal['modal'] | Literal['stokes'] | Literal['ola'] | None = None,
+    air_abs_filter: Literal['modal', 'stokes', 'ola'] | None = None,
+    save_h5: bool = True,
     save_wav: bool = True,
     plot_raw: bool = False,
     plot: bool = False,
@@ -265,8 +315,11 @@ def process_outputs(
         po.resample(resample_fs)
 
     if fcut_lowpass > 0:
-        po.apply_lowpass(fcut=fcut_lowpass, N_order=order_lowpass,
-                         symmetric=symmetric_lowpass)
+        po.apply_lowpass(
+            fcut=fcut_lowpass,
+            N_order=order_lowpass,
+            symmetric=symmetric_lowpass,
+        )
 
     # these are only needed if you're simulating with fmax >1kHz, but generally fine to use
     if air_abs_filter.lower() == 'modal':  # best, but slowest
@@ -276,7 +329,8 @@ def process_outputs(
     elif air_abs_filter.lower() == 'ola':  # fastest, but not as recommended
         po.apply_ola_filter()
 
-    po.save_h5()
+    if save_h5:
+        po.save_h5()
 
     if save_wav:
         po.save_wav()
@@ -286,7 +340,7 @@ def process_outputs(
 
     if plot or plot_raw:
         po.plot_filtered_outputs()
-        po.show_plots()
+        plt.show()
 
 
 @click.command(name='process-outputs', help='Process raw simulation output.')
@@ -294,7 +348,7 @@ def process_outputs(
 @click.option('--plot', is_flag=True)
 @click.option('--plot_raw', is_flag=True)
 @click.option('--save_wav', is_flag=True)
-@click.option('--resample_fs', default=None)
+@click.option('--resample_fs', default=None, type=float)
 @click.option('--fcut_lowcut', default=10.0)
 @click.option('--fcut_lowpass', default=0.0)
 @click.option('--order_lowcut', default=8)

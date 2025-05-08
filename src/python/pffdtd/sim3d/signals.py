@@ -92,6 +92,7 @@ class SimSignals:
 
         in_sigs = in_alpha[:, None]*in_sig[None, :]
 
+        self.in_sig = in_sig
         self.in_sigs = in_sigs
         self._scale_source_signals()
 
@@ -152,6 +153,7 @@ class SimSignals:
         # out_alpha = self.out_alpha.flat[:]
         out_reorder = np.arange(out_ixyz.size)  # no sorting here
         in_sigs = self.in_sigs
+        in_sig = self.in_sig
 
         kw = {}
         if compress is not None:
@@ -162,6 +164,7 @@ class SimSignals:
             h5f.create_dataset('out_ixyz', data=out_ixyz, **kw)
             h5f.create_dataset('out_alpha', data=out_alpha, **kw)
             h5f.create_dataset('out_reorder', data=out_reorder, **kw)
+            h5f.create_dataset('in_sig', data=in_sig, **kw)  # For deconvolution
             h5f.create_dataset('in_sigs', data=in_sigs, **kw)
             h5f.create_dataset('Ns', data=np.int64(in_ixyz.size))
             h5f.create_dataset('Nr', data=np.int64(out_ixyz.size))
