@@ -3,6 +3,8 @@
 
 import click
 
+from pffdtd.signals import convolution
+from pffdtd.signals import fir
 from pffdtd.signals import mls
 from pffdtd.signals import octave
 from pffdtd.signals import phase
@@ -15,6 +17,8 @@ def signals():
     pass
 
 
+signals.add_command(convolution.main)
+signals.add_command(fir.main)
 signals.add_command(mls.main)
 signals.add_command(octave.main)
 signals.add_command(phase.main)
