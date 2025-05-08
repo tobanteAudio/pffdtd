@@ -15,6 +15,7 @@ imgui.ini
 mmap_dat
 /models/Atmos
 /models/CP
+*.FCBak
 
 /venv
 __pycache__# Byte-compiled / optimized / DLL files
