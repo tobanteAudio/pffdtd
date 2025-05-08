@@ -1,10 +1,10 @@
 # SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: 2025 Tobias Hienzsch
-
 import click
 from matplotlib.axes import Axes
 import matplotlib.pyplot as plt
 import numpy as np
+from scipy.signal.windows import get_window
 
 from pffdtd.signals.group_delay import group_delay_seconds, excess_group_delay_seconds
 from pffdtd.signals.octave import octave_smoothing
@@ -17,12 +17,17 @@ def plot_impulse_response_summary(
     *,
     fmax: float | None = None,
     smoothing: float = 0.0,
+    window: str | tuple | None = None,
 ):
+    n = x.shape[-1]
+    nfft = n
+
     if not fmax:
         fmax = fs/2
 
-    n = x.shape[-1]
-    nfft = n
+    if window:
+        x *= get_window(window, n)
+
     freqs = np.fft.rfftfreq(nfft, 1/fs)
     H = np.fft.rfft(x, nfft)
 
@@ -95,5 +100,5 @@ def plot_impulse_response_summary(
 @click.option('--smoothing', default=0.0, type=float)
 def main(impulse_path, fmax, smoothing):
     fs, ir = wavread(impulse_path)
-    plot_impulse_response_summary(ir, fs, fmax=fmax, smoothing=smoothing)
+    plot_impulse_response_summary(ir, fs, fmax=fmax, smoothing=smoothing, window=('tukey', 0.01))
     plt.show()
