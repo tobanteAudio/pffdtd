@@ -100,5 +100,5 @@ def plot_impulse_response_summary(
 @click.option('--smoothing', default=0.0, type=float)
 def main(impulse_path, fmax, smoothing):
     fs, ir = wavread(impulse_path)
-    plot_impulse_response_summary(ir, fs, fmax=fmax, smoothing=smoothing, window=('tukey', 0.01))
+    plot_impulse_response_summary(ir, fs, fmax=fmax, smoothing=smoothing, window=('tukey', 0.005))
     plt.show()
