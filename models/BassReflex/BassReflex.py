@@ -12,19 +12,19 @@ class BassReflex(Setup3D):
     source_index = 1
     source_signal = 'impulse'
     diff_source = True
-    duration = 4.0
+    duration = 7.0
     Tc = 20
     rh = 50
     fcc = False
     ppw = 10.5
-    fmax = 8000.0
+    fmax = 6000.0
     save_folder = '../../sim_data/BassReflex/cpu'
     save_folder_gpu = '../../sim_data/BassReflex/gpu'
     compress = 0
     draw_vox = True
     draw_backend = 'polyscope'
     bmin = [-0.05, -0.05, -0.05]
-    bmax = [+0.50, +0.50, +0.70]
+    bmax = [+0.80, +0.75, +0.95]
 
     def generate_model(self, constants):
         print('--BASS-REFLEX: Generate model')
@@ -34,6 +34,7 @@ class BassReflex(Setup3D):
 
         m = MeshModelBuilder()
         m.add('_RIGID', obj_dir / 'box.obj', [125, 125, 125], reverse=True, sides=0)
-        m.add_source('S1', [0.20, 0.05, 0.55])
-        m.add_receiver('R1', [0.20, 0.00, 0.150])
+        m.add_source('S1', [0.375, 0.05, 0.858/2])
+        m.add_receiver('R1', [0.375, 0.00, 0.1287])
+        m.add_receiver('R2', [0.375, 0.00, 0.7293])
         m.write(self.model_file)
