@@ -5,14 +5,15 @@ import click
 import numpy as np
 
 
-def diffusor_bandwidth(well_width, max_depth, c=343.0):
-    fmin = c/(max_depth*4)
+def diffusor_bandwidth(max_depth, well_width, c=343.0):
+    fmin = c/(max_depth*2)
     fmax = c/(well_width*2)
     return fmin, fmax
 
 
 def diffusor_dimensions(fmin, fmax, c=343.0):
-    max_depth = c/(fmin*4)
+    assert fmax > fmin
+    max_depth = c/(fmin*2)
     well_width = c/(fmax*2)
     return max_depth, well_width
 
