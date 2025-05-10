@@ -36,4 +36,4 @@ pffdtd sim2d process-outputs --fmin=20 --sim_dir="$sim_dir" "$sim_dir/out.h5"
 
 # Report
 # pffdtd sim2d report --sim_dir="$sim_dir" "$sim_dir/out.h5"
-pffdtd diffusor measurement "$sim_dir"
+pffdtd diffusion measurement "$sim_dir"

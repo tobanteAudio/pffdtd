@@ -47,4 +47,4 @@ pffdtd analysis summary --fmax="$fmax" --smoothing="$smoothing" $sim_dir/R001_ou
 # pffdtd analysis room-modes --sim_dir="$sim_dir" --fmin=$fmin --num_modes=20 --width=3.65 --length=6.0 --height=3.12
 # pffdtd signals convolution --sim_dir="$sim_dir"
 # pffdtd analysis localization --sim_dir="$sim_dir" "$model_dir/model.json"
-# pffdtd diffusor measurement "$sim_dir"
+# pffdtd diffusion measurement "$sim_dir"

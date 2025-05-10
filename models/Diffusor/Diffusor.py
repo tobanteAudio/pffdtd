@@ -5,9 +5,7 @@ import numpy as np
 from tqdm import tqdm
 
 from pffdtd.geometry.math import to_ixy, point_on_circle
-from pffdtd.diffusor.design import diffusor_bandwidth
-from pffdtd.diffusor.qrd import quadratic_residue_diffuser
-from pffdtd.diffusor.prd import primitive_root_diffuser
+from pffdtd.diffusion.diffusor import diffusor_bandwidth, quadratic_residue_diffusor, primitive_root_diffusor
 from pffdtd.sim2d.setup import sim_setup_2d
 
 
@@ -63,8 +61,8 @@ def add_diffusor(prime, well_width, max_depth, room, in_mask, X, Y, dx, c, verbo
         print(f"  error_d={derr_q/depth*100:.2f}%")
 
     print('--DIFFUSOR: Locate diffusor')
-    depths, _ = primitive_root_diffuser(prime, g=None, depth=depth_q)
-    depths = quadratic_residue_diffuser(prime, depth_q)
+    depths, _ = primitive_root_diffusor(prime, g=None, depth=depth_q)
+    depths = quadratic_residue_diffusor(prime, depth_q)
     prime = depths.shape[0]
     for w in tqdm(range(n)):
         xs = (room[0]/2-total_width/2)+w*width_q
