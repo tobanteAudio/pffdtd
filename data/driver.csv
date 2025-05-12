@@ -1,78 +1,78 @@
 Name,Type,D_nominal,Z_ref,BL,Cms,Mms,Re,Qes,Qms,Qts,n0,Sd,f1,f2,Zmax,Xmax,Xmech,fmin,fmax,fs,P_rms,P_max,SPL_ref,V_ref,Vas,F3_sealed,F3_ported,Volume_sealed,Volume_ported,Weight,Price,Test
-B&C Speakers DE110-8,Compression,1.0,8,,,,,,,,,,,,,,,2000.0,18000.0,,25,50,106.0,2.83,,,,,,0.32,70,https://audioxpress.com/article/test-bench-b-c-speakers-de110-8-compression-driver
-B&C Speakers DE360,Compression,1.0,8,,,,,,,,,,,,,,,1200.0,20000.0,,35,70,110.0,2.83,,,,,,0.5,95,https://audioxpress.com/article/test-bench-b-c-speakers-de360-8-1-exit-pro-sound-compression-driver
-B&C Speakers DE550,Compression,1.0,8,,,,,,,,,,,,,,,1000.0,17000.0,,70,140,108.0,2.83,,,,,,1.17,180,https://audioxpress.com/article/test-bench-b-c-speakers-de550-8-compression-driver
-B&C Speakers DE780TN,Compression,1.4,8,,,,,,,,,,,,,,,500.0,18000.0,,110,220,108.0,2.83,,,,,,1.6,250,https://audioxpress.com/article/test-bench-b-c-speakers-de780tn-8-compression-driver
-B&C Speakers DE980TN,Compression,1.4,8,,,,,,,,,,,,,,,500.0,18000.0,,110,220,108.5,2.83,,,,,,2.3,380,https://audioxpress.com/article/test-bench-b-c-de980tn-8-compression-driver
-B&C Speakers DE990TN,Compression,1.4,8,,,,,,,,,,,,,,,500.0,18000.0,,100,200,107.5,2.83,,,,,,2.0,400,https://audioxpress.com/article/test-bench-b-c-speakers-de990tn-compression-driver
-B&C Speakers DE1085TN,Compression,2.0,8,,,,,,,,,,,,,,,500.0,20000.0,,140,280,109.0,2.83,,,,,,3.7,550,https://audioxpress.com/article/test-bench-b-c-speakers-de1085tn-2-titanium-diaphragm-compression-driver-coupled-to-a-b-c-me60-horn
-B&C Speakers DE1090TN,Compression,1.4,8,,,,,,,,,,,,,,,500.0,20000.0,,120,240,108.0,2.83,,,,,,1.9,340,https://audioxpress.com/article/test-bench-b-c-speakers-de1090tn-compression-driver
-B&C Speakers 10NW76,Woofer,10.0,8,20.0,,0.047,5.5,0.27,7.8,0.26,0.0185,0.0320,,,,6.8,7.0,65.0,3500.0,67.0,400,800,96.5,2.83,17.6,,,,,3.8,275,https://audioxpress.com/article/test-bench-the-10nw76-pro-sound-high-spl-10-driver-from-b-c-speakers
-B&C Speakers 12NDL88,Woofer,12.0,8,19.9,,0.071,5,0.29,5,0.27,0.023,0.0522,,,,8.0,9.5,50.0,3000.0,51.0,700,1400,98.0,2.83,52.0,,62.4,,40.0,4.95,270,https://audioxpress.com/article/Test-Bench-B-C-Speakers-12NDL88-12-Woofer
-B&C Speakers 14NA100-8,Woofer,14.0,8,23.5,,0.0965,5.1,0.24,5.6,0.23,0.031,0.0707,,,,8.5,8.8,45.0,2000.0,43.0,800,1600,99.0,2.83,99.5,,58.7,,60.0,8.3,370,https://audioxpress.com/article/test-bench-b-c-speakers-14na100-8-14-pro-sound-woofer
-Ciare 12.00SW,Woofer,12.0,8,25.3,,0.183,6.7,0.36,6.1,0.34,0.0045,0.0523,,,,14.0,,30.0,2000.0,30.0,1000,2000,89.5,2.83,59.0,,,,,11.1,270,
-Ciare 15.00SW,Woofer,15.0,8,25.0,,0.220,6.75,0.44,5.6,0.41,0.0065,0.0780,,,,14.0,,20.0,200.0,29.0,1000,2000,91.0,2.83,111.0,,,,,12.1,320,
-Ciare 18.00SW,Woofer,18.0,8,32.5,,0.377,7.0,0.55,6.7,0.5,0.0073,0.1134,,,,14.0,,20.0,200.0,36.0,1000,2000,91.5,2.83,93.0,,,,,15.7,390,
-Celestion CDX1-1742,Compression,1.0,8,,,,,,,,,,,,,,,1200.0,20000.0,,50,100,107.0,2.83,,,,,,1.4,80,https://audioxpress.com/article/test-bench-celestion-cdx1-1742-1-exit-pro-sound-compression-driver
-Celestion CDX14-3040,Compression,1.4,8,,,,,,,,,,,,,,,500.0,18000.0,,75,150,106.5,2.83,,,,,,1.4,250,https://audioxpress.com/article/the-celestion-cdx14-3040-compression-driver
-Dayton Audio AMTPRO-4,AMT,,4,,,,3.96,,,,,,,,,,,800.0,18000.0,,50,100,97.0,2.83,,,,,,,170,
-Dayton Audio RSS265HF-8,Woofer,10.0,8,14.9,0.000312,0.131,6.45,0.592,2.68,0.485,0.00131,0.03464,11.986,46.581,35.62,14.3,,25.0,2000.0,24.9,350,700,84.2,2.83,52.5,43,22,24.9,79.85,,260,
-Dayton Audio RSS315HFA-8,Woofer,12.0,8,18.0,0.00027,0.194,6.52,0.541,2.5,0.45,0.00188,0.05067,13.454,34.896,36.328,14.3,,25.0,1500.0,22.2,400,700,85.7,2.83,97.2,40,20,43.6,131.1,,310,
-Dayton Audio RSS315HF-4,Woofer,12.0,4,14.0,0.00023,0.188,3.1,0.449,2.83,0.39,0.00254,0.05147,14.672,38.055,22.438,14.3,,23.0,1000.0,24.2,400,800,90.3,2.83,84.1,53,30,20.1,57.7,,300,
-Dayton Audio RSS315HO-4,Woofer,12.0,4,20.0,0.000146,0.251,3.24,0.334,3.63,0.306,0.00276,0.05147,16.0,40.317,38.369,12.3,,26.0,600.0,26.2,700,1400,90.5,2.83,53.7,66,36,9.34,27.75,,314,
-Dayton Audio RSS390HF-4,Woofer,15.0,4,15.0,0.000217,0.302,3.0,0.499,3.02,0.43,0.00302,0.08296,13.454,30.204,21.173,14.0,,18.0,800.0,19.5,500,1000,91.2,2.83,212.0,37,21,81.5,253.7,,390,
-Dayton Audio RSS390HO-4,Woofer,15.0,4,19.8,0.000171,0.319,3.16,0.346,3.69,0.32,0.00462,0.08296,13.454,32.938,36.873,12.0,,21.0,600.0,21.5,800,1600,92.8,2.83,168.0,50,30,44.7,77.7,,390,
-Dayton Audio RSS460HO-4,Woofer,18.0,4,23.4,0.000143,0.499,3.2,0.347,4.05,0.32,0.00499,0.1164,11.986,28.509,40.539,12.75,,20.0,500.0,18.8,900,1800,93.0,2.83,272.0,40,23,86.1,212.3,,559,
-Eighteen Sound ND3ST,Compression,1.4,8,,,,6.4,,,,,,,,,,,800.0,20000.0,,120,240,112.0,2.83,,,,,,2.3,342,https://audioxpress.com/article/test-bench-eighteen-sound-nd3st-1-4-compression-driver
-Eighteen Sound NSD1424BTN,Compression,1.4,8,,,,,,,,,,,,,,,800.0,20000.0,,70,140,110.0,2.83,,,,,,1.7,311,https://audioxpress.com/article/test-bench-a-1-4-pro-sound-compression-driver-from-eighteen-sound
-Eminence N314T-8,Compression,1.4,8,,,,4.8,,,,,,,,,,,800.0,20000.0,550,100,200,110.9,2.83,,,,,,2.2,270,https://audioxpress.com/article/test-bench-eminence-n314t-8-with-h14ea-horn-and-n320t-8-with-h2ea-horn
-Eminence N320T-8,Compression,2.0,8,,,,4.8,,,,,,,,,,,800.0,20000.0,520,100,200,110.4,2.83,,,,,,2.5,270,https://audioxpress.com/article/test-bench-eminence-n314t-8-with-h14ea-horn-and-n320t-8-with-h2ea-horn
-Faital Pro HF108R,Compression,1.0,8,,,,5.8,,,,,,,,,,,1000.0,20000.0,,60,120,109.0,2.83,,,,,,0.8,150,https://audioxpress.com/article/test-bench-faital-pro-hf108r-compression-driver
-JBL Selenium D220Ti-8,Compression,1.0,8,,,,,,,,,,,,,,,1000.0,21000.0,,23,46,109.0,2.83,,,,,,1.76,100,
-Morel CAT 328-110,Tweeter,1.0,8,3.5,,,,,,,,,,,,,,,,650.0,200,1000,90.0,2.83,,,,,,0.573,130,
-Morel ET 338,Tweeter,1.0,8,,,,,,,,,,,,,,,1800.0,20000.0,700.0,200,1000,92.5,2.83,,,,,,,220,
-Morel ET 448,Tweeter,1.0,8,,,,,,,,,,,,,,,2200.0,22000.0,750.0,120,1000,92.0,2.83,,,,,,,150,
-Morel ST 1048,Tweeter,1.0,8,,,0.00044,5.2,,,,,0.0006,,,,,,1400.0,22000.0,680.0,220,1000,91.5,2.83,,,,,,0.435,350,
-Morel TSCT 1044,Tweeter,1.0,4,,,,4.19,,,,,0.0006,,,,1.0,,1500.0,20000.0,591.0,200,400,95.0,2.83,,,,,,0.5,425,https://audioxpress.com/article/test-bench-morel-tsct-1044-high-end-tweeter
-Morel EM 1308,Midrange,2.1,8,,,,,,,0.47,,,,,,,,,,320.0,200,1000,88.0,2.83,,,,,,,240,
-Morel TiCW 1058Ft,Woofer,10.0,8,15.7,0.00048,0.0812,6.3,0.35,3.58,0.3,,0.0343,,,,10.5,,,,25.0,600,3000,87.0,2.83,82.0,,,,,7.0,650,https://audioxpress.com/article/test-bench-morel-ticw-1058ft-10-ultimate-titanium-series-woofer
-Morel UW 1058,Woofer,10.0,8,15.3,0.00024,0.0993,6.8,0.58,1.72,0.43,,0.0343,,,,12.5,,,,26.0,500,1500,85.8,2.83,40.8,,,,,6.1,580,
-Morel UW 1258,Woofer,12.0,8,13.67,0.00044,0.10549,6.8,0.56,1.88,0.43,,0.0437,,,,12.5,,,,21.0,800,3000,87.0,2.83,138.38,,,,,6.3,690,
-Mundorf AMT 25CS2.1-R,AMT,,8,,,,,,,,,,,,,,,,,1100.0,,230,94.0,2.83,,,,,,,630,
-Mundorf AMT 29CM1.1-R,AMT,,8,,,,,,,,,,,,,,,,,1500.0,,250,100.0,2.83,,,,,,,800,
-Mundorf AMT U160W1.1-R,AMT,,4,,,,,,,,,,,,,,,1200.0,28000.0,1750.0,15,140,93.0,2.83,,,,,,0.630,315,
-Mundorf AMT U60W1.1-C,AMT,,4,,,,,,,,,,,,,,,2100.0,34000.0,2350.0,10,70,93.0,2.83,,,,,,0.254,200,
-Oberton ND72CT/HB,Compression,1.4,8,,,,6.78,,,,,,,,,,,500.0,19000.0,,100,200,109.0,2.83,,,,,,2.95,380,https://audioxpress.com/article/test-bench-oberton-nd72ct-hb-1-4-compression-driver
+B&C Speakers DE110-8,Compression,1.0,8,,,,,,,,,,,,,,,2000.0,18000.0,,25.0,50.0,106.0,2.83,,,,,,0.32,70,https://audioxpress.com/article/test-bench-b-c-speakers-de110-8-compression-driver
+B&C Speakers DE360,Compression,1.0,8,,,,,,,,,,,,,,,1200.0,20000.0,,35.0,70.0,110.0,2.83,,,,,,0.5,95,https://audioxpress.com/article/test-bench-b-c-speakers-de360-8-1-exit-pro-sound-compression-driver
+B&C Speakers DE550,Compression,1.0,8,,,,,,,,,,,,,,,1000.0,17000.0,,70.0,140.0,108.0,2.83,,,,,,1.17,180,https://audioxpress.com/article/test-bench-b-c-speakers-de550-8-compression-driver
+B&C Speakers DE780TN,Compression,1.4,8,,,,,,,,,,,,,,,500.0,18000.0,,110.0,220.0,108.0,2.83,,,,,,1.6,250,https://audioxpress.com/article/test-bench-b-c-speakers-de780tn-8-compression-driver
+B&C Speakers DE980TN,Compression,1.4,8,,,,,,,,,,,,,,,500.0,18000.0,,110.0,220.0,108.5,2.83,,,,,,2.3,380,https://audioxpress.com/article/test-bench-b-c-de980tn-8-compression-driver
+B&C Speakers DE990TN,Compression,1.4,8,,,,,,,,,,,,,,,500.0,18000.0,,100.0,200.0,107.5,2.83,,,,,,2.0,400,https://audioxpress.com/article/test-bench-b-c-speakers-de990tn-compression-driver
+B&C Speakers DE1085TN,Compression,2.0,8,,,,,,,,,,,,,,,500.0,20000.0,,140.0,280.0,109.0,2.83,,,,,,3.7,550,https://audioxpress.com/article/test-bench-b-c-speakers-de1085tn-2-titanium-diaphragm-compression-driver-coupled-to-a-b-c-me60-horn
+B&C Speakers DE1090TN,Compression,1.4,8,,,,,,,,,,,,,,,500.0,20000.0,,120.0,240.0,108.0,2.83,,,,,,1.9,340,https://audioxpress.com/article/test-bench-b-c-speakers-de1090tn-compression-driver
+B&C Speakers 10NW76,Woofer,10.0,8,20.0,,0.047,5.5,0.27,7.8,0.26,0.0185,0.032,,,,6.8,7.0,65.0,3500.0,67.0,400.0,800.0,96.5,2.83,17.6,,,,,3.8,275,https://audioxpress.com/article/test-bench-the-10nw76-pro-sound-high-spl-10-driver-from-b-c-speakers
+B&C Speakers 12NDL88,Woofer,12.0,8,19.9,,0.071,5.0,0.29,5.0,0.27,0.023,0.0522,,,,8.0,9.5,50.0,3000.0,51.0,700.0,1400.0,98.0,2.83,52.0,,62.4,,40.0,4.95,270,https://audioxpress.com/article/Test-Bench-B-C-Speakers-12NDL88-12-Woofer
+B&C Speakers 14NA100-8,Woofer,14.0,8,23.5,,0.0965,5.1,0.24,5.6,0.23,0.031,0.0707,,,,8.5,8.8,45.0,2000.0,43.0,800.0,1600.0,99.0,2.83,99.5,,58.7,,60.0,8.3,370,https://audioxpress.com/article/test-bench-b-c-speakers-14na100-8-14-pro-sound-woofer
+Ciare 12.00SW,Woofer,12.0,8,25.3,,0.183,6.7,0.36,6.1,0.34,0.0045,0.0523,,,,14.0,,30.0,2000.0,30.0,1000.0,2000.0,89.5,2.83,59.0,,,,,11.1,270,
+Ciare 15.00SW,Woofer,15.0,8,25.0,,0.22,6.75,0.44,5.6,0.41,0.0065,0.078,,,,14.0,,20.0,200.0,29.0,1000.0,2000.0,91.0,2.83,111.0,,,,,12.1,320,
+Ciare 18.00SW,Woofer,18.0,8,32.5,,0.377,7.0,0.55,6.7,0.5,0.0073,0.1134,,,,14.0,,20.0,200.0,36.0,1000.0,2000.0,91.5,2.83,93.0,,,,,15.7,390,
+Celestion CDX1-1742,Compression,1.0,8,,,,,,,,,,,,,,,1200.0,20000.0,,50.0,100.0,107.0,2.83,,,,,,1.4,80,https://audioxpress.com/article/test-bench-celestion-cdx1-1742-1-exit-pro-sound-compression-driver
+Celestion CDX14-3040,Compression,1.4,8,,,,,,,,,,,,,,,500.0,18000.0,,75.0,150.0,106.5,2.83,,,,,,1.4,250,https://audioxpress.com/article/the-celestion-cdx14-3040-compression-driver
+Dayton Audio AMTPRO-4,AMT,,4,,,,3.96,,,,,,,,,,,800.0,18000.0,,50.0,100.0,97.0,2.83,,,,,,,170,
+Dayton Audio RSS265HF-8,Woofer,10.0,8,14.9,0.000312,0.131,6.45,0.592,2.68,0.485,0.00131,0.03464,11.986,46.581,35.62,14.3,,25.0,2000.0,24.9,350.0,700.0,84.2,2.83,52.5,43.0,22.0,24.9,79.85,,260,
+Dayton Audio RSS315HFA-8,Woofer,12.0,8,18.0,0.00027,0.194,6.52,0.541,2.5,0.45,0.00188,0.05067,13.454,34.896,36.328,14.3,,25.0,1500.0,22.2,400.0,700.0,85.7,2.83,97.2,40.0,20.0,43.6,131.1,,310,
+Dayton Audio RSS315HF-4,Woofer,12.0,4,14.0,0.00023,0.188,3.1,0.449,2.83,0.39,0.00254,0.05147,14.672,38.055,22.438,14.3,,23.0,1000.0,24.2,400.0,800.0,90.3,2.83,84.1,53.0,30.0,20.1,57.7,,300,
+Dayton Audio RSS315HO-4,Woofer,12.0,4,20.0,0.000146,0.251,3.24,0.334,3.63,0.306,0.00276,0.05147,16.0,40.317,38.369,12.3,,26.0,600.0,26.2,700.0,1400.0,90.5,2.83,53.7,66.0,36.0,9.34,27.75,,314,
+Dayton Audio RSS390HF-4,Woofer,15.0,4,15.0,0.000217,0.302,3.0,0.499,3.02,0.43,0.00302,0.08296,13.454,30.204,21.173,14.0,,18.0,800.0,19.5,500.0,1000.0,91.2,2.83,212.0,37.0,21.0,81.5,253.7,,390,
+Dayton Audio RSS390HO-4,Woofer,15.0,4,19.8,0.000171,0.319,3.16,0.346,3.69,0.32,0.00462,0.08296,13.454,32.938,36.873,12.0,,21.0,600.0,21.5,800.0,1600.0,92.8,2.83,168.0,50.0,30.0,44.7,77.7,,390,
+Dayton Audio RSS460HO-4,Woofer,18.0,4,23.4,0.000143,0.499,3.2,0.347,4.05,0.32,0.00499,0.1164,11.986,28.509,40.539,12.75,,20.0,500.0,18.8,900.0,1800.0,93.0,2.83,272.0,40.0,23.0,86.1,212.3,,559,
+Eighteen Sound ND3ST,Compression,1.4,8,,,,6.4,,,,,,,,,,,800.0,20000.0,,120.0,240.0,112.0,2.83,,,,,,2.3,342,https://audioxpress.com/article/test-bench-eighteen-sound-nd3st-1-4-compression-driver
+Eighteen Sound NSD1424BTN,Compression,1.4,8,,,,,,,,,,,,,,,800.0,20000.0,,70.0,140.0,110.0,2.83,,,,,,1.7,311,https://audioxpress.com/article/test-bench-a-1-4-pro-sound-compression-driver-from-eighteen-sound
+Eminence N314T-8,Compression,1.4,8,,,,4.8,,,,,,,,,,,800.0,20000.0,550.0,100.0,200.0,110.9,2.83,,,,,,2.2,270,https://audioxpress.com/article/test-bench-eminence-n314t-8-with-h14ea-horn-and-n320t-8-with-h2ea-horn
+Eminence N320T-8,Compression,2.0,8,,,,4.8,,,,,,,,,,,800.0,20000.0,520.0,100.0,200.0,110.4,2.83,,,,,,2.5,270,https://audioxpress.com/article/test-bench-eminence-n314t-8-with-h14ea-horn-and-n320t-8-with-h2ea-horn
+Faital Pro HF108R,Compression,1.0,8,,,,5.8,,,,,,,,,,,1000.0,20000.0,,60.0,120.0,109.0,2.83,,,,,,0.8,150,https://audioxpress.com/article/test-bench-faital-pro-hf108r-compression-driver
+JBL Selenium D220Ti-8,Compression,1.0,8,,,,,,,,,,,,,,,1000.0,21000.0,,23.0,46.0,109.0,2.83,,,,,,1.76,100,
+Morel CAT 328-110,Tweeter,1.0,8,3.5,,,,,,,,,,,,,,,,650.0,200.0,1000.0,90.0,2.83,,,,,,0.573,130,
+Morel ET 338,Tweeter,1.0,8,,,,,,,,,,,,,,,1800.0,20000.0,700.0,200.0,1000.0,92.5,2.83,,,,,,,220,
+Morel ET 448,Tweeter,1.0,8,,,,,,,,,,,,,,,2200.0,22000.0,750.0,120.0,1000.0,92.0,2.83,,,,,,,150,
+Morel ST 1048,Tweeter,1.0,8,,,0.00044,5.2,,,,,0.0006,,,,,,1400.0,22000.0,680.0,220.0,1000.0,91.5,2.83,,,,,,0.435,350,
+Morel TSCT 1044,Tweeter,1.0,4,,,,4.19,,,,,0.0006,,,,1.0,,1500.0,20000.0,591.0,200.0,400.0,95.0,2.83,,,,,,0.5,425,https://audioxpress.com/article/test-bench-morel-tsct-1044-high-end-tweeter
+Morel EM 1308,Midrange,2.1,8,,,,,,,0.47,,,,,,,,,,320.0,200.0,1000.0,88.0,2.83,,,,,,,240,
+Morel TiCW 1058Ft,Woofer,10.0,8,15.7,0.00048,0.0812,6.3,0.35,3.58,0.3,,0.0343,,,,10.5,,,,25.0,600.0,3000.0,87.0,2.83,82.0,,,,,7.0,650,https://audioxpress.com/article/test-bench-morel-ticw-1058ft-10-ultimate-titanium-series-woofer
+Morel UW 1058,Woofer,10.0,8,15.3,0.00024,0.0993,6.8,0.58,1.72,0.43,,0.0343,,,,12.5,,,,26.0,500.0,1500.0,85.8,2.83,40.8,,,,,6.1,580,
+Morel UW 1258,Woofer,12.0,8,13.67,0.00044,0.10549,6.8,0.56,1.88,0.43,,0.0437,,,,12.5,,,,21.0,800.0,3000.0,87.0,2.83,138.38,,,,,6.3,690,
+Mundorf AMT 25CS2.1-R,AMT,,8,,,,,,,,,,,,,,,,,1100.0,,230.0,94.0,2.83,,,,,,,630,
+Mundorf AMT 29CM1.1-R,AMT,,8,,,,,,,,,,,,,,,,,1500.0,,250.0,100.0,2.83,,,,,,,800,
+Mundorf AMT U160W1.1-R,AMT,,4,,,,,,,,,,,,,,,1200.0,28000.0,1750.0,15.0,140.0,93.0,2.83,,,,,,0.63,315,
+Mundorf AMT U60W1.1-C,AMT,,4,,,,,,,,,,,,,,,2100.0,34000.0,2350.0,10.0,70.0,93.0,2.83,,,,,,0.254,200,
+Oberton ND72CT/HB,Compression,1.4,8,,,,6.78,,,,,,,,,,,500.0,19000.0,,100.0,200.0,109.0,2.83,,,,,,2.95,380,https://audioxpress.com/article/test-bench-oberton-nd72ct-hb-1-4-compression-driver
 Purifi Audio PTT10.0X04-NAB-01,Woofer,10.0,4,12.6,0.00062,0.0994,3.9,0.35,5.5,0.33,,0.03597,,,68.0,14.75,25.0,,,24.0,,,88.0,2.83,82.0,,,,,6.0,900,https://audioxpress.com/article/test-bench-purifi-audio-ptt10-0x04-nab-01-10-midbass-woofer
-Radian 475PB,Compression,1.0,8,,,,6.2,,,,,,,,,,,1000.0,25000.0,,50,100,109.5,2.83,,,,,,2.9,250,https://audioxpress.com/article/test-bench-radian-audio-engineering-475pb-1-inch-compression-driver
-Radian 745PB,Compression,1.4,8,,,,6.2,,,,,,,,,,,500.0,20000.0,,100,200,109.5,2.83,,,,,,5.09,325,https://audioxpress.com/article/test-bench-radian-audio-engineering-745pb-1-4-compression-driver
-Radian 835PB,Compression,1.4,8,,,,6.2,,,,,,,,,,,500.0,20000.0,,100,200,110.5,2.83,,,,,,6.63,400,https://audioxpress.com/article/test-bench-radian-audio-835pb-1-4-ferrite-compression-driver
-Radian 951PB,Compression,1.4,8,,,,5.4,,,,,,,,,,,500.0,20000.0,,125,250,111.5,2.83,,,,,,5.45,640,https://audioxpress.com/article/test-bench-the-951pb-1-4-compression-driver-from-radian-audio-engineering
-Radian 950PB,Compression,2.0,8,,,,5.4,,,,,,,,,,,500.0,22000.0,,125,250,113.0,2.83,,,,,,2.09,625,https://audioxpress.com/article/test-bench-radian-audio-engineering-950pb-and-760neopb-compression-drivers
-RCF ND950,Compression,2.0,8,,,,8.5,,,,,,,,,,,500.0,20000.0,,140,280,110.0,2.83,,,,,,3.82,320,https://audioxpress.com/article/Test-Bench-RCF-ND950-Neodymium-Compression-Driver-and-HF950-Horn
-SB Acoustics TW29DN-B,Tweeter,1.0,4,3.2,,,3.0,0.57,1.66,0.43,,0.00096,,,,0.25,,,,650.0,80,160,96.0,2.83,,,,,,0.39,150,https://audioxpress.com/article/test-bench-the-sb-acoustics-satori-tw29dn-b-8-tweeter
-SB Acoustics TW29BNWG-4,Tweeter,1.0,4,3.1,,,3.0,0.6,2.1,0.46,,0.00096,,,,0.25,,,,700.0,80,160,97.0,2.83,,,,,,0.46,500,https://audioxpress.com/article/test-bench-the-tw29bnwg-beryllium-dome-and-waveguide-from-the-sb-acoustics
-SB Acoustics SB12MNRX2-25-4,Woofer,4.0,4,3.9,0.0015,0.0042,3.2,0.35,4.19,0.32,,0.0050,,,,2.2,,,,63.5,50,100,90.5,2.83,5.3,,,,,0.92,61,
-SB Acoustics SB34NRX75-6,Woofer,12.0,6,10.7,0.00071,0.099,4.2,0.43,5.1,0.4,,0.0508,,,,11.0,,,,19.0,200,400,90.0,2.83,260.0,,,,,6.02,220,
-SB Acoustics SB34NRXL75-8,Woofer,12.0,8,16.6,0.00056,0.093,6.2,0.29,5.5,0.28,,0.0508,,,,10.0,,,,22.0,200,400,91.0,2.83,205.0,,,,,8.9,310,
-Scan-Speak 28W/4878T00,Woofer,10.0,4,11.2,0.00068,0.1145,3.8,0.32,5.6,0.3,,0.0363,,,,14.0,26.0,18.0,1000.0,18.0,200,500,88.0,2.83,127.0,39,24,35.0,65.0,7.5,700,https://audioxpress.com/article/test-bench-scan-speak-28w-4578t00-10-subwoofer
-Scan-Speak 30W/4558T00,Woofer,12.0,4,10.5,0.00065,0.135,3.3,0.34,5.01,0.32,,0.0466,,,,12.5,28.0,17.0,1500.0,17.0,150,350,89.0,2.83,197.0,34,20,67.0,132.0,,350,
-Scan-Speak 32W/4878T00,Woofer,13.0,4,12.5,0.00052,0.150,3.1,0.33,7.0,0.32,,0.0526,,,,14.0,28.0,18.0,2000.0,18.0,200,550,90.0,2.83,203.9,36,21,67.0,129.0,7.5,700,https://audioxpress.com/article/test-bench-scan-speak-32w-4878t00-subwoofer
-Scan-Speak 32W/4878T01,Woofer,13.0,4,13.0,0.00043,0.112,3.1,0.3,6.0,0.28,,0.0526,,,,7.0,28.0,23.0,1500.0,23.0,150,400,92.0,2.83,170.0,53,34,40.0,69.0,7.5,700,
-Supravox 215 GMF,Woofer,8.0,8,9.7,,0.013,8.0,0.38,8.57,0.36,,0.0253,,,,3.7,,50.0,4000.0,54.0,40,80,96.0,2.83,60.0,,,,,,480,
-Supravox 285 GMF,Woofer,11.0,8,10.55,,0.0197,6.5,0.345,8.86,0.33,,0.04426,,,,3.4,,40.0,7000.0,47.8,70,140,100.0,2.83,157.0,,,,,,330,
-Supravox 400 GMF,Woofer,16.0,8,18.2908,0.00047,0.0621385,6.5,0.1432,7.5492,0.14,,0.0855,,,,10.0,,19.0,4000.0,18.87,120,240,98.5,2.83,490.0,,,,,,750,
-Supravox 400-2000 EXC,Woofer,16.0,8,17.53,0.0005,0.066,6.5,0.184,9.1932,0.1805,,0.0855,,,,10.0,,23.0,4000.0,22.0,120,240,98.16,2.83,681.0,,,,,10.7,1350,
-TAD TD-2002,Compression,1.0,8,,,,,,,,,,,,,,,450.0,27000.0,,20,40,111.0,2.83,,,,,,6.9,3050,
-TAD TD-4001,Compression,2.0,16,,,,,,,,,,,,,,,600.0,20000.0,,30,60,107.0,2.83,,,,,,12.6,5000,
-TAD TL-1601b,Woofer,16.0,8,20.5,0.000276,0.117,6.6,0.32,6.8,0.31,0.020,0.0881,,,,8.0,18.0,28.0,2000.0,28.0,200,500,97.5,2.83,304.0,,,,,13.0,1800,
-TAD TL-1801,Woofer,18.0,8,21.0,0.000237,0.158,6.6,0.39,7.9,0.37,0.022,0.122,,,,7.5,20.0,26.0,2000.0,26.0,200,800,96.5,2.83,500.0,,,,,12.6,2030,
-Volt Loudspeakers VM527,Midrange,2.0,8,,,,5.5,,,,,0.002827,,,40.0,1.0,1.0,500.0,4500.0,502.0,75,150,91.0,2.83,,,,,,2.2,280,https://audioxpress.com/article/test-bench-volt-loudspeakers-vm527-midrange
-Volt Loudspeakers VM752,Midrange,3.0,8,9.3,0.0004,0.004,6.3,0.81,9.53,0.75,,0.0057,,,89.5,1.0,2.0,500.0,4000.0,400.0,100,200,94.0,2.83,0.16,,,,,9.0,670,https://audioxpress.com/article/test-bench-volt-loudspeakers-vm752-3-midrange-dome-driver
-Volt Loudspeakers RV2500,Woofer,10.0,8,13.9,0.00047,0.069,5.9,0.38,2.58,0.33,,0.0330,,,,12.0,18.0,20.0,500.0,28.0,250,500,89.0,2.83,71.78,,22,,100.0,5.8,460,
-Volt Loudspeakers RV2501,Woofer,10.0,8,13.9,0.0003,0.05522,5.3,0.37,3.19,0.33,,0.0330,,,,5.0,10.0,30.0,800.0,39.0,250,500,91.0,2.83,47.03,,35,,80.0,5.2,440,
-Volt Loudspeakers RV3143,Woofer,12.0,8,18.0,0.00027,0.076,6.1,0.32,5.35,0.3,,0.0473,24.26,50.50,95.0,5.2,18.0,29.0,700.0,35.0,300,600,91.5,2.83,86.0,,29,,110.0,6.8,570,https://audioxpress.com/article/test-bench-volt-rv3143-studio-monitor-woofer
-Volt Loudspeakers RV3863,Woofer,15.0,8,19.3,0.000253,0.119,5.8,0.33,4.03,0.31,,0.0760,,,42.5,7.5,19.0,25.0,500.0,29.0,400,800,94.0,2.83,205.0,,29,,200.0,10.8,780,
-Volt Loudspeakers RV4564,Woofer,18.0,8,25.7,0.00016,0.235,5.8,0.34,3.94,0.31,,0.1029,,,68.0,12.5,22.0,30.0,500.0,26.0,750,1500,93.0,2.83,238.0,,23,,300.0,17.0,1000,
-Wavecor TW030WA22,Tweeter,1.0,8,,,,6.6,,,,,0.0011,,,,0.4,,2000.0,25000.0,780.0,65,200,91.0,2.83,,,,,,0.4,125,
-Wavecor WF211PA01,Woofer,8.0,4,10.7,0.00028,0.026,3.1,0.26,5.8,0.25,,0.0214,,,,2.0,,80.0,1000.0,59.0,170,350,96.5,2.83,18.2,,,,,5.0,400,https://audioxpress.com/article/test-bench-wavecor-s-new-wf211pa01-8-25-pa-woofer
+Radian 475PB,Compression,1.0,8,,,,6.2,,,,,,,,,,,1000.0,25000.0,,50.0,100.0,109.5,2.83,,,,,,2.9,250,https://audioxpress.com/article/test-bench-radian-audio-engineering-475pb-1-inch-compression-driver
+Radian 745PB,Compression,1.4,8,,,,6.2,,,,,,,,,,,500.0,20000.0,,100.0,200.0,109.5,2.83,,,,,,5.09,325,https://audioxpress.com/article/test-bench-radian-audio-engineering-745pb-1-4-compression-driver
+Radian 835PB,Compression,1.4,8,,,,6.2,,,,,,,,,,,500.0,20000.0,,100.0,200.0,110.5,2.83,,,,,,6.63,400,https://audioxpress.com/article/test-bench-radian-audio-835pb-1-4-ferrite-compression-driver
+Radian 951PB,Compression,1.4,8,,,,5.4,,,,,,,,,,,500.0,20000.0,,125.0,250.0,111.5,2.83,,,,,,5.45,640,https://audioxpress.com/article/test-bench-the-951pb-1-4-compression-driver-from-radian-audio-engineering
+Radian 950PB,Compression,2.0,8,,,,5.4,,,,,,,,,,,500.0,22000.0,,125.0,250.0,113.0,2.83,,,,,,2.09,625,https://audioxpress.com/article/test-bench-radian-audio-engineering-950pb-and-760neopb-compression-drivers
+RCF ND950,Compression,2.0,8,,,,8.5,,,,,,,,,,,500.0,20000.0,,140.0,280.0,110.0,2.83,,,,,,3.82,320,https://audioxpress.com/article/Test-Bench-RCF-ND950-Neodymium-Compression-Driver-and-HF950-Horn
+SB Acoustics TW29DN-B,Tweeter,1.0,4,3.2,,,3.0,0.57,1.66,0.43,,0.00096,,,,0.25,,,,650.0,80.0,160.0,96.0,2.83,,,,,,0.39,150,https://audioxpress.com/article/test-bench-the-sb-acoustics-satori-tw29dn-b-8-tweeter
+SB Acoustics TW29BNWG-4,Tweeter,1.0,4,3.1,,,3.0,0.6,2.1,0.46,,0.00096,,,,0.25,,,,700.0,80.0,160.0,97.0,2.83,,,,,,0.46,500,https://audioxpress.com/article/test-bench-the-tw29bnwg-beryllium-dome-and-waveguide-from-the-sb-acoustics
+SB Acoustics SB12MNRX2-25-4,Woofer,4.0,4,3.9,0.0015,0.0042,3.2,0.35,4.19,0.32,,0.005,,,,2.2,,,,63.5,50.0,100.0,90.5,2.83,5.3,,,,,0.92,61,
+SB Acoustics SB34NRX75-6,Woofer,12.0,6,10.7,0.00071,0.099,4.2,0.43,5.1,0.4,,0.0508,,,,11.0,,,,19.0,200.0,400.0,90.0,2.83,260.0,,,,,6.02,220,
+SB Acoustics SB34NRXL75-8,Woofer,12.0,8,16.6,0.00056,0.093,6.2,0.29,5.5,0.28,,0.0508,,,,10.0,,,,22.0,200.0,400.0,91.0,2.83,205.0,,,,,8.9,310,
+Scan-Speak 28W/4878T00,Woofer,10.0,4,11.2,0.00068,0.1145,3.8,0.32,5.6,0.3,,0.0363,,,,14.0,26.0,18.0,1000.0,18.0,200.0,500.0,88.0,2.83,127.0,39.0,24.0,35.0,65.0,7.5,700,https://audioxpress.com/article/test-bench-scan-speak-28w-4578t00-10-subwoofer
+Scan-Speak 30W/4558T00,Woofer,12.0,4,10.5,0.00065,0.135,3.3,0.34,5.01,0.32,,0.0466,,,,12.5,28.0,17.0,1500.0,17.0,150.0,350.0,89.0,2.83,197.0,34.0,20.0,67.0,132.0,,350,
+Scan-Speak 32W/4878T00,Woofer,13.0,4,12.5,0.00052,0.15,3.1,0.33,7.0,0.32,,0.0526,,,,14.0,28.0,18.0,2000.0,18.0,200.0,550.0,90.0,2.83,203.9,36.0,21.0,67.0,129.0,7.5,700,https://audioxpress.com/article/test-bench-scan-speak-32w-4878t00-subwoofer
+Scan-Speak 32W/4878T01,Woofer,13.0,4,13.0,0.00043,0.112,3.1,0.3,6.0,0.28,,0.0526,,,,7.0,28.0,23.0,1500.0,23.0,150.0,400.0,92.0,2.83,170.0,53.0,34.0,40.0,69.0,7.5,700,
+Supravox 215 GMF,Woofer,8.0,8,9.7,,0.013,8.0,0.38,8.57,0.36,,0.0253,,,,3.7,,50.0,4000.0,54.0,40.0,80.0,96.0,2.83,60.0,,,,,,480,
+Supravox 285 GMF,Woofer,11.0,8,10.55,,0.0197,6.5,0.345,8.86,0.33,,0.04426,,,,3.4,,40.0,7000.0,47.8,70.0,140.0,100.0,2.83,157.0,,,,,,330,
+Supravox 400 GMF,Woofer,16.0,8,18.2908,0.00047,0.0621385,6.5,0.1432,7.5492,0.14,,0.0855,,,,10.0,,19.0,4000.0,18.87,120.0,240.0,98.5,2.83,490.0,,,,,,750,
+Supravox 400-2000 EXC,Woofer,16.0,8,17.53,0.0005,0.066,6.5,0.184,9.1932,0.1805,,0.0855,,,,10.0,,23.0,4000.0,22.0,120.0,240.0,98.16,2.83,681.0,,,,,10.7,1350,
+TAD TD-2002,Compression,1.0,8,,,,,,,,,,,,,,,450.0,27000.0,,20.0,40.0,111.0,2.83,,,,,,6.9,3050,
+TAD TD-4001,Compression,2.0,16,,,,,,,,,,,,,,,600.0,20000.0,,30.0,60.0,107.0,2.83,,,,,,12.6,5000,
+TAD TL-1601b,Woofer,16.0,8,20.5,0.000276,0.117,6.6,0.32,6.8,0.31,0.02,0.0881,,,,8.0,18.0,28.0,2000.0,28.0,200.0,500.0,97.5,2.83,304.0,,,,,13.0,1800,
+TAD TL-1801,Woofer,18.0,8,21.0,0.000237,0.158,6.6,0.39,7.9,0.37,0.022,0.122,,,,7.5,20.0,26.0,2000.0,26.0,200.0,800.0,96.5,2.83,500.0,,,,,12.6,2030,
+Volt Loudspeakers VM527,Midrange,2.0,8,,,,5.5,,,,,0.002827,,,40.0,1.0,1.0,500.0,4500.0,502.0,75.0,150.0,91.0,2.83,,,,,,2.2,280,https://audioxpress.com/article/test-bench-volt-loudspeakers-vm527-midrange
+Volt Loudspeakers VM752,Midrange,3.0,8,9.3,0.0004,0.004,6.3,0.81,9.53,0.75,,0.0057,,,89.5,1.0,2.0,500.0,4000.0,400.0,100.0,200.0,94.0,2.83,0.16,,,,,9.0,670,https://audioxpress.com/article/test-bench-volt-loudspeakers-vm752-3-midrange-dome-driver
+Volt Loudspeakers RV2500,Woofer,10.0,8,13.9,0.00047,0.069,5.9,0.38,2.58,0.33,,0.033,,,,12.0,18.0,20.0,500.0,28.0,250.0,500.0,89.0,2.83,71.78,,22.0,,100.0,5.8,460,
+Volt Loudspeakers RV2501,Woofer,10.0,8,13.9,0.0003,0.05522,5.3,0.37,3.19,0.33,,0.033,,,,5.0,10.0,30.0,800.0,39.0,250.0,500.0,91.0,2.83,47.03,,35.0,,80.0,5.2,440,
+Volt Loudspeakers RV3143,Woofer,12.0,8,18.0,0.00027,0.076,6.1,0.32,5.35,0.3,,0.0473,24.26,50.5,95.0,5.2,18.0,29.0,700.0,35.0,300.0,600.0,91.5,2.83,86.0,,29.0,,110.0,6.8,570,https://audioxpress.com/article/test-bench-volt-rv3143-studio-monitor-woofer
+Volt Loudspeakers RV3863,Woofer,15.0,8,19.3,0.000253,0.119,5.8,0.33,4.03,0.31,,0.076,,,42.5,7.5,19.0,25.0,500.0,29.0,400.0,800.0,94.0,2.83,205.0,,29.0,,200.0,10.8,780,
+Volt Loudspeakers RV4564,Woofer,18.0,8,25.7,0.00016,0.235,5.8,0.34,3.94,0.31,,0.1029,,,68.0,12.5,22.0,30.0,500.0,26.0,750.0,1500.0,93.0,2.83,238.0,,23.0,,300.0,17.0,1000,
+Wavecor TW030WA22,Tweeter,1.0,8,,,,6.6,,,,,0.0011,,,,0.4,,2000.0,25000.0,780.0,65.0,200.0,91.0,2.83,,,,,,0.4,125,
+Wavecor WF211PA01,Woofer,8.0,4,10.7,0.00028,0.026,3.1,0.26,5.8,0.25,,0.0214,,,,2.0,,80.0,1000.0,59.0,170.0,350.0,96.5,2.83,18.2,,,,,5.0,400,https://audioxpress.com/article/test-bench-wavecor-s-new-wf211pa01-8-25-pa-woofer
