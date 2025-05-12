@@ -2,7 +2,7 @@
 # SPDX-FileCopyrightText: 2025 Tobias Hienzsch
 import numpy as np
 
-from pffdtd.speaker.ts import (
+from pffdtd.transducer.ts import (
     compliance_equivalent_volume,
     diaphragm_diameter,
     efficiency,
@@ -15,7 +15,7 @@ from pffdtd.speaker.ts import (
 )
 
 
-def test_speaker_ts():
+def test_transducer_ts():
     # Models the workflow when importing a driver in WinISD
     # using the steps from their documentation
 
