@@ -50,7 +50,7 @@ def efficiency(fs, Qes, Vas, c=343.2):
     return n0
 
 
-@click.command(name='ts', help='Thiele/Small parameters')
+@click.command(name='thiele-small', help='Thiele/Small parameters')
 @click.argument('drivers_csv', nargs=1, type=click.Path(exists=True))
 @click.argument('driver_type', type=str, default='')
 def main(drivers_csv, driver_type):

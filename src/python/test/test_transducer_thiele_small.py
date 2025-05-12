@@ -2,7 +2,7 @@
 # SPDX-FileCopyrightText: 2025 Tobias Hienzsch
 import numpy as np
 
-from pffdtd.transducer.ts import (
+from pffdtd.transducer.thiele_small import (
     compliance_equivalent_volume,
     diaphragm_diameter,
     efficiency,
@@ -15,7 +15,7 @@ from pffdtd.transducer.ts import (
 )
 
 
-def test_transducer_ts():
+def test_transducer_thiele_small():
     # Models the workflow when importing a driver in WinISD
     # using the steps from their documentation
 
