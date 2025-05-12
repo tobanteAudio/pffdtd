@@ -26,6 +26,7 @@ SPDX-License-Identifier = "CC-BY-SA-4.0"
 path = [
     "cmake/profile/linux_sycl",
     "cmake/profile/windows_sycl",
+    "data/*.csv",
     "models/BassReflex/freecad/BassReflex.FCStd",
     "models/BassReflex/model.json",
     "models/Diffusor3D/model.json",

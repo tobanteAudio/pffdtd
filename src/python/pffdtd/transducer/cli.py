@@ -6,6 +6,7 @@ import click
 from pffdtd.transducer import distortion
 from pffdtd.transducer import diy
 from pffdtd.transducer import horn
+from pffdtd.transducer import power
 from pffdtd.transducer import thiele_small
 
 
@@ -17,4 +18,5 @@ def transducer():
 transducer.add_command(distortion.main)
 transducer.add_command(diy.main)
 transducer.add_command(horn.main)
+transducer.add_command(power.main)
 transducer.add_command(thiele_small.main)

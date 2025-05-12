@@ -2,6 +2,10 @@
 # SPDX-FileCopyrightText: 2025 Tobias Hienzsch
 import numpy as np
 
+from pffdtd.transducer.power import (
+    max_sound_pressure,
+    power_for_target_spl,
+)
 from pffdtd.transducer.thiele_small import (
     compliance_equivalent_volume,
     diaphragm_diameter,
@@ -13,6 +17,13 @@ from pffdtd.transducer.thiele_small import (
     max_impedance,
     resonance_frequency,
 )
+
+
+def test_max_sound_pressure():
+    assert np.allclose(max_sound_pressure(90, 2, 1), 93.01029995)
+    assert np.allclose(max_sound_pressure(91, 2, 1), 94.01029995)
+    assert np.allclose(power_for_target_spl(93.01029995, 90, 1), 2)
+    assert np.allclose(power_for_target_spl(94.01029995, 91, 1), 2)
 
 
 def test_transducer_thiele_small():
