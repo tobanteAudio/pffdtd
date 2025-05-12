@@ -54,12 +54,12 @@ def _find_primitive_root(prime):
     return None
 
 
-@click.command(name='qrd', help='Design QRD diffusors.')
+@click.command(name='diffusor', help='Design diffusors QRD & PRD.')
 def main():
-    n = 13
+    n = 7
     c = 343
-    well_width = 0.0254*2
-    design_frequency = 400
+    well_width = 0.05
+    design_frequency = 500
 
     design_wavelength = c/design_frequency
     design_depth = design_wavelength/2
@@ -68,7 +68,8 @@ def main():
     fmax = c/(well_width*2)
     seat_distance = design_wavelength*3
 
-    w = quadratic_residue_diffusor(n, design_depth)
+    qrd = quadratic_residue_diffusor(n, depth=design_depth)
+    prd = primitive_root_diffusor(n, depth=design_depth)
 
     print(f"prime     = {n}")
     print(f"width     = {well_width*100:.2f} cm")
@@ -82,5 +83,6 @@ def main():
     print(f"plate     = {plate_frequency:.2f} Hz")
     print('')
 
-    print(f"wells     = {np.round(w*100, 2)} cm")
-    print(f"max depth = {np.max(w)*100:.2f} cm")
+    print(f"QRD     = {np.round(qrd*100, 2)} cm")
+    print(f"PRD     = {np.round(prd[0]*100, 2)} cm")
+    print(f"max depth = {np.max(qrd)*100:.2f} cm")
