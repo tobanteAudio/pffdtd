@@ -3,6 +3,7 @@
 import click
 
 import matplotlib.pyplot as plt
+from matplotlib.ticker import ScalarFormatter
 import numpy as np
 from scipy.interpolate import interp1d
 from scipy.signal import sosfilt
@@ -283,9 +284,13 @@ def main():
     def percent_to_db(pct):
         return 20 * np.log10(pct+0.000001 / 100)
 
+    dB_ref = 94
     woofer = interpolate([f for f, _ in scan_speak_32w_4878t00_94db], [d for _, d in scan_speak_32w_4878t00_94db])
     midrange = interpolate([f for f, _ in volt_vm_752_94db], [d for _, d in volt_vm_752_94db])
     tweeter = interpolate([f for f, _ in morel_1044_94db], [d for _, d in morel_1044_94db])
+
+    formatter = ScalarFormatter()
+    formatter.set_scientific(False)
 
     ax = plt.gca()
     ax.semilogx(fftfreqs, 20*np.log10(woofer/100+np.finfo(np.float64).eps), label='Woofer')
@@ -295,13 +300,14 @@ def main():
     ax.set_ylim(-80.0, 0.0)
     ax.set_ylabel('Frequency [Hz]')
     ax.set_ylabel('Magnitude [dB]')
-    ax.set_title('2nd Harmonic')
+    ax.set_title(f'2nd Harmonic @ {dB_ref} dBSPL / 1m')
     secax = ax.secondary_yaxis('right', functions=(db_to_percent, percent_to_db))
     secax.set_yticks([0.1, 0.2, 0.5, 1.0, 2.0, 4.0, 8.0])
     secax.set_ylabel('Magnitude [%]')
-    ax.grid(which='both')
+    ax.xaxis.set_major_formatter(formatter)
+    ax.grid(which='minor', color='#DDDDDD', linestyle=':', linewidth=0.5)
+    ax.minorticks_on()
     ax.legend()
-    plt.tight_layout()
     plt.show()
 
     woofer_min = minimum_phase_reconstruction(woofer/100)
@@ -331,11 +337,12 @@ def main():
     ax.set_ylim(-80.0, 0.0)
     ax.set_ylabel('Frequency [Hz]')
     ax.set_ylabel('Magnitude [dB]')
-    ax.set_title('2nd Harmonic')
+    ax.set_title(f'2nd Harmonic @ {dB_ref} dBSPL / 1m')
     secax = ax.secondary_yaxis('right', functions=(db_to_percent, percent_to_db))
     secax.set_yticks([0.1, 0.2, 0.5, 1.0, 2.0, 4.0, 8.0])
     secax.set_ylabel('Magnitude [%]')
-    ax.grid(which='both')
+    ax.xaxis.set_major_formatter(formatter)
+    ax.grid(which='minor', color='#DDDDDD', linestyle=':', linewidth=0.5)
+    ax.minorticks_on()
     ax.legend()
-    plt.tight_layout()
     plt.show()

@@ -55,7 +55,7 @@ def pink_noise_slope(x, fs):
 
 
 @click.command(name='pink', help='Generate pink noise')
-@click.argument('output', nargs=1, type=click.Path())
+@click.argument('output', nargs=-1, type=click.Path())
 @click.option('--duration', default=10.0, type=float)
 @click.option('--fs', default=48000, type=int)
 def main(output, duration, fs):
@@ -69,4 +69,5 @@ def main(output, duration, fs):
     print(f'Slope: {pink_noise_slope(x, fs)}')
     print(f'Mean:  {abs(np.mean(x))}')
 
-    wavwrite(output, fs, x)
+    if len(output) == 1:
+        wavwrite(output[0], fs, x)

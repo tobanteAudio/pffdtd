@@ -40,5 +40,4 @@ def main(filename, color_map, min_db, window):
 
     plt.figure(figsize=(10, 6))
     plot_spectrogram(ir, fs, window=window, min_dB=min_db, color_map=color_map)
-    plt.tight_layout()
     plt.show()

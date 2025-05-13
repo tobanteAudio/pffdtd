@@ -16,7 +16,7 @@ def generate_sine_wave(frequency, duration, fs, dB_rms=-20.0):
 
 
 @click.command(name='sine', help='Generate sine wave.')
-@click.argument('output', nargs=1, type=click.Path())
+@click.argument('output', nargs=-1, type=click.Path())
 @click.option('--duration', default=10.0, type=float)
 @click.option('--frequency', default=440.0, type=float)
 @click.option('--fs', default=48000, type=int)
@@ -30,4 +30,5 @@ def main(output, duration, frequency, fs):
     print(f'Crest: {20*np.log10(crest_factor(x)):.2f} dB')
     print(f'Mean:  {abs(np.mean(x))}')
 
-    wavwrite(output, fs, x)
+    if len(output) == 1:
+        wavwrite(output[0], fs, x)
