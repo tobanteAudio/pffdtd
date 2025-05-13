@@ -295,7 +295,7 @@ def _apply_lowpass(
 def process_outputs(
     sim_dir: str,
     *,
-    resample_fs: float | None = None,
+    resample_Fs: float | None = None,
     fcut_lowcut: float = 10.0,
     order_lowcut: int = 4,
     fcut_lowpass: float = 0.0,
@@ -311,8 +311,8 @@ def process_outputs(
 
     po.initial_process(fcut=fcut_lowcut, N_order=order_lowcut)
 
-    if resample_fs:
-        po.resample(resample_fs)
+    if resample_Fs:
+        po.resample(resample_Fs)
 
     if fcut_lowpass > 0:
         po.apply_lowpass(
@@ -348,17 +348,29 @@ def process_outputs(
 @click.option('--plot', is_flag=True)
 @click.option('--plot_raw', is_flag=True)
 @click.option('--save_wav', is_flag=True)
-@click.option('--resample_fs', default=None, type=float)
+@click.option('--resample_Fs', 'resample_Fs', default=None, type=float)
 @click.option('--fcut_lowcut', default=10.0)
 @click.option('--fcut_lowpass', default=0.0)
 @click.option('--order_lowcut', default=8)
 @click.option('--order_lowpass', default=8)
 @click.option('--symmetric_lowpass', is_flag=True)
 @click.option('--air_abs_filter', default='none')
-def main(sim_dir, plot, plot_raw, save_wav, resample_fs, fcut_lowcut, fcut_lowpass, order_lowcut, order_lowpass, symmetric_lowpass, air_abs_filter):
+def main(
+    sim_dir,
+    plot,
+    plot_raw,
+    save_wav,
+    resample_Fs,
+    fcut_lowcut,
+    fcut_lowpass,
+    order_lowcut,
+    order_lowpass,
+    symmetric_lowpass,
+    air_abs_filter,
+):
     process_outputs(
         sim_dir=sim_dir,
-        resample_fs=resample_fs,
+        resample_Fs=resample_Fs,
         fcut_lowcut=fcut_lowcut,
         order_lowcut=order_lowcut,
         fcut_lowpass=fcut_lowpass,

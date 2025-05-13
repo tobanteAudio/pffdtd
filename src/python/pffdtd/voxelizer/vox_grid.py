@@ -164,13 +164,13 @@ class VoxGrid(VoxGridBase):
 @click.option('--draw-points/--no-draw-points', default=False, help='draw grid points')
 @click.option('--h', type=float, required=True)
 @click.option('--model_json', type=click.Path(exists=True), help='json file to import')
-@click.option('--nh', type=int, default=None, help='Nh')
-@click.option('--nvox_est', type=int, default=None, help='Nvox roughly')
+@click.option('--Nh', 'Nh', type=int, default=None, help='Nh')
+@click.option('--Nvox_est', 'Nvox_est', type=int, default=None, help='Nvox roughly')
 @click.option('--nprocs', type=int, default=get_default_nprocs(), help='Number of processes')
 @click.option('--offset', type=float, default=3.0)
-def main(az_el, draw, draw_points, h, model_json, nh, nvox_est, nprocs, offset):
+def main(az_el, draw, draw_points, h, model_json, Nh, Nvox_est, nprocs, offset):
     assert nprocs > 0
-    # assert nvox_est is not None or nh is not None
+    # assert Nvox_est is not None or Nh is not None
     assert h is not None
     assert model_json is not None
 
@@ -180,7 +180,7 @@ def main(az_el, draw, draw_points, h, model_json, nh, nvox_est, nprocs, offset):
     cart_grid = CartGrid(h, offset, room_geo.bmin, room_geo.bmax)
     cart_grid.print_stats()
 
-    vox_grid = VoxGrid(room_geo, cart_grid, nvox_est, nh)
+    vox_grid = VoxGrid(room_geo, cart_grid, Nvox_est, Nh)
     vox_grid.fill(Nprocs=nprocs)
     vox_grid.print_stats()
 

@@ -79,7 +79,7 @@ def test_sim3d_locate_sound_source(tmp_path, engine):
 
     process_outputs(
         sim_dir=sim_dir,
-        resample_fs=96_000,
+        resample_Fs=96_000,
         fcut_lowcut=fmin,
         order_lowcut=4,
         fcut_lowpass=fmax,
