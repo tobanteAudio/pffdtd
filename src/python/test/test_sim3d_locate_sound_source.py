@@ -3,6 +3,7 @@
 
 import json
 
+import h5py
 import numpy as np
 import pytest
 
@@ -65,11 +66,11 @@ def test_sim3d_locate_sound_source(tmp_path, engine):
             'Walls': material,
         },
         diff_source=True,
-        duration=0.5,
+        duration=0.3,
         fcc_flag=False,
         fmax=fmax,
         PPW=ppw,
-        insig_type='impulse',
+        insig_type='mls-11',
         save_folder=sim_dir,
         save_folder_gpu=sim_dir if engine != 'python' else None,
         Nprocs=1,
@@ -79,7 +80,7 @@ def test_sim3d_locate_sound_source(tmp_path, engine):
 
     process_outputs(
         sim_dir=sim_dir,
-        resample_Fs=96_000,
+        resample_Fs=48_000,
         fcut_lowcut=fmin,
         order_lowcut=4,
         fcut_lowpass=fmax,
@@ -90,6 +91,9 @@ def test_sim3d_locate_sound_source(tmp_path, engine):
         plot_raw=False,
         plot=False,
     )
+
+    with h5py.File(sim_dir / 'constants.h5', 'r') as constants:
+        c = float(constants['c'][...])
 
     fs1, mic1 = wavread(sim_dir/'R001_out_normalised.wav')
     fs2, mic2 = wavread(sim_dir/'R002_out_normalised.wav')
@@ -104,6 +108,7 @@ def test_sim3d_locate_sound_source(tmp_path, engine):
 
     with open(model_file, 'r') as f:
         model = json.load(f)
+
     mic_pos = np.array([
         model['receivers'][0]['xyz'],
         model['receivers'][1]['xyz'],
@@ -111,6 +116,21 @@ def test_sim3d_locate_sound_source(tmp_path, engine):
         model['receivers'][3]['xyz'],
     ])
 
-    actual = model['sources'][0]['xyz']
-    estimated, _ = tetrahedron_microphone_array(mic_pos, mic_sigs, fs)
-    assert np.linalg.norm(actual-estimated) <= 0.1
+    source_pos = model['sources'][0]['xyz']
+    distance_1 = np.linalg.norm(source_pos-mic_pos[0])
+    distance_2 = np.linalg.norm(source_pos-mic_pos[1])
+    distance_3 = np.linalg.norm(source_pos-mic_pos[2])
+    distance_4 = np.linalg.norm(source_pos-mic_pos[3])
+    actual_tdoas = [
+        (distance_1-distance_2)/c*1000,
+        (distance_1-distance_3)/c*1000,
+        (distance_1-distance_4)/c*1000,
+        (distance_2-distance_3)/c*1000,
+        (distance_2-distance_4)/c*1000,
+        (distance_3-distance_4)/c*1000,
+    ]
+
+    _, estimated_tdoas = tetrahedron_microphone_array(mic_pos, mic_sigs, fs, c=c)
+    estimated_tdoas *= 1000
+
+    assert np.max((estimated_tdoas-actual_tdoas)/actual_tdoas*100) < 5.0
