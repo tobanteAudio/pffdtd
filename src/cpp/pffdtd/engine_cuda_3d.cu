@@ -925,11 +925,13 @@ auto run(Simulation3D const& sim) -> void { // NOLINT(readability-function-cogni
     gpuErrchk(cudaMemcpy(gpu.bn_ixyz, host.bn_ixyz.get(), (size_t)host.Nb * sizeof(int64_t), cudaMemcpyHostToDevice));
 
     gpuErrchk(cudaMalloc(&(gpu.bnl_ixyz), (size_t)(host.Nbl * sizeof(int64_t))));
-    gpuErrchk(cudaMemcpy(gpu.bnl_ixyz, host.bnl_ixyz.get(), (size_t)host.Nbl * sizeof(int64_t), cudaMemcpyHostToDevice)
+    gpuErrchk(
+        cudaMemcpy(gpu.bnl_ixyz, host.bnl_ixyz.get(), (size_t)host.Nbl * sizeof(int64_t), cudaMemcpyHostToDevice)
     );
 
     gpuErrchk(cudaMalloc(&(gpu.bna_ixyz), (size_t)(host.Nba * sizeof(int64_t))));
-    gpuErrchk(cudaMemcpy(gpu.bna_ixyz, host.bna_ixyz.get(), (size_t)host.Nba * sizeof(int64_t), cudaMemcpyHostToDevice)
+    gpuErrchk(
+        cudaMemcpy(gpu.bna_ixyz, host.bna_ixyz.get(), (size_t)host.Nba * sizeof(int64_t), cudaMemcpyHostToDevice)
     );
 
     gpuErrchk(cudaMalloc(&(gpu.Q_bna), (size_t)(host.Nba * sizeof(int8_t))));
