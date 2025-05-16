@@ -17,7 +17,7 @@ def plot_impulse_response_summary(
     *,
     fmax: float | None = None,
     smoothing: float = 0.0,
-    window: str | tuple | None = None,
+    window: str | tuple[str, float] | None = None,
 ):
     n = x.shape[-1]
     nfft = n
@@ -26,7 +26,7 @@ def plot_impulse_response_summary(
         fmax = fs/2
 
     if window:
-        x *= get_window(window, n)
+        x *= get_window(window, n)  # type: ignore
 
     freqs = np.fft.rfftfreq(nfft, 1/fs)
     H = np.fft.rfft(x, nfft)

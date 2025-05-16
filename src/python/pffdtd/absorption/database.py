@@ -67,7 +67,7 @@ def read_absorption_database_excel(path) -> pd.DataFrame:
     )
 
     df = df.drop(['character of absorption', 'flow resistance', 'layer thickness'], axis=1)
-    return df.sort_values(['reference', 63, 80, 100, 125, 160, 200], ascending=False)
+    return df.sort_values(['reference', 63, 80, 100, 125, 160, 200], ascending=False)  # type: ignore
 
 
 @click.command(name='database')

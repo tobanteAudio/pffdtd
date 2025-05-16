@@ -42,13 +42,13 @@ def clarity(x: np.ndarray, fs: float, early_ms: float) -> float:
     return 10 * np.log10(E_early / E_late)
 
 
-def energy_decay_curve(x) -> np.ndarray:
+def energy_decay_curve(x: np.ndarray) -> np.ndarray:
     edc = np.cumsum(x[::-1]**2)[::-1]
     edc_dB = 10 * np.log10(edc / np.max(edc))
     return edc_dB
 
 
-def early_decay_time(edc_dB, fs):
+def early_decay_time(edc_dB: np.ndarray, fs: float) -> float:
     edc_dB -= np.max(edc_dB)
     end_idx = np.where(edc_dB <= -10)[0][0]
 
@@ -132,15 +132,15 @@ def _plot_tolerances(rt60, freqs, fmin, fmax, ax: Axes):
     ax.set_title('Tolerance')
     ax.set_ylabel('Difference [s]')
     ax.set_xlabel('Frequency [Hz]')
-    ax.set_xlim((fmin, fmax))
-    ax.set_ylim((ymin-0.075, ymax+0.075))
+    ax.set_xlim(fmin, fmax)
+    ax.set_ylim(ymin-0.075, ymax+0.075)
     ax.grid(which='minor', color='#DDDDDD', linestyle=':', linewidth=0.5)
     ax.minorticks_on()
     ax.margins(0, 0.1)
     ax.legend(loc='upper right')
 
 
-def run(files, fmin, fmax, target=None):
+def run(files: list[str], fmin: float, fmax: float, target: float | None = None):
     # ISO 1/3 octaves
     center_freqs = np.array([
         20, 25, 31.5, 40, 50, 63, 80, 100, 125, 160,
@@ -193,8 +193,8 @@ def run(files, fmin, fmax, target=None):
     ax.set_ylabel('Decay [s]')
     ax.set_xlabel('Frequency [Hz]')
     ax.xaxis.set_major_formatter(formatter)
-    ax.set_xlim((fmin, fmax))
-    ax.set_ylim((0, np.max(file_times[0]['T30'])+0.1))
+    ax.set_xlim(fmin, fmax)
+    ax.set_ylim(0, np.max(file_times[0]['T30'])+0.1)
     ax.grid(which='minor', color='#DDDDDD', linestyle=':', linewidth=0.5)
     ax.minorticks_on()
     ax.legend(loc='upper right')

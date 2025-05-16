@@ -96,7 +96,7 @@ def air_absorption(
     assert rel_humidity_pnct <= 100
     assert rel_humidity_pnct >= 10
 
-    f = frequencies
+    f = np.asarray(frequencies)
     T = temperature_celsius
     rh = rel_humidity_pnct
 

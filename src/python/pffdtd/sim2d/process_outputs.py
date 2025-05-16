@@ -17,7 +17,7 @@ from pffdtd.signals.wavfile import save_as_wav_files
 @click.option('--fmin', default=20.0)
 @click.option('--sim_dir', type=click.Path(exists=True))
 @click.argument('out_file', nargs=1,  type=click.Path(exists=True))
-def main(fmin, diff, sim_dir, out_file):
+def main(fmin, diff, sim_dir, out_file) -> None:
     sim_dir = pathlib.Path(sim_dir)
 
     with h5py.File(sim_dir / 'constants.h5', 'r') as constants:
@@ -45,7 +45,7 @@ def main(fmin, diff, sim_dir, out_file):
     out = signal.sosfilt(sos, out)
 
     sos = signal.butter(4, fmax, fs=fs, btype='low', output='sos')
-    out: np.ndarray = signal.sosfilt(sos, out)
+    out = signal.sosfilt(sos, out)
 
     Fs_target = 48000
     out_f = resample(out, fs, Fs_target, filter='kaiser_best')

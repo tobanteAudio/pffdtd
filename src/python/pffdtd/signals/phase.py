@@ -52,7 +52,7 @@ def minimum_phase_reconstruction(M_half: np.ndarray) -> np.ndarray:
 
 
 @click.command(name='phase', help='Plot phase mismatch.')
-def main():
+def main() -> None:
     c = 343.0
     frequencies = np.linspace(20, 2_000, 10000)
 

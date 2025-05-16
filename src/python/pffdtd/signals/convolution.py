@@ -9,7 +9,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 from scipy.signal import oaconvolve
 
-from pffdtd.signals.mls import generate_max_len_seq
 from pffdtd.signals.wavfile import wavread
 
 
@@ -23,7 +22,7 @@ def deconvolve(y: np.ndarray, s: np.ndarray) -> np.ndarray:
     return np.squeeze(np.fft.irfft(H, n=n))
 
 
-def deconvolve_sim_outputs(sim_dir, *, plot=True):
+def deconvolve_sim_outputs(sim_dir: Path, *, plot=True):
     sim_dir = Path(sim_dir)
 
     with h5py.File(sim_dir / 'signals.h5', 'r') as f:
@@ -48,21 +47,21 @@ def deconvolve_sim_outputs(sim_dir, *, plot=True):
         ax.grid(which='minor', color='#DDDDDD', linestyle=':', linewidth=0.5)
         ax.minorticks_on()
 
-        ax: Axes = axs[1]
+        ax = axs[1]
         ax.set_title('Recording')
         ax.set_xlim(0.0, u_out.shape[-1]/fs)
         ax.plot(np.linspace(0.0, u_out.shape[-1]/fs, u_out.shape[-1]), u_out[0, :])
         ax.grid(which='minor', color='#DDDDDD', linestyle=':', linewidth=0.5)
         ax.minorticks_on()
 
-        ax: Axes = axs[2]
+        ax = axs[2]
         ax.set_title('Impulse')
         ax.set_xlim(0.0, u_out.shape[-1]/fs)
         ax.plot(np.linspace(0.0, ir.shape[-1]/fs, ir.shape[-1]), ir[0, :])
         ax.grid(which='minor', color='#DDDDDD', linestyle=':', linewidth=0.5)
         ax.minorticks_on()
 
-        ax: Axes = axs[3]
+        ax = axs[3]
         ax.set_title('Impulse [dB]')
         ax.set_xlim(0.0, u_out.shape[-1]/fs)
         ax.set_ylim(-105, +5)
@@ -77,7 +76,7 @@ def deconvolve_sim_outputs(sim_dir, *, plot=True):
 @click.argument('impulse_path', nargs=-1, type=click.Path(exists=True))
 @click.option('--sim_dir', type=click.Path(exists=True))
 @click.option('--stimulus', type=click.Path(exists=True))
-def main(impulse_path, sim_dir, stimulus):
+def main(impulse_path, sim_dir, stimulus) -> None:
     if sim_dir:
         deconvolve_sim_outputs(sim_dir=sim_dir, plot=True)
         return
@@ -95,7 +94,7 @@ def main(impulse_path, sim_dir, stimulus):
     print(f'convolution   = {convolution.shape[-1]/fs:.2f} s')
     print(f'deconvolution = {deconvolution.shape[-1]/fs:.2f} s')
 
-    fig, axs = plt.subplots(4, 1)
+    _, axs = plt.subplots(4, 1)
 
     ax: Axes = axs[0]
     ax.set_title('IR')
@@ -104,21 +103,21 @@ def main(impulse_path, sim_dir, stimulus):
     ax.grid(which='minor', color='#DDDDDD', linestyle=':', linewidth=0.5)
     ax.minorticks_on()
 
-    ax: Axes = axs[1]
+    ax = axs[1]
     ax.set_title('Sweep')
     ax.set_xlim(0.0, len(convolution)/fs)
     ax.plot(np.linspace(0.0, len(sweep)/fs, len(sweep)), sweep)
     ax.grid(which='minor', color='#DDDDDD', linestyle=':', linewidth=0.5)
     ax.minorticks_on()
 
-    ax: Axes = axs[2]
+    ax = axs[2]
     ax.set_title('Convolution')
     ax.set_xlim(0.0, len(convolution)/fs)
     ax.plot(np.linspace(0.0, len(convolution)/fs, len(convolution)), convolution)
     ax.grid(which='minor', color='#DDDDDD', linestyle=':', linewidth=0.5)
     ax.minorticks_on()
 
-    ax: Axes = axs[3]
+    ax = axs[3]
     ax.set_title('Deconvolution')
     ax.set_xlim(0.0, len(ir)/fs)
     ax.plot(np.linspace(0.0, len(deconvolution)/fs, len(deconvolution)), deconvolution)

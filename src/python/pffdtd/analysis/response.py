@@ -54,8 +54,9 @@ def plot_musical_response(
     if not ax:
         ax = plt.gca()
 
+    note_numbers = np.arange(centre.shape[-1])+16
+
     if key_colors:
-        note_numbers = np.arange(centre.shape[-1])+16
         note_colors = [midi_key_color(int(n)) for n in note_numbers]
         note_colors = ['blue' if color == 'white' else color for color in note_colors]
         ax.bar(note_numbers, smoothed, facecolor=note_colors)
@@ -68,7 +69,15 @@ def plot_musical_response(
     ax.grid(which='major', color='#DDDDDD', linestyle=':', linewidth=0.5)
 
 
-def plot_response_compare(files, labels, *, fmin=20.0, fmax=20000.0, smoothing=0.0, target=None):
+def plot_response_compare(
+    files: list[str],
+    labels: list[str],
+    *,
+    fmin: float = 20.0,
+    fmax: float = 20000.0,
+    smoothing: float = 0.0,
+    target: float | None = None,
+):
     assert len(files) == 2
     assert len(labels) == 2
 
@@ -115,7 +124,7 @@ def plot_response_compare(files, labels, *, fmin=20.0, fmax=20000.0, smoothing=0
     ax0.set_xlabel('Frequency [Hz]')
     ax0.set_ylabel('Amplitude [dB]')
     ax0.set_ylim(-60, 0)
-    ax0.set_xlim((fmin, fmax))
+    ax0.set_xlim(fmin, fmax)
     ax0.xaxis.set_major_formatter(formatter)
     ax0.grid(which='minor', color='#DDDDDD', linestyle=':', linewidth=0.5)
     ax0.minorticks_on()
@@ -125,13 +134,13 @@ def plot_response_compare(files, labels, *, fmin=20.0, fmax=20000.0, smoothing=0
     max_diff = np.max(np.abs(difference[(freqs > 10) & (freqs < 20e3)]))
     ax1: Axes = ax[1]
     ax1.semilogx(freqs, difference, linestyle='-', label=label)
-    if target != 0.0:
+    if target and target != 0.0:
         ax1.hlines(target, fmin, fmax, linestyle='--', label=f"Target {target} dB", color='red')
     ax1.set_title('Difference')
     ax1.set_xlabel('Frequency [Hz]')
     ax1.set_ylabel('Amplitude [dB]')
-    ax1.set_xlim((fmin, fmax))
-    ax1.set_ylim((-max_diff*1.1, max_diff*1.1))
+    ax1.set_xlim(fmin, fmax)
+    ax1.set_ylim(-max_diff*1.1, max_diff*1.1)
     ax1.xaxis.set_major_formatter(formatter)
     ax1.grid(which='minor', color='#DDDDDD', linestyle=':', linewidth=0.5)
     ax1.minorticks_on()

@@ -15,7 +15,7 @@ from pffdtd.analysis.room_modes import room_modes
 @click.command(name='report', help='Generate report.')
 @click.option('--sim_dir', type=click.Path(exists=True))
 @click.argument('out_file', nargs=-1, type=click.Path(exists=True))
-def main(sim_dir, out_file):
+def main(sim_dir, out_file) -> None:
     out_file = out_file[0]
     sim_dir = Path(sim_dir)
 
@@ -48,7 +48,7 @@ def main(sim_dir, out_file):
     out = signal.sosfilt(sos, out)
 
     sos = signal.butter(4, fmax, fs=fs, btype='low', output='sos')
-    out: np.ndarray = signal.sosfilt(sos, out)
+    out = signal.sosfilt(sos, out)
 
     # out *= signal.windows.hann(out.shape[-1])
     spectrum: np.ndarray = np.fft.rfft(out, axis=-1)
@@ -70,8 +70,8 @@ def main(sim_dir, out_file):
 
     plt.semilogx(frequencies, dB.squeeze(), label=f'{15}deg')
     plt.vlines(modes_f, -60, 0.0, colors='r', linestyles='--')
-    plt.xlim((10, 500))
-    plt.ylim((-80, 0))
+    plt.xlim(10, 500)
+    plt.ylim(-80, 0)
     plt.grid(which='both')
     plt.legend()
     plt.show()

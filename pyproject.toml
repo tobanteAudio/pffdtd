@@ -49,7 +49,7 @@ Homepage = "https://github.com/tobanteAudio/pffdtd"
 Issues = "https://github.com/tobanteAudio/pffdtd/issues"
 
 [project.optional-dependencies]
-dev = ["conan>=2.6.0", "pre-commit>=3.8.0", "pylint>=3.2.6"]
+dev = ["conan>=2.6.0", "mypy>=1.15.0", "pre-commit>=3.8.0", "pylint>=3.2.6"]
 test = ["pytest>=8.3.2", "pytest-cov>=5.0.0"]
 
 [project.scripts]
@@ -72,3 +72,16 @@ ignore = []
 in-place = true
 recursive = true
 aggressive = 0
+
+[tool.mypy]
+packages = "pffdtd"
+python_version = "3.11"
+warn_redundant_casts = true
+# warn_return_any = true
+warn_unused_configs = true
+warn_unused_ignores = true
+exclude = []
+
+[[tool.mypy.overrides]]
+module = ["h5py", "mayavi", "numba", "polyscope", "resampy", "tqdm", "tvtk.*"]
+ignore_missing_imports = true

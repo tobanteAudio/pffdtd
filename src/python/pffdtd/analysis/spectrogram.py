@@ -11,7 +11,7 @@ from pffdtd.signals.wavfile import wavread
 
 def plot_spectrogram(x, fs, *, window='hann', min_dB=-100, color_map='gouraud', ax: Axes | None = None):
     if not ax:
-        ax: Axes = plt.gca()
+        ax = plt.gca()
 
     nperseg = 128
     nfft = nperseg*32
@@ -26,7 +26,7 @@ def plot_spectrogram(x, fs, *, window='hann', min_dB=-100, color_map='gouraud', 
     ax.set_xlabel('Time [s]')
     ax.set_ylabel('Frequency [Hz]')
     ax.set_yscale('log')
-    ax.set_ylim([frequencies[1], fs / 2])
+    ax.set_ylim(frequencies[1], fs / 2)
 
 
 @click.command(name='spectrogram', help='Spectral decay plot (STFT).')

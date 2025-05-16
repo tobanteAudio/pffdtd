@@ -56,7 +56,7 @@ def porous_absorber(
 
     # Calculate absorption coefficient for porous absorber with no air gap
     abs_refl = _difference_over_sum((z_abs_surface / air.impedance) * cos_phi, 1.0)
-    abs_alpha = _reflectivity_as_alpha(abs_refl)
+    abs_alpha: np.ndarray = _reflectivity_as_alpha(abs_refl)
 
     if offset_zeros:
         abs_alpha[abs_alpha == 0.0] = np.finfo(abs_alpha.dtype).eps
@@ -83,7 +83,7 @@ def porous_absorber(
 
     # Absorption coefficient for porous absorber with air gap
     abs_air_refl = _difference_over_sum((abs_air_z / air.impedance) * cos_phi, 1.0)
-    abs_air_alpha = _reflectivity_as_alpha(abs_air_refl)
+    abs_air_alpha: np.ndarray = _reflectivity_as_alpha(abs_air_refl)
 
     if offset_zeros:
         abs_air_alpha[abs_air_alpha == 0.0] = np.finfo(abs_air_alpha.dtype).eps
@@ -124,12 +124,12 @@ def _difference_over_sum(a, b):
 @click.option('--angle', default=0.0, type=float)
 @click.option('--reflection', is_flag=True)
 @click.option('--temperature', default=20, type=float)
-def main(csv_file, angle, reflection, temperature):
+def main(csv_file, angle, reflection, temperature) -> None:
     absorbers = pd.read_csv(csv_file)
     frequency = np.linspace(20, 20_000, 1024*16)
 
-    _, ax = plt.subplots(1, 1)
-    ax: Axes = ax
+    _, axs = plt.subplots(1, 1)
+    ax: Axes = axs
     ax.set_title(csv_file)
 
     for _, spec in absorbers.iterrows():

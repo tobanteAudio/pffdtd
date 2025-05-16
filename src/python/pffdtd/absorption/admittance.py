@@ -134,7 +134,7 @@ def read_mat_DEF(filename) -> np.ndarray:
     """write HDF5 mat file from frequency-independent triplet (D=F=0)
     """
     with h5py.File(Path(filename), 'r') as h5f:
-        DEF = h5f['DEF'][()]
+        DEF = np.asarray(h5f['DEF'][()])
     return DEF
 
 

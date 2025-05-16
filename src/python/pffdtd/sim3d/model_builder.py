@@ -3,6 +3,7 @@
 
 from collections import defaultdict
 import json
+from typing import Any
 
 import numpy as np
 
@@ -34,7 +35,7 @@ def load_mesh(obj_file, reverse=False):
 
 class MeshModelBuilder:
     def __init__(self) -> None:
-        self.root = {
+        self.root: dict[str, Any] = {
             'mats_hash': {},
             'sources': [],
             'receivers': []

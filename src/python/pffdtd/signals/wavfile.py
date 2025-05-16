@@ -10,9 +10,9 @@ import scipy.io.wavfile
 
 def wavread(fname) -> tuple[float, np.ndarray]:
     fs, data = scipy.io.wavfile.read(fname)  # reads in (Nsamples,Nchannels)
+    fs = np.float64(fs)
     if data.dtype == np.int16:
         data = data/32768.0
-        fs = np.float64(fs)
     return fs, np.float64(data.T)
 
 

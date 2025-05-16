@@ -199,7 +199,7 @@ class ProcessOutputs:
             ax.plot(tv, r_out_f[i], linestyle='-', label=f'R{i+1}')
         ax.set_title('r_out filtered')
         ax.margins(0, 0.1)
-        # ax.set_xlim((0,0.1))
+        # ax.set_xlim(0,0.1)
         ax.set_xlabel('time (s)')
         ax.grid(which='minor', color='#DDDDDD', linestyle=':', linewidth=0.5)
         ax.minorticks_on()
@@ -218,8 +218,8 @@ class ProcessOutputs:
         ax.set_xlabel('freq (Hz)')
         ax.set_ylabel('dB')
         ax.set_xscale('log')
-        ax.set_ylim((dB_max-80, dB_max+10))
-        ax.set_xlim((1, Fs_f/2))
+        ax.set_ylim(dB_max-80, dB_max+10)
+        ax.set_xlim(1, Fs_f/2)
         ax.grid(which='minor', color='#DDDDDD', linestyle=':', linewidth=0.5)
         ax.minorticks_on()
         ax.legend()
@@ -301,7 +301,7 @@ def process_outputs(
     fcut_lowpass: float = 0.0,
     order_lowpass: int = 8,
     symmetric_lowpass: bool = True,
-    air_abs_filter: Literal['modal', 'stokes', 'ola'] | None = None,
+    air_abs_filter: Literal['none', 'ola', 'stokes', 'modal'] = 'none',
     save_h5: bool = True,
     save_wav: bool = True,
     plot_raw: bool = False,
@@ -328,6 +328,10 @@ def process_outputs(
         po.apply_stokes_filter()
     elif air_abs_filter.lower() == 'ola':  # fastest, but not as recommended
         po.apply_ola_filter()
+    elif air_abs_filter.lower() == 'none':
+        pass
+    else:
+        raise RuntimeError(f'unknown air absorption filter type "{air_abs_filter}"')
 
     if save_h5:
         po.save_h5()

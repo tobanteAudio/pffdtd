@@ -4,13 +4,13 @@ import click
 import numpy as np
 from matplotlib.axes import Axes
 import matplotlib.pyplot as plt
-from scipy.signal import butter, firwin2, unit_impulse, sosfilt, windows
+from scipy.signal import firwin2, unit_impulse, sosfilt, windows
 
 from pffdtd.signals.iir import dolby_atmos_target_curve, linkwitz_riley_crossover
 from pffdtd.signals.group_delay import group_delay_seconds
 
 
-def linear_phase_from_sos(sos, ntaps, window='hann'):
+def linear_phase_from_sos(sos, ntaps, window='hann') -> np.ndarray:
     assert ntaps % 2 != 0
 
     taps = np.zeros(ntaps)
@@ -29,7 +29,7 @@ def linear_phase_from_sos(sos, ntaps, window='hann'):
 @click.command(name='fir', help='FIR filters.')
 @click.option('--fs', default=48000.0, type=float)
 @click.option('--ntaps', default=1001, type=int)
-def main(fs, ntaps):
+def main(fs, ntaps) -> None:
     group_delay = ntaps//2
     group_delay_ms = 1000/fs*group_delay
     resolution = fs/ntaps
@@ -73,7 +73,7 @@ def main(fs, ntaps):
     ax.minorticks_on()
     ax.legend()
 
-    ax: Axes = axs[1]
+    ax = axs[1]
     ax.set_title('Error')
     ax.semilogx(freqs, firw_dB-sos_dB, label='FIRW-SOS')
     ax.semilogx(freqs, lin_dB-sos_dB, label='LIN-SOS')
@@ -85,7 +85,7 @@ def main(fs, ntaps):
     ax.minorticks_on()
     ax.legend()
 
-    ax: Axes = axs[2]
+    ax = axs[2]
     ax.set_title('|Error|')
     ax.semilogx(freqs, np.abs(firw_dB-sos_dB), label='FIRW-SOS')
     ax.semilogx(freqs, np.abs(lin_dB-sos_dB), label='LIN-SOS')
@@ -97,7 +97,7 @@ def main(fs, ntaps):
     ax.minorticks_on()
     ax.legend()
 
-    ax: Axes = axs[3]
+    ax = axs[3]
     ax.set_title('Group Delay')
     ax.semilogx(freqs, group_delay_seconds(sos_h, freqs)*1000, label='SOS')
     ax.set_xlabel('Frequency [Hz]')
@@ -112,7 +112,7 @@ def main(fs, ntaps):
 
     t = np.arange(ntaps)/fs*1000-group_delay_ms
     _, axs = plt.subplots(2, 1)
-    ax: Axes = axs[0]
+    ax = axs[0]
     ax.set_title('Impulse Response')
     ax.plot(t, firw, label='FIRWIN2')
     ax.plot(t, lin, label='LIN-to-SOS')
@@ -124,7 +124,7 @@ def main(fs, ntaps):
     ax.minorticks_on()
     ax.legend()
 
-    ax: Axes = axs[1]
+    ax = axs[1]
     ax.set_title('Impulse Response')
     ax.plot(t, 20*np.log10(np.maximum(np.abs(firw), 1e-9)), label='FIRWIN2')
     ax.plot(t, 20*np.log10(np.maximum(np.abs(lin), 1e-9)), label='LIN-to-SOS')

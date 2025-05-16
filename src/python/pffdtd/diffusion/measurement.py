@@ -1,17 +1,19 @@
 # SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: 2024 Tobias Hienzsch
 from pathlib import Path
+from typing import Any
 
 import click
 import h5py
 import matplotlib.pyplot as plt
+from matplotlib.projections.polar import PolarAxes
 import numpy as np
 from scipy import signal
 
 from pffdtd.signals.wavfile import collect_wav_files, load_wav_files
 
 
-def polar_response(y: np.array, fs: float):
+def polar_response(y: np.ndarray, fs: float) -> list[tuple[float, str]]:
     octave_bands = [
         # (63, 125),
         # (125, 250),
@@ -23,7 +25,7 @@ def polar_response(y: np.array, fs: float):
         (8000, 16000),
     ]
 
-    bands = []
+    bands: list[tuple[float, str]] = []
     for lowcut, highcut in octave_bands:
         sos = signal.butter(8, [lowcut, highcut], btype='band', output='sos', fs=fs)
         band = signal.sosfilt(sos, y, axis=-1)
@@ -40,7 +42,7 @@ def polar_response(y: np.array, fs: float):
 
 @click.command(name='measurement', help='Measure polar response.')
 @click.argument('sim_dir', nargs=1,  type=click.Path(exists=True))
-def main(sim_dir):
+def main(sim_dir) -> None:
     sim_dir = Path(sim_dir)
     files = collect_wav_files(sim_dir, '*_out_normalised.wav')
     fs, out = load_wav_files(files)
@@ -70,10 +72,10 @@ def main(sim_dir):
     # plt.legend()
     plt.show()
 
-    def _plot(ax, rms, title):
+    def _plot(ax: PolarAxes, rms: float, title: str):
         ax.plot(np.deg2rad(mic_angles), rms)
         ax.set_title(title)
-        ax.set_ylim((0.0, 100.0))
+        ax.set_ylim(0.0, 100.0)
         ax.set_thetamin(0)
         ax.set_thetamax(180)
 
