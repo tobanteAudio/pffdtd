@@ -31,5 +31,5 @@ def midi_key_color(note: int) -> str:
     """
     assert isinstance(note, int)
     assert note >= 0
-    is_black = (note % 12) in [1, 3, 6, 8, 10]
+    is_black = note % 12 in [1, 3, 6, 8, 10]
     return 'black' if is_black else 'white'

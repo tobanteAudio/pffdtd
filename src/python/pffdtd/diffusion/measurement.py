@@ -1,7 +1,6 @@
 # SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: 2024 Tobias Hienzsch
 from pathlib import Path
-from typing import Any
 
 import click
 import h5py

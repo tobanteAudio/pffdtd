@@ -107,7 +107,7 @@ def main(model_json, sim_dir):
     estimated_tdoas *= 1000
 
     def report_error(a, b, actual, estimate):
-        error_ms = (actual-estimate)
+        error_ms = actual-estimate
         return {
             'A': a,
             'B': b,
