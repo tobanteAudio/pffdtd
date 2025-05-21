@@ -191,12 +191,12 @@ class RoomGeometry:
         mat_str = self.mat_str
         Nmat = self.Nmat
         fig = None
-        if plot_normals or wireframe:
+
+        if wireframe:
             assert backend == 'mayavi'
 
-        # sources/receivers not drawn
-
         if backend == 'mayavi':
+            # sources/receivers not drawn
             from mayavi import mlab
             from tvtk.api import tvtk
 
@@ -245,6 +245,25 @@ class RoomGeometry:
 
             ps.set_SSAA_factor(4)
             ps.set_up_dir('z_up')
+
+            sources = ps.register_point_cloud(
+                name='Sources',
+                points=self.Sxyz,
+                enabled=True,
+                point_render_mode='sphere',
+                color=(0, 0, 1)
+            )
+            sources.set_radius(0.05, relative=False)
+
+            receivers = ps.register_point_cloud(
+                name='Receivers',
+                points=self.Rxyz,
+                enabled=True,
+                point_render_mode='sphere',
+                color=(0, 1, 0)
+            )
+            receivers.set_radius(0.05, relative=False)
+
             # Register a mesh
             for m in range(-1, Nmat):
                 mat = mat_str[m]
@@ -255,7 +274,7 @@ class RoomGeometry:
                 else:
                     color = tuple(npa(mats_dict[mat]['color'])/255.0)
 
-                ps.register_surface_mesh(
+                mat_mesh = ps.register_surface_mesh(
                     name=mat,
                     vertices=pts,
                     faces=tris,
@@ -264,6 +283,10 @@ class RoomGeometry:
                     edge_width=1,
                     enabled=enable_surface,
                 )
+
+                if plot_normals:
+                    mtp = tris_precompute(tris=tris, pts=pts)
+                    mat_mesh.add_vector_quantity('Normals', mtp['nor'], enabled=True, defined_on='faces')
 
         else:
             raise RuntimeError(f"invalid backend {backend}")
