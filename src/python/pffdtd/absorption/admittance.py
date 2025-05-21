@@ -356,4 +356,4 @@ def main(material_file):
 # write_freq_ind_mat_from_Yn(convert_R_to_Yn(0.5),filename=Path(write_folder / 'R50.h5'))
 
 # #input DEF values directly
-# write_freq_dep_mat(npa([[0,1.0,0],[2,3,4]]),filename=Path(write_folder / 'ex_mat.h5'))
+# write_freq_dep_mat(np.array([[0,1.0,0],[2,3,4]]),filename=Path(write_folder / 'ex_mat.h5'))

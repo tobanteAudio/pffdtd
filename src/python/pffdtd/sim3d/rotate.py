@@ -13,7 +13,6 @@ import shutil
 
 import h5py
 import numpy as np
-from numpy import array as npa
 
 from pffdtd.common.timerdict import TimerDict
 from pffdtd.geometry.math import ind2sub3d
@@ -33,11 +32,11 @@ def rotate(sim_dir, tr=None, compress=False):
         Nz = h5f['Nz'][()]
 
     if tr is None:
-        tr = np.argsort(npa([Nx, Ny, Nz]))[::-1]  # descending (Nx is non-contiguous -- want Ny*Nz min)
+        tr = np.argsort(np.array([Nx, Ny, Nz]))[::-1]  # descending (Nx is non-contiguous -- want Ny*Nz min)
     else:
-        assert np.all(np.sort(tr) == npa([0, 1, 2]))
+        assert np.all(np.sort(tr) == np.array([0, 1, 2]))
     _print(f'{tr=}')
-    if np.all(tr == npa([0, 1, 2])):
+    if np.all(tr == np.array([0, 1, 2])):
         _print('no rotate')
         _print(timer.ftoc('read'))
         return  # no op
@@ -52,10 +51,10 @@ def rotate(sim_dir, tr=None, compress=False):
 
     NN = adj_bn.shape[1]
     if NN == 6:
-        iVV = npa([[1, 0, 0], [-1, 0, 0], [0, 1, 0], [0, -1, 0], [0, 0, 1], [0, 0, -1]])
+        iVV = np.array([[1, 0, 0], [-1, 0, 0], [0, 1, 0], [0, -1, 0], [0, 0, 1], [0, 0, -1]])
     else:
-        iVV = npa([[+1, +1, 0], [-1, -1, 0], [0, +1, +1], [0, -1, -1], [+1, 0, +1], [-1, 0, -1],
-                   [+1, -1, 0], [-1, +1, 0], [0, +1, -1], [0, -1, +1], [+1, 0, -1], [-1, 0, +1]])
+        iVV = np.array([[+1, +1, 0], [-1, -1, 0], [0, +1, +1], [0, -1, -1], [+1, 0, +1], [-1, 0, -1],
+                        [+1, -1, 0], [-1, +1, 0], [0, +1, -1], [0, -1, +1], [+1, 0, -1], [-1, 0, +1]])
 
     with h5py.File(sim_dir / Path('signals.h5'), 'r') as h5f:
         in_ixyz = h5f['in_ixyz'][...]
@@ -76,9 +75,9 @@ def rotate(sim_dir, tr=None, compress=False):
         return [abcl[i] for i in tr]  # swap with order
 
     Nxt, Nyt, Nzt = _swap3(Nx, Ny, Nz, tr)
-    bn_ixyzt = npa(_swap3(*ind2sub3d(bn_ixyz, Nx, Ny, Nz), tr)).T @ npa([Nzt*Nyt, Nzt, 1])
-    in_ixyzt = npa(_swap3(*ind2sub3d(in_ixyz, Nx, Ny, Nz), tr)).T @ npa([Nzt*Nyt, Nzt, 1])
-    out_ixyzt = npa(_swap3(*ind2sub3d(out_ixyz, Nx, Ny, Nz), tr)).T @ npa([Nzt*Nyt, Nzt, 1])
+    bn_ixyzt = np.array(_swap3(*ind2sub3d(bn_ixyz, Nx, Ny, Nz), tr)).T @ np.array([Nzt*Nyt, Nzt, 1])
+    in_ixyzt = np.array(_swap3(*ind2sub3d(in_ixyz, Nx, Ny, Nz), tr)).T @ np.array([Nzt*Nyt, Nzt, 1])
+    out_ixyzt = np.array(_swap3(*ind2sub3d(out_ixyz, Nx, Ny, Nz), tr)).T @ np.array([Nzt*Nyt, Nzt, 1])
     xvt, yvt, zvt = _swap3(xv, yv, zv, tr)
     assert xvt.size == Nxt
     assert yvt.size == Nyt
@@ -88,7 +87,7 @@ def rotate(sim_dir, tr=None, compress=False):
     timer.tic('reorder adj')
     # reorder adj_bn columns
     jj = np.zeros((NN,), dtype=np.int_)
-    jj = npa([np.flatnonzero(np.all(ivv[tr] == iVV, axis=-1))[0] for ivv in iVV])
+    jj = np.array([np.flatnonzero(np.all(ivv[tr] == iVV, axis=-1))[0] for ivv in iVV])
     _print(f'{jj=}')
     ia = np.argsort(jj)
     adj_bnt = adj_bn[:, ia]
@@ -210,8 +209,8 @@ def fold_fcc_sim_data(sim_dir):
     ii = biy >= Ny/2
 
     # bn_ixyz
-    bn_ixyz[ii] = np.c_[bix[ii], Ny-biy[ii]-1, biz[ii]] @ npa([Nz*Nyh, Nz, 1])
-    bn_ixyz[~ii] = np.c_[bix[~ii], biy[~ii], biz[~ii]] @ npa([Nz*Nyh, Nz, 1])
+    bn_ixyz[ii] = np.c_[bix[ii], Ny-biy[ii]-1, biz[ii]] @ np.array([Nz*Nyh, Nz, 1])
+    bn_ixyz[~ii] = np.c_[bix[~ii], biy[~ii], biz[~ii]] @ np.array([Nz*Nyh, Nz, 1])
 
     adj_bn[ii, 0], adj_bn[ii, 6] = adj_bn[ii, 6], adj_bn[ii, 0]
     adj_bn[ii, 1], adj_bn[ii, 7] = adj_bn[ii, 7], adj_bn[ii, 1]
@@ -221,14 +220,14 @@ def fold_fcc_sim_data(sim_dir):
     # in_ixyz
     bix, biy, biz = ind2sub3d(in_ixyz, Nx, Ny, Nz)
     ii = biy >= Ny/2
-    in_ixyz[ii] = np.c_[bix[ii], Ny-biy[ii]-1, biz[ii]] @ npa([Nz*Nyh, Nz, 1])
-    in_ixyz[~ii] = np.c_[bix[~ii], biy[~ii], biz[~ii]] @ npa([Nz*Nyh, Nz, 1])
+    in_ixyz[ii] = np.c_[bix[ii], Ny-biy[ii]-1, biz[ii]] @ np.array([Nz*Nyh, Nz, 1])
+    in_ixyz[~ii] = np.c_[bix[~ii], biy[~ii], biz[~ii]] @ np.array([Nz*Nyh, Nz, 1])
 
     # out_ixyz
     bix, biy, biz = ind2sub3d(out_ixyz, Nx, Ny, Nz)
     ii = biy >= Ny/2
-    out_ixyz[ii] = np.c_[bix[ii], Ny-biy[ii]-1, biz[ii]] @ npa([Nz*Nyh, Nz, 1])
-    out_ixyz[~ii] = np.c_[bix[~ii], biy[~ii], biz[~ii]] @ npa([Nz*Nyh, Nz, 1])
+    out_ixyz[ii] = np.c_[bix[ii], Ny-biy[ii]-1, biz[ii]] @ np.array([Nz*Nyh, Nz, 1])
+    out_ixyz[~ii] = np.c_[bix[~ii], biy[~ii], biz[~ii]] @ np.array([Nz*Nyh, Nz, 1])
 
     timer.tic('write')
     # write

@@ -4,7 +4,6 @@ import json
 
 import click
 import numpy as np
-from numpy import array as npa
 
 from pffdtd.geometry.math import dotv, rotate_az_el_deg
 from pffdtd.geometry.tris_precompute import tris_precompute
@@ -22,12 +21,12 @@ class RoomGeometry:
         self.mats_dict = None
         # bmin and bmax may take custom bounds of scene
         if bmin is None:
-            self.bmin = npa([np.inf, np.inf, np.inf])
+            self.bmin = np.array([np.inf, np.inf, np.inf])
         else:
             self.bmin = bmin
 
         if bmax is None:
-            self.bmax = -npa([np.inf, np.inf, np.inf])
+            self.bmax = -np.array([np.inf, np.inf, np.inf])
         else:
             self.bmax = bmax
 
@@ -83,8 +82,8 @@ class RoomGeometry:
         colors = []
         # convert to np arrays
         for mat in mat_str:
-            mats_dict[mat]['pts'] = npa(mats_dict[mat]['pts'], dtype=np.float64) @ R  # also rotate pts here
-            mats_dict[mat]['tris'] = npa(mats_dict[mat]['tris'], dtype=np.int64)
+            mats_dict[mat]['pts'] = np.array(mats_dict[mat]['pts'], dtype=np.float64) @ R  # also rotate pts here
+            mats_dict[mat]['tris'] = np.array(mats_dict[mat]['tris'], dtype=np.int64)
             colors.append(mats_dict[mat]['color'])
 
         # calculate bmin/bmax
@@ -96,10 +95,10 @@ class RoomGeometry:
 
         assert len(data['sources']) > 0  # sources have to be defined in JSON
         assert len(data['receivers']) > 0  # receivers have to be defined in JSON
-        Sxyz = np.atleast_2d(npa([source['xyz'] for source in data['sources']], dtype=np.float64)) @ R
+        Sxyz = np.atleast_2d(np.array([source['xyz'] for source in data['sources']], dtype=np.float64)) @ R
         assert np.all((Sxyz > bmin) & (Sxyz < bmax))
 
-        Rxyz = np.atleast_2d(npa([receiver['xyz'] for receiver in data['receivers']], dtype=np.float64)) @ R
+        Rxyz = np.atleast_2d(np.array([receiver['xyz'] for receiver in data['receivers']], dtype=np.float64)) @ R
         assert np.all((Rxyz > bmin) & (Rxyz < bmax))
 
         self.mats_dict = mats_dict
@@ -210,7 +209,7 @@ class RoomGeometry:
                 if m == -1:
                     color = (1, 1, 1)
                 else:
-                    color = tuple(npa(mats_dict[mat]['color'])/255.0)
+                    color = tuple(np.array(mats_dict[mat]['color'])/255.0)
 
                 # tris
                 if not wireframe:
@@ -272,7 +271,7 @@ class RoomGeometry:
                 if m == -1:
                     color = (1, 1, 1)
                 else:
-                    color = tuple(npa(mats_dict[mat]['color'])/255.0)
+                    color = tuple(np.array(mats_dict[mat]['color'])/255.0)
 
                 mat_mesh = ps.register_surface_mesh(
                     name=mat,

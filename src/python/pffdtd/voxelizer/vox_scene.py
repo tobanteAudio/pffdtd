@@ -30,13 +30,11 @@ from multiprocessing import shared_memory
 from pathlib import Path
 
 import click
-import numpy as np
-from numpy import array as npa
-import numba as nb
 import h5py
+import numba as nb
+import numpy as np
 import psutil
 from tqdm import tqdm
-
 
 from pffdtd.common.misc import get_default_nprocs, clear_dat_folder, yes_or_no
 from pffdtd.common.timerdict import TimerDict
@@ -61,15 +59,15 @@ class VoxScene:
         self.NN = 6  # number of nearest neighbours
         self.hf = h  # scaled h (for FCC)
         self.face_area = h*h
-        self.VV = npa([[1., 0, 0], [-1, 0, 0], [0, 1, 0], [0, -1, 0], [0, 0, 1], [0, 0, -1]])
+        self.VV = np.array([[1., 0, 0], [-1, 0, 0], [0, 1, 0], [0, -1, 0], [0, 0, 1], [0, 0, -1]])
         self.uvv = self.VV
         if fcc:
             self.NN = 12
             self.face_area /= np.sqrt(2.0)
             self.hf *= np.sqrt(2.0)  # actually grid spacing on FCC subgrid
             self.VVc = self.VV
-            self.VV = npa([[+1., +1, 0], [-1, -1, 0], [0, +1, +1], [0, -1, -1], [+1, 0, +1], [-1, 0, -1],
-                           [+1, -1, 0], [-1, +1, 0], [0, +1, -1], [0, -1, +1], [+1, 0, -1], [-1, 0, +1]])
+            self.VV = np.array([[+1., +1, 0], [-1, -1, 0], [0, +1, +1], [0, -1, -1], [+1, 0, +1], [-1, 0, -1],
+                                [+1, -1, 0], [-1, +1, 0], [0, +1, -1], [0, -1, +1], [+1, 0, -1], [-1, 0, +1]])
             self.uvv = self.VV/np.sqrt(2.0)  # normalised
             self.print('Using FCC subgrid')
 
@@ -202,7 +200,7 @@ class VoxScene:
 
                     # returns np.inf or dist>0 if hit
                     hit_dist = np.full(vox_shape, np.inf)
-                    _, hit_dist.flat[ray_mask.flat[:]] = tri_ray_intersection_vec(ray_o, ray_d, npa([tri_pre]), d_eps=1.0e-3*h)
+                    _, hit_dist.flat[ray_mask.flat[:]] = tri_ray_intersection_vec(ray_o, ray_d, np.array([tri_pre]), d_eps=1.0e-3*h)
 
                     assert np.all(hit_dist >= 0.0)
                     hit_dist -= hf  # shift, doesn't affect np.inf entries

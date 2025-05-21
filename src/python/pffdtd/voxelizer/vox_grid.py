@@ -12,7 +12,6 @@ Notes:
 """
 import click
 import numpy as np
-from numpy import array as npa
 from tqdm import tqdm
 
 from pffdtd.common.misc import get_default_nprocs
@@ -52,8 +51,8 @@ class VoxGrid(VoxGridBase):
         Nxyz = cart_grid.Nxyz
         Nx, Ny, Nz = Nxyz
 
-        assert np.all(npa([xv[0], yv[0], zv[0]]) < np.amin(pts, axis=0))
-        assert np.all(npa([xv[Nx-1], yv[Ny-1], zv[Nz-1]]) > np.amax(pts, axis=0))
+        assert np.all(np.array([xv[0], yv[0], zv[0]]) < np.amin(pts, axis=0))
+        assert np.all(np.array([xv[Nx-1], yv[Ny-1], zv[Nz-1]]) > np.amax(pts, axis=0))
 
         # Nh*h is width of non-overlapping part of voxel (with 0.5 spacing around points)
         # Nh is also min number of points along one dim
@@ -90,7 +89,7 @@ class VoxGrid(VoxGridBase):
         vox_idx = 0
         self.timer.tic('allocate voxels')
         # allocate dummy voxels
-        self.voxels = [Voxel(npa([0, 0, 0]), npa([np.inf, np.inf, np.inf]), npa([0, 0, 0]), npa([0, 0, 0]), 0) for i in range(Nvox)]
+        self.voxels = [Voxel(np.array([0, 0, 0]), np.array([np.inf, np.inf, np.inf]), np.array([0, 0, 0]), np.array([0, 0, 0]), 0) for i in range(Nvox)]
         self.print(self.timer.ftoc('allocate voxels'))
 
         self.timer.tic('initialise voxels')
@@ -123,10 +122,10 @@ class VoxGrid(VoxGridBase):
                         iz_last = Nz-1
 
                     # box for voxel is one more layer thick
-                    bmin = npa([xv[ix_start], yv[iy_start], zv[iz_start]])-0.5*h
-                    bmax = npa([xv[ix_last], yv[iy_last], zv[iz_last]])+0.5*h  # using matlab-style end
-                    ixyz_start = npa([ix_start, iy_start, iz_start])
-                    ixyz_last = npa([ix_last, iy_last, iz_last])  # matlab-style end
+                    bmin = np.array([xv[ix_start], yv[iy_start], zv[iz_start]])-0.5*h
+                    bmax = np.array([xv[ix_last], yv[iy_last], zv[iz_last]])+0.5*h  # using matlab-style end
+                    ixyz_start = np.array([ix_start, iy_start, iz_start])
+                    ixyz_last = np.array([ix_last, iy_last, iz_last])  # matlab-style end
 
                     vox = self.voxels[vox_idx]
                     vox.bmin = bmin

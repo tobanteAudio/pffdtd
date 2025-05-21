@@ -16,7 +16,7 @@ triangles, pruned first here)
 
 import click
 import numpy as np
-from numpy import array as npa
+
 from pffdtd.geometry.math import dotv, normalise, vecnorm
 from pffdtd.geometry.tris_precompute import tris_precompute
 
@@ -200,7 +200,7 @@ def main(draw, trials):
         bmax = np.amax(pts, axis=0)
         scale = vecnorm(bmax-bmin)
 
-        tri_pre = tris_precompute(pts=pts, tris=npa([tri]))
+        tri_pre = tris_precompute(pts=pts, tris=np.array([tri]))
 
         ro = normalise(np.random.randn(Nrays, 3))*scale
         rd = normalise(np.random.random((Nrays, 3))*(bmax-bmin)+bmin - ro)
