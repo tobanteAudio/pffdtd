@@ -31,10 +31,8 @@ def plot_impulse_response_summary(
     freqs = np.fft.rfftfreq(nfft, 1/fs)
     H = np.fft.rfft(x, nfft)
 
-    mag = np.maximum(np.abs(H), 1e-9)/nfft
-    mag[1:-1] *= 2
-    mag_dB = 20*np.log10(mag)
-    # mag_dB = mag_dB - np.max(mag_dB) + 120
+    mag_dB = 20*np.log10(np.maximum(np.abs(H), 1e-9))
+    mag_dB = mag_dB - np.max(mag_dB)
 
     mag_smooth_dB = mag_dB
     if smoothing > 0:
@@ -49,23 +47,13 @@ def plot_impulse_response_summary(
     impulse_plot.set_title('Impulse')
     impulse_plot.grid(which='minor', color='#DDDDDD', linestyle=':', linewidth=0.5)
 
-    impulse_dB_plot: Axes = axs[0][1]
+    impulse_dB_plot: Axes = axs[1][0]
     impulse_dB_plot.plot(np.linspace(0.0, n/fs, n), 20*np.log10(np.abs(x)+1e-9))
     impulse_dB_plot.set_ylim(-100, 0)
     impulse_dB_plot.set_xlabel('Time [s]')
-    impulse_dB_plot.set_ylabel('Amplitude [dBFS]')
+    impulse_dB_plot.set_ylabel('Amplitude [dB]')
     impulse_dB_plot.set_title('Impulse')
     impulse_dB_plot.grid(which='minor', color='#DDDDDD', linestyle=':', linewidth=0.5)
-
-    mag_plot: Axes = axs[1][0]
-    mag_plot.semilogx(freqs, mag_smooth_dB)
-    mag_plot.set_xlim(10, fmax)
-    mag_plot.set_ylim(-120, 0)
-    # mag_plot.set_ylim(10, 130)
-    mag_plot.set_xlabel('Frequency [Hz]')
-    mag_plot.set_ylabel('Magnitude [dB]')
-    mag_plot.set_title('Magnitude')
-    mag_plot.grid(which='minor', color='#DDDDDD', linestyle=':', linewidth=0.5)
 
     phase_plot: Axes = axs[2][0]
     phase_plot.semilogx(freqs, np.rad2deg(np.angle(H)))
@@ -74,6 +62,15 @@ def plot_impulse_response_summary(
     phase_plot.set_ylabel('Phase [deg]')
     phase_plot.set_title('Phase')
     phase_plot.grid(which='minor', color='#DDDDDD', linestyle=':', linewidth=0.5)
+
+    mag_plot: Axes = axs[0][1]
+    mag_plot.semilogx(freqs, mag_smooth_dB)
+    mag_plot.set_xlim(10, fmax)
+    mag_plot.set_ylim(-60, 0)
+    mag_plot.set_xlabel('Frequency [Hz]')
+    mag_plot.set_ylabel('Magnitude [dB]')
+    mag_plot.set_title('Magnitude')
+    mag_plot.grid(which='minor', color='#DDDDDD', linestyle=':', linewidth=0.5)
 
     group_delay_plot: Axes = axs[1][1]
     group_delay_plot.semilogx(freqs, group_delay_seconds(H, freqs)*1000)

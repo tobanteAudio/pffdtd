@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: 2024 Tobias Hienzsch
+import pathlib
 
 import click
 import matplotlib.pyplot as plt
@@ -63,9 +64,10 @@ def plot_musical_response(
     else:
         ax.bar(note_numbers, smoothed)
 
+    ax.set_title(f'Musical Response: {pathlib.Path(file).stem}')
     ax.set_xlabel('Note Number [MIDI]')
     ax.set_ylabel('Magnitude [dB]')
-    ax.set_ylim(48, 92)
+    ax.set_ylim(50, 90)
     ax.grid(which='major', color='#DDDDDD', linestyle=':', linewidth=0.5)
 
 
@@ -156,7 +158,7 @@ def plot_response_compare(
 @click.option('--smoothing', default=0.0)
 @click.option('--target', default=0.0)
 @click.option('--musical', is_flag=True)
-def main(files, fmin, fmax, label_a, label_b, smoothing, target, musical):
+def main(files, fmin, fmax, label_a, label_b, smoothing, target, musical) -> None:
     if len(files) == 2:
         plot_response_compare(
             files,
@@ -166,9 +168,17 @@ def main(files, fmin, fmax, label_a, label_b, smoothing, target, musical):
             smoothing=smoothing,
             target=target,
         )
-        plt.show()
 
     if musical:
-        plot_musical_response(files[0], fmin=fmin, fmax=fmax, fraction=12, key_colors=False)
-        plt.title('Musical Response')
-        plt.show()
+        for file in files:
+            _, ax = plt.subplots(1, 1, constrained_layout=True)
+            plot_musical_response(
+                file,
+                fmin=fmin,
+                fmax=fmax,
+                fraction=12,
+                key_colors=False,
+                ax=ax,
+            )
+
+    plt.show()

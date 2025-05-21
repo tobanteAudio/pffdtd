@@ -76,9 +76,9 @@ def main():
     bmax = [6, 3.65, 3.12]  # Tobi Office
     bmax = [17, 15, 9]
     bmax = [6.77, 7.6, 4.4]  # Pro Studio
-    fmax = 10_000.0
-    ppw = 7.75
-    fcc = True
+    fmax = 16_000.0
+    ppw = 10.5
+    fcc = False
 
     # bmax = [4000, 2500, 750]  # Airport
     # bmax = [300, 250, 75]  # Generic Stadium
