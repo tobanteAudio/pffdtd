@@ -1,15 +1,13 @@
 # SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: 2021 Brian Hamilton
-
-"""Use numpy structured arrays to precompute a bunch of stuff for arrays of
-triangles. Used in triangle intersection routines
-"""
-
 import numpy as np
 from pffdtd.geometry.math import normalise, dot2, vecnorm
 
 
-def tris_precompute(pts=None, tris=None):
+def tris_precompute(*, pts: np.ndarray, tris: np.ndarray) -> np.ndarray:
+    """Use numpy structured arrays to precompute a bunch of stuff for arrays of
+    triangles. Used in triangle intersection routines
+    """
     # N.B. careful with slicing tris_pre[idx]['var'] (bad) vs tris_pre['var'][idx] (good)
     assert tris is not None
     assert pts is not None
