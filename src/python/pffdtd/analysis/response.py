@@ -169,6 +169,6 @@ def main(files, fmin, fmax, label_a, label_b, smoothing, target, musical):
         plt.show()
 
     if musical:
-        plot_musical_response(files[0], fmin=fmin, fmax=fmax, fraction=12)
+        plot_musical_response(files[0], fmin=fmin, fmax=fmax, fraction=12, key_colors=False)
         plt.title('Musical Response')
         plt.show()

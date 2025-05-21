@@ -32,8 +32,9 @@ OMP_PROC_BIND=spread OMP_NUM_THREADS=16 $pffdtd_engine sim3d -e cuda -p "64" -s 
 # pffdtd sim3d engine --sim_dir="$sim_dir" --plot --draw_backend="mayavi" --json_model="${model_dir}/model.json"
 
 # Post-process
-pffdtd sim3d process-outputs --sim_dir="$sim_dir" --fcut_lowpass "$fmax" --order_lowpass=8 --symmetric_lowpass --fcut_lowcut "$fmin" --order_lowcut=4 --air_abs_filter="none" --save_wav --plot
+pffdtd sim3d process-outputs --sim_dir="$sim_dir" --resample_Fs 48000 --fcut_lowpass "$fmax" --order_lowpass=8 --symmetric_lowpass --fcut_lowcut "$fmin" --order_lowcut=4 --air_abs_filter="none" --save_wav --plot
 pffdtd analysis summary --fmax="$fmax" --smoothing="$smoothing" $sim_dir/R001_out_normalised.wav
+# pffdtd analysis response --musical --fmin="$fmin" --fmax="$fmax" --smoothing="$smoothing" $sim_dir/R001_out_normalised.wav
 # pffdtd analysis response --fmin=10 --target="-7.51" --smoothing=$smoothing --fmax=$fmax $sim_dir/R001_out_normalised.wav $sim_dir/R002_out_normalised.wav
 # pffdtd analysis response --fmin=10 --target="-7.13" --smoothing=$smoothing --fmax=$fmax $sim_dir/R001_out_normalised.wav $sim_dir/R003_out_normalised.wav
 # pffdtd analysis response --fmin=10 --target="-7.31" --smoothing=$smoothing --fmax=$fmax $sim_dir/R001_out_normalised.wav $sim_dir/R004_out_normalised.wav
