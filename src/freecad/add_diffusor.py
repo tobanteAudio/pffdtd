@@ -7,7 +7,7 @@ import Part
 import numpy as np
 
 
-def quadratic_residue_diffuser(prime, depth=None) -> np.ndarray:
+def quadratic_residue_diffusor(prime, depth=None) -> np.ndarray:
     """
     Duplicate of pffdtd.duffusion.diffusor because FreeCAD
     doesn't have access to the pffdtd python package.
@@ -30,10 +30,10 @@ def main():
     backing = 10
     fin = 5
 
-    large_depths = quadratic_residue_diffuser(prime, D)
+    large_depths = quadratic_residue_diffusor(prime, D)
     large_depths = np.append(large_depths, large_depths[0])
 
-    small_depths = quadratic_residue_diffuser(small_prime, W*0.75)
+    small_depths = quadratic_residue_diffusor(small_prime, W*0.75)
     small_depths = np.append(small_depths, small_depths[0])
     small_width = W/small_depths.shape[0]
 
