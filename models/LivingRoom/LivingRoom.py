@@ -36,7 +36,7 @@ class LivingRoom(Setup3D):
         'Walls': 'concrete_painted.h5',
         'Window': 'glas_thick.h5',
     }
-    duration = 3.0
+    duration = 2.25
     Tc = 20
     rh = 50
     fcc = False

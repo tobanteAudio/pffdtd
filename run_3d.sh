@@ -9,7 +9,7 @@ root_dir="$(cd "$(dirname "$0")" && pwd)"
 pffdtd_engine="$root_dir/build/src/cpp/pffdtd-engine"
 # pffdtd_engine="$root_dir/cmake-build-cuda/src/cpp/pffdtd-engine"
 
-sim_name="BassReflex"
+sim_name="LivingRoom"
 sim_setup="${sim_name}.py"
 sim_dir="$root_dir/sim_data/$sim_name/gpu"
 
@@ -17,7 +17,7 @@ model_dir="$root_dir/models/$sim_name"
 materials_dir="$root_dir/materials"
 
 fmin=20
-fmax=4000
+fmax=1600
 smoothing=0
 
 # Delete old sim
@@ -34,7 +34,7 @@ OMP_PROC_BIND=spread OMP_NUM_THREADS=16 $pffdtd_engine sim3d -e cuda -p "64" -s 
 # Post-process
 pffdtd sim3d process-outputs --sim_dir="$sim_dir" --resample_Fs 48000 --fcut_lowpass "$fmax" --order_lowpass=8 --symmetric_lowpass --fcut_lowcut "$fmin" --order_lowcut=4 --air_abs_filter="none" --save_wav --plot
 pffdtd analysis summary --fmax="$fmax" --smoothing="$smoothing" $sim_dir/R001_out_normalised.wav
-# pffdtd analysis response --musical --fmin="$fmin" --fmax="$fmax" --smoothing="$smoothing" $sim_dir/R001_out_normalised.wav
+pffdtd analysis response --musical --fmin="$fmin" --fmax="$fmax" --smoothing="$smoothing" $sim_dir/R001_out_normalised.wav
 # pffdtd analysis response --fmin=10 --target="-7.51" --smoothing=$smoothing --fmax=$fmax $sim_dir/R001_out_normalised.wav $sim_dir/R002_out_normalised.wav
 # pffdtd analysis response --fmin=10 --target="-7.13" --smoothing=$smoothing --fmax=$fmax $sim_dir/R001_out_normalised.wav $sim_dir/R003_out_normalised.wav
 # pffdtd analysis response --fmin=10 --target="-7.31" --smoothing=$smoothing --fmax=$fmax $sim_dir/R001_out_normalised.wav $sim_dir/R004_out_normalised.wav
