@@ -65,8 +65,11 @@ class SimSignals:
 
         if sig_type == 'impulse':
             in_sig = unit_impulse(Nt, dtype=np.float64)
-        if sig_type == 'impulse-highpass':
-            in_sig = sosfilt(butter(4, 30, 'high', fs=fs, output='sos'), unit_impulse(Nt, dtype=np.float64))
+        if sig_type.startswith('impulse-highpass'):
+            order = 4
+            fcut = float(sig_type.split('-')[-1])
+            in_sig = sosfilt(butter(order, fcut, 'high', fs=fs, output='sos'), unit_impulse(Nt, dtype=np.float64))
+            self.print(f'Generate high-pass impulse with fcut = {fcut:.2f} Hz and order = {order}')
         elif sig_type == 'hann10':  # for viz
             N = 10
             n = np.arange(N)

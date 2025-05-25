@@ -26,33 +26,35 @@ from pffdtd.voxelizer.vox_scene import VoxScene
 
 
 def sim_setup_3d(
-    # The following are required but using None default so not positional
-    insig_type=None,  # sig type (see sig_comms.py)
-    fmax=None,  # fmax for simulation (to set grid spacing)
-    PPW=None,  # points per wavelength (also to set grid spacing)
-    save_folder=None,  # where to save .h5 files
-    model_json_file=None,  # json export of model
-    mat_folder=None,  # folder where to find .h5 DEF coefficients for wal impedances
-    mat_files_dict=None,  # dict to link up materials to .h5 mat files
-    duration=None,  # duration to simulate, in seconds
+    *,
+
+    # The following are required
+    insig_type,       # sig type (see sig_comms.py)
+    fmax,             # fmax for simulation (to set grid spacing)
+    PPW,              # points per wavelength (also to set grid spacing)
+    save_folder,      # where to save .h5 files
+    model_json_file,  # json export of model
+    mat_folder,       # folder where to find .h5 DEF coefficients for wal impedances
+    mat_files_dict,   # dict to link up materials to .h5 mat files
+    duration,         # duration to simulate, in seconds
 
     # The following are not required
-    Tc=20,  # temperature in deg C (sets sound speed)
-    rh=50,  # relative humidity of air (configures air absorption post processing)
-    source_num=1,  # 1-based indexing, source to simulate (in sources.csv)
-    save_folder_gpu=None,  # folder to save gpu-prepared .h5 data (sorted and rotated and FCC-folded)
-    draw_vox=False,  # draw voxelization
+    Tc=20,                  # temperature in deg C (sets sound speed)
+    rh=50,                  # relative humidity of air (configures air absorption post processing)
+    source_num=1,           # 1-based indexing, source to simulate (in sources.csv)
+    save_folder_gpu=None,   # folder to save gpu-prepared .h5 data (sorted and rotated and FCC-folded)
+    draw_vox=False,         # draw voxelization
     draw_backend='mayavi',  # default, 'polyscope' better for larger grids
-    diff_source=False,  # use this for single precision runs
-    fcc_flag=False,  # to use FCC scheme
-    bmin=None,  # to set custom scene bounds (useful for open scenes)
-    bmax=None,  # to set custom scene bounds (useful for open scenes)
-    Nvox_est=None,  # to manually set number of voxels (for ray-tri intersections) for voxelization
-    Nh=None,  # to set voxel size in grid pacing (for ray-tri intersections)
-    Nprocs=None,  # number of processes for multiprocessing, defaults to 80% of cores
-    compress=None,  # GZIP compress for HDF5, 0 to 9 (fast to slow)
-    rot_az_el=[0., 0.],  # to rotate the whole scene (including sources/receivers) -- to test robustness of scheme
-    model_factory=None,
+    diff_source=False,      # use this for single precision runs
+    fcc_flag=False,         # to use FCC scheme
+    bmin=None,              # to set custom scene bounds (useful for open scenes)
+    bmax=None,              # to set custom scene bounds (useful for open scenes)
+    Nvox_est=None,          # to manually set number of voxels (for ray-tri intersections) for voxelization
+    Nh=None,                # to set voxel size in grid pacing (for ray-tri intersections)
+    Nprocs=None,            # number of processes for multiprocessing, defaults to 80% of cores
+    compress=None,          # GZIP compress for HDF5, 0 to 9 (fast to slow)
+    rot_az_el=[0., 0.],     # to rotate the whole scene (including sources/receivers) -- to test robustness of scheme
+    model_factory=None,     # callback where the 'model.json' can be created
 ):
     assert Tc is not None
     assert rh is not None
@@ -152,7 +154,7 @@ class Setup3D:
     mat_folder: str | None = None
 
     source_index: int
-    source_signal: Literal['impulse', 'impulse-highpass', 'hann10', 'hann20', 'hann5ms', 'dhann30']
+    source_signal: str
     diff_source: bool = True
 
     compress: int = 0
