@@ -18,6 +18,7 @@ def plot_impulse_response_summary(
     fmax: float | None = None,
     smoothing: float = 0.0,
     window: str | tuple[str, float] | None = None,
+    ax: list[list[Axes]] | None = None
 ):
     n = x.shape[-1]
     nfft = n
@@ -38,16 +39,14 @@ def plot_impulse_response_summary(
     if smoothing > 0:
         mag_smooth_dB = octave_smoothing(mag_dB, fs, nfft, smoothing)
 
-    fig, axs = plt.subplots(3, 2)
-
-    impulse_plot: Axes = axs[0][0]
+    impulse_plot: Axes = ax[0][0]
     impulse_plot.plot(np.linspace(0.0, n/fs, n), x)
     impulse_plot.set_xlabel('Time [s]')
     impulse_plot.set_ylabel('Amplitude [FS]')
     impulse_plot.set_title('Impulse')
     impulse_plot.grid(which='minor', color='#DDDDDD', linestyle=':', linewidth=0.5)
 
-    impulse_dB_plot: Axes = axs[1][0]
+    impulse_dB_plot: Axes = ax[1][0]
     impulse_dB_plot.plot(np.linspace(0.0, n/fs, n), 20*np.log10(np.abs(x)+1e-9))
     impulse_dB_plot.set_ylim(-100, 0)
     impulse_dB_plot.set_xlabel('Time [s]')
@@ -55,7 +54,7 @@ def plot_impulse_response_summary(
     impulse_dB_plot.set_title('Impulse')
     impulse_dB_plot.grid(which='minor', color='#DDDDDD', linestyle=':', linewidth=0.5)
 
-    phase_plot: Axes = axs[2][0]
+    phase_plot: Axes = ax[2][0]
     phase_plot.semilogx(freqs, np.rad2deg(np.angle(H)))
     phase_plot.set_xlim(10, fmax)
     phase_plot.set_xlabel('Frequency [Hz]')
@@ -63,7 +62,7 @@ def plot_impulse_response_summary(
     phase_plot.set_title('Phase')
     phase_plot.grid(which='minor', color='#DDDDDD', linestyle=':', linewidth=0.5)
 
-    mag_plot: Axes = axs[0][1]
+    mag_plot: Axes = ax[0][1]
     mag_plot.semilogx(freqs, mag_smooth_dB)
     mag_plot.set_xlim(10, fmax)
     mag_plot.set_ylim(-60, 0)
@@ -72,7 +71,7 @@ def plot_impulse_response_summary(
     mag_plot.set_title('Magnitude')
     mag_plot.grid(which='minor', color='#DDDDDD', linestyle=':', linewidth=0.5)
 
-    group_delay_plot: Axes = axs[1][1]
+    group_delay_plot: Axes = ax[1][1]
     group_delay_plot.semilogx(freqs, group_delay_seconds(H, freqs)*1000)
     group_delay_plot.set_xlim(10, fmax)
     group_delay_plot.set_xlabel('Frequency [Hz]')
@@ -80,7 +79,7 @@ def plot_impulse_response_summary(
     group_delay_plot.set_title('Group Delay')
     group_delay_plot.grid(which='minor', color='#DDDDDD', linestyle=':', linewidth=0.5)
 
-    excess_group_delay_plot: Axes = axs[2][1]
+    excess_group_delay_plot: Axes = ax[2][1]
     excess_group_delay_plot.semilogx(freqs, excess_group_delay_seconds(H, freqs)*1000)
     excess_group_delay_plot.set_xlim(10, fmax)
     excess_group_delay_plot.set_xlabel('Frequency [Hz]')
@@ -88,7 +87,7 @@ def plot_impulse_response_summary(
     excess_group_delay_plot.set_title('Excess Group Delay')
     excess_group_delay_plot.grid(which='minor', color='#DDDDDD', linestyle=':', linewidth=0.5)
 
-    return fig, axs
+    return ax
 
 
 @click.command(name='summary', help='Quick display of IRs.')

@@ -69,7 +69,7 @@ def decay_time(edc_dB, fs, t20=False):
     return t60
 
 
-def reverberation_time(x, fs, freqs, plot=False) -> pd.DataFrame:
+def reverberation_time(x, fs, freqs, plot=False, ax: Axes | None = None) -> pd.DataFrame:
     results = []
     for frequency in freqs:
         bandpass = octave_bandpass(frequency, fs, fraction=3, order=2)
@@ -90,15 +90,17 @@ def reverberation_time(x, fs, freqs, plot=False) -> pd.DataFrame:
         })
 
         if plot:
+            if not ax:
+                ax = plt.gca()
             t = np.linspace(0, edc_dB.shape[-1]/fs, edc_dB.shape[-1])
-            plt.plot(t, edc_dB, label=f'{frequency} Hz')
+            ax.plot(t, edc_dB, label=f'{frequency:.1f} Hz')
 
     if plot:
-        plt.ylim(-80, 0)
-        plt.grid(which='minor', color='#DDDDDD', linestyle=':', linewidth=0.5)
-        plt.minorticks_on()
-        plt.legend(loc='upper right')
-        plt.show()
+        ax.set_ylim(-80, 0)
+        ax.grid(which='minor', color='#DDDDDD', linestyle=':', linewidth=0.5)
+        ax.minorticks_on()
+        ax.legend(loc='upper right')
+        ax.set_title('Energy Decay Curve')
 
     return pd.DataFrame.from_records(results)
 
