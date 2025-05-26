@@ -30,11 +30,11 @@ class LivingRoom(Setup3D):
         'Speakers': 'wood.h5',
         'Speaker Stands': 'metal_iron.h5',
         'Table': 'wood.h5',
-        'TV 42': 'wood.h5',
-        'TV 55': 'wood.h5',
+        # 'TV 42': 'wood.h5',
+        # 'TV 55': 'wood.h5',
         'TV Table': 'wood.h5',
-        'Walls': 'concrete_painted.h5',
-        'Window': 'glas_thick.h5',
+        'Walls': 'brick_wall.h5',
+        'Window': 'glas_thin.h5',
     }
     duration = 2.25
     Tc = 20
@@ -54,15 +54,21 @@ class LivingRoom(Setup3D):
 
         # autopep8: off
         absorber_8000_150mm = porous_absorber(0.15, 8000.0, frequency=iso_octaves, offset_zeros=True, angle=45)
+
+        # ISO octaves                   16    32    63    125   250   500   1000  2000  4000  8000  16000
+        brick_wall          = np.array([0.01, 0.01, 0.08, 0.05, 0.04, 0.02, 0.04, 0.05, 0.05, 0.05, 0.05])
         concrete_painted    = np.array([0.01, 0.01, 0.01, 0.05, 0.06, 0.07, 0.09, 0.08, 0.08, 0.08, 0.08])
         glas_thick          = np.array([0.15, 0.30, 0.27, 0.18, 0.06, 0.04, 0.03, 0.02, 0.02, 0.02, 0.01])
+        glas_thin           = np.array([0.15, 0.40, 0.30, 0.20, 0.06, 0.04, 0.03, 0.02, 0.02, 0.02, 0.01])
         metal_iron          = np.array([0.01, 0.01, 0.01, 0.01, 0.01, 0.02, 0.02, 0.03, 0.03, 0.03, 0.02])
         wood                = np.array([0.10, 0.11, 0.13, 0.15, 0.11, 0.10, 0.07, 0.06, 0.07, 0.07, 0.07])
 
         folder = Path(self.mat_folder)
         fit_to_Sabs_oct_11(absorber_8000_150mm , filename=folder / 'absorber_8000_150mm.h5')
+        fit_to_Sabs_oct_11(brick_wall          , filename=folder / 'brick_wall.h5'         )
         fit_to_Sabs_oct_11(concrete_painted    , filename=folder / 'concrete_painted.h5'   )
         fit_to_Sabs_oct_11(glas_thick          , filename=folder / 'glas_thick.h5'         )
+        fit_to_Sabs_oct_11(glas_thin           , filename=folder / 'glas_thin.h5'          )
         fit_to_Sabs_oct_11(metal_iron          , filename=folder / 'metal_iron.h5'         )
         fit_to_Sabs_oct_11(wood                , filename=folder / 'wood.h5'               )
         # autopep8: on
@@ -94,8 +100,8 @@ class LivingRoom(Setup3D):
         m.add('Speakers', obj / 'speakers.obj', [25, 25, 25], reverse=True)
         m.add('Speaker Stands', obj / 'speaker_stands.obj', [5, 5, 5], reverse=True)
         m.add('Table', obj / 'table.obj', [200, 200, 200], reverse=True)
-        m.add('TV 42', obj / 'tv_42.obj', [10, 10, 10], reverse=True)
-        m.add('TV 55', obj / 'tv_55.obj', [10, 10, 10], reverse=True)
+        # m.add('TV 42', obj / 'tv_42.obj', [10, 10, 10], reverse=True)
+        # m.add('TV 55', obj / 'tv_55.obj', [10, 10, 10], reverse=True)
         m.add('TV Table', obj / 'tv_table.obj', [120, 120, 120], reverse=True)
         m.add('Walls', obj / 'walls.obj', [175, 175, 175], reverse=True)
         m.add('Window', obj / 'window.obj', [137, 207, 240], reverse=True)
