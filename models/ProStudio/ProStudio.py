@@ -45,7 +45,7 @@ class ProStudio(Setup3D):
     draw_vox = True
     draw_backend = 'polyscope'
     compress = 0
-    rot_az_el = [0, 0]
+    rot_az_el = (0, 0)
 
     def generate_materials(self):
         self._print('Generate materials')

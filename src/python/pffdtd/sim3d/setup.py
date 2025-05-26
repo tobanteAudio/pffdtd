@@ -53,7 +53,7 @@ def sim_setup_3d(
     Nh=None,                # to set voxel size in grid pacing (for ray-tri intersections)
     Nprocs=None,            # number of processes for multiprocessing, defaults to 80% of cores
     compress=None,          # GZIP compress for HDF5, 0 to 9 (fast to slow)
-    rot_az_el=[0., 0.],     # to rotate the whole scene (including sources/receivers) -- to test robustness of scheme
+    rot_az_el=(0, 0),       # to rotate the whole scene (including sources/receivers) -- to test robustness of scheme
     model_factory=None,     # callback where the 'model.json' can be created
 ):
     assert Tc is not None
@@ -149,7 +149,7 @@ class Setup3D:
     model_file: str
     bmin: list[float] | None = None
     bmax: list[float] | None = None
-    rot_az_el: list[float] = [0.0, 0.0]
+    rot_az_el: tuple[float, float] = (0, 0)
     materials: dict[str, str] = {}
     mat_folder: str | None = None
 

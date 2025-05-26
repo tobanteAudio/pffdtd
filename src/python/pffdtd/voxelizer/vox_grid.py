@@ -155,7 +155,7 @@ class VoxGrid(VoxGridBase):
 
 
 @click.command(name='grid')
-@click.option('--az_el', nargs=2, type=float, default=[0, 0], help='two angles in deg')
+@click.option('--az_el', nargs=2, type=float, default=(0, 0), help='two angles in deg')
 @click.option('--draw/--no-draw', default=False)
 @click.option('--draw-points/--no-draw-points', default=False, help='draw grid points')
 @click.option('--h', type=float, required=True)

@@ -16,7 +16,14 @@ class RoomGeometry:
     - Also prunes triangles, prints some stats (surface areas, volume), rotates scene, and draws
     """
 
-    def __init__(self, model_file=None, az_el=[0., 0.], area_eps=1e-6, bmin=None, bmax=None):
+    def __init__(
+        self,
+        model_file: str,
+        az_el: tuple[float, float] = (0., 0.),
+        area_eps: float = 1e-6,
+        bmin=None,
+        bmax=None,
+    ):
         # main dict for room data
         self.mats_dict = None
         # bmin and bmax may take custom bounds of scene
@@ -46,6 +53,7 @@ class RoomGeometry:
         # identity 3x3 matrix by default
         self.R, _, _ = rotate_az_el_deg(*az_el)
 
+        az_el = np.array(az_el)
         if np.any(az_el != 0):
             self.print(f'az-el deg rotation: {az_el}')
 

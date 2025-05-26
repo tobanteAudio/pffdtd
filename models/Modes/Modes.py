@@ -29,7 +29,7 @@ class Modes(Setup3D):
     compress = 0
     draw_vox = False
     draw_backend = 'polyscope'
-    rot_az_el = [0, 0]
+    rot_az_el = (0, 0)
 
     def generate_materials(self):
         self._print('Generate materials')

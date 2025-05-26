@@ -25,7 +25,7 @@ class InfiniteBaffle(Setup3D):
     draw_vox = False
     draw_backend = 'polyscope'
     compress = 0
-    rot_az_el = [0, 0]
+    rot_az_el = (0, 0)
     bmax = [343.2/20, 2.0, 343.2/20]
     bmin = [0, 0, 0]
 

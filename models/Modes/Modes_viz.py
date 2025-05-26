@@ -25,7 +25,7 @@ sim_setup_3d(
     compress=0,
     draw_vox=True,
     draw_backend='polyscope',
-    rot_az_el=[0, 0]
+    rot_az_el=(0, 0)
 )
 
 # then run with python and 3D visualization:
