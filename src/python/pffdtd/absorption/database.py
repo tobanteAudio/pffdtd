@@ -67,16 +67,16 @@ def read_absorption_database_excel(path) -> pd.DataFrame:
     )
 
     df = df.drop(['character of absorption', 'flow resistance', 'layer thickness'], axis=1)
-    return df.sort_values(['reference', 63, 80, 100, 125, 160, 200], ascending=False)  # type: ignore
+    return df  # .sort_values(['reference', 63, 80, 100, 125, 160, 200], ascending=False)  # type: ignore
 
 
 @click.command(name='database')
 @click.argument('database_excel', nargs=1, type=click.Path(exists=True))
-def main(database_excel):
+@click.option('--save_csv', type=click.Path())
+def main(database_excel, save_csv) -> None:
     df = read_absorption_database_excel(database_excel)
-    df.to_csv('absorber.csv', sep=';', index=False, quoting=csv.QUOTE_MINIMAL)
     print(df)
-    # print(df.columns)
     print('--------------------------')
-    # print(df.describe())
-    # print(df.memory_usage(deep=True))
+
+    if save_csv:
+        df.to_csv(save_csv, sep=';', index=False, quoting=csv.QUOTE_MINIMAL)

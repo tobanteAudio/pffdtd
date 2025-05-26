@@ -6,32 +6,42 @@ import sys
 from typing import Any
 
 import matplotlib.pyplot as plt
-from matplotlib.backends.backend_qtagg import FigureCanvas
 from matplotlib.axes import Axes
+from matplotlib.backends.backend_qtagg import FigureCanvas
 from matplotlib.figure import Figure
+from matplotlib.ticker import ScalarFormatter
 import numpy as np
 
 from PySide6.QtCore import (
     QAbstractListModel,
+    QAbstractTableModel,
+    QItemSelection,
     QModelIndex,
     QObject,
+    # QSortFilterProxyModel,
     Qt,
 )
 from PySide6.QtGui import QAction
 from PySide6.QtWidgets import (
+    QAbstractItemView,
     QApplication,
     QFileDialog,
     QLabel,
+    QLineEdit,
     QListView,
     QHBoxLayout,
     QMainWindow,
     QProgressBar,
+    QSplitter,
+    QTableView,
     QTabWidget,
     QToolBar,
+    QVBoxLayout,
     QWidget,
 )
 
 from pffdtd.common.plot import plot_styles
+from pffdtd.absorption.database import read_absorption_database_excel
 from pffdtd.analysis.response import plot_musical_response
 from pffdtd.analysis.rt60 import reverberation_time
 from pffdtd.analysis.summary import plot_impulse_response_summary
@@ -55,6 +65,105 @@ class MatplotLibCanvas(FigureCanvas):
                 ax.clear()
         else:
             self.axes.clear()
+
+
+class MaterialTableModel(QAbstractTableModel):
+    def __init__(self):
+        super().__init__()
+        self._df = read_absorption_database_excel('./sim_data/abstab_wf.xls')
+
+    def data(self, index, role):
+        if role == Qt.ItemDataRole.DisplayRole:
+            value = self._df.iloc[index.row(), index.column()]
+            return str(value)
+
+    def rowCount(self, index):
+        return self._df.shape[0]
+
+    def columnCount(self, index):
+        return self._df.shape[1]
+
+    def headerData(self, section, orientation, role):
+        # section is the index of the column/row.
+        if role == Qt.ItemDataRole.DisplayRole:
+            if orientation == Qt.Orientation.Horizontal:
+                return str(self._df.columns[section])
+
+            if orientation == Qt.Orientation.Vertical:
+                return str(self._df.index[section])
+
+
+class MaterialTable(QWidget):
+    def __init__(self):
+        super().__init__()
+
+        # TABLE
+        self.model = MaterialTableModel()
+        # self.proxy_model = QSortFilterProxyModel()
+        # self.proxy_model.setFilterKeyColumn(-1)  # Search all columns.
+        # self.proxy_model.setSourceModel(self.model)
+        # self.proxy_model.sort(0, Qt.SortOrder.AscendingOrder)
+
+        self.table = QTableView()
+        self.table.setModel(self.model)
+        self.table.setSelectionMode(QAbstractItemView.SelectionMode.ExtendedSelection)
+        self.table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
+        self.table.selectionModel().selectionChanged.connect(self.updateSelection)
+
+        self.search = QLineEdit()
+        # self.search.textChanged.connect(self.proxy_model.setFilterFixedString)
+
+        vbox = QVBoxLayout()
+        vbox.addWidget(self.search)
+        vbox.addWidget(self.table)
+
+        tableWithSearch = QWidget()
+        tableWithSearch.setLayout(vbox)
+
+        # PLOT
+        self.canvas = MatplotLibCanvas(self, width=5, height=4)
+
+        # LAYOUT
+        splitter = QSplitter(Qt.Orientation.Vertical)
+        splitter.addWidget(tableWithSearch)
+        splitter.addWidget(self.canvas)
+        layout = QHBoxLayout()
+        layout.addWidget(splitter)
+        self.setLayout(layout)
+
+    def updateSelection(self, selected: QItemSelection, deselected: QItemSelection):
+        def get_id(idx):
+            return self.model.headerData(idx.row(), Qt.Orientation.Vertical, Qt.ItemDataRole.DisplayRole)
+
+        rows = self.table.selectionModel().selectedRows()
+        ids = [get_id(r) for r in rows]
+
+        ax = self.canvas.axes
+        ax.clear()
+
+        if len(ids) == 0:
+            self.canvas.draw()
+            return
+
+        bands = [63, 125, 250, 500, 1000, 2000, 4000, 8000]
+        ax.set_xlabel('Frequency [Hz]')
+        ax.set_ylim(0.0, 1.0)
+        ax.set_ylabel('Absorption [Sabs]')
+
+        for idx in ids:
+            coefficients = self.model._df.loc[int(idx)][bands]
+            description = self.model._df.loc[int(idx)]['description']
+            ax.semilogx(bands, coefficients, label=description[:150])
+            ax.scatter(bands, coefficients, color='red')
+
+        formatter = ScalarFormatter()
+        formatter.set_scientific(False)
+        ax.xaxis.set_major_formatter(formatter)
+
+        ax.grid(which='minor', color='#DDDDDD', linestyle=':', linewidth=0.5)
+        ax.legend(loc='upper left')
+        # ax.grid(which='both')
+        self.canvas.draw()
 
 
 class OpenFilesListModel(QAbstractListModel):
@@ -81,7 +190,7 @@ class OpenFilesListModel(QAbstractListModel):
 
 class MainWindow(QMainWindow):
     def __init__(self):
-        super(MainWindow, self).__init__()
+        super().__init__()
 
         # Status Bar
         self.status = QLabel()
@@ -121,26 +230,26 @@ class MainWindow(QMainWindow):
         self.fileListModel = OpenFilesListModel(self)
         self.fileList = QListView()
         self.fileList.setModel(self.fileListModel)
+        # self.fileList.selectionModel().selectionChanged.connect()
 
         # Tabs
         self.summary = MatplotLibCanvas(self, width=5, height=4, dpi=100, subplot_args={'nrows': 3, 'ncols': 2})
         self.musical = MatplotLibCanvas(self, width=5, height=4, dpi=100)
         self.edc = MatplotLibCanvas(self, width=5, height=4, dpi=100)
+        self.materials = MaterialTable()
 
         self.tabs = QTabWidget(tabPosition=QTabWidget.TabPosition.North)
         self.tabs.addTab(self.summary, 'Summary')
         self.tabs.addTab(self.musical, 'Musical')
         self.tabs.addTab(self.edc, 'EDC')
+        self.tabs.addTab(self.materials, 'Materials')
 
         # Main Layout
-        layout = QHBoxLayout()
-        layout.addWidget(self.fileList, stretch=1)
-        layout.addWidget(self.tabs, stretch=5)
+        splitter = QSplitter(Qt.Orientation.Horizontal)
+        splitter.addWidget(self.fileList)
+        splitter.addWidget(self.tabs)
 
-        widget = QWidget()
-        widget.setLayout(layout)
-        self.setCentralWidget(widget)
-
+        self.setCentralWidget(splitter)
         self.setWindowTitle('PFFDTD')
         self.resize(1280, 720)
 

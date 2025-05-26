@@ -39,6 +39,9 @@ def plot_impulse_response_summary(
     if smoothing > 0:
         mag_smooth_dB = octave_smoothing(mag_dB, fs, nfft, smoothing)
 
+    if ax is None:
+        _, ax = plt.subplots(3, 2)
+
     impulse_plot: Axes = ax[0][0]
     impulse_plot.plot(np.linspace(0.0, n/fs, n), x)
     impulse_plot.set_xlabel('Time [s]')
