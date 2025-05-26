@@ -48,11 +48,13 @@ Homepage = "https://github.com/tobanteAudio/pffdtd"
 Issues = "https://github.com/tobanteAudio/pffdtd/issues"
 
 [project.optional-dependencies]
+gui = ["PySide6"]
 test = ["pytest", "pytest-cov"]
 dev = ["autopep8", "conan", "mypy", "pre-commit", "pylint"]
 
 [project.scripts]
 pffdtd = "pffdtd.cli:main"
+pffdtd-gui = "pffdtd.gui.main:main"
 
 [tool.setuptools.packages.find]
 where = ["src/python"]
