@@ -70,6 +70,9 @@ def decay_time(edc_dB, fs, t20=False):
 
 
 def reverberation_time(x, fs, freqs, plot=False, ax: Axes | None = None) -> pd.DataFrame:
+    if not ax:
+        ax = plt.gca()
+
     results = []
     for frequency in freqs:
         bandpass = octave_bandpass(frequency, fs, fraction=3, order=2)
@@ -90,8 +93,6 @@ def reverberation_time(x, fs, freqs, plot=False, ax: Axes | None = None) -> pd.D
         })
 
         if plot:
-            if not ax:
-                ax = plt.gca()
             t = np.linspace(0, edc_dB.shape[-1]/fs, edc_dB.shape[-1])
             ax.plot(t, edc_dB, label=f'{frequency:.1f} Hz')
 

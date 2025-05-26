@@ -153,9 +153,6 @@ class VoxGrid(VoxGridBase):
     def print(self, fstring):
         print(f'--VOX_GRID: {fstring}')
 
-    def print_stats(self):
-        super().print_stats()
-
 
 @click.command(name='grid')
 @click.option('--az_el', nargs=2, type=float, default=[0, 0], help='two angles in deg')

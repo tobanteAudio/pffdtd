@@ -7,7 +7,7 @@ from typing import Any
 
 import matplotlib.pyplot as plt
 from matplotlib.axes import Axes
-from matplotlib.backends.backend_qtagg import FigureCanvas
+from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 from matplotlib.ticker import ScalarFormatter
 import numpy as np
@@ -49,7 +49,7 @@ from pffdtd.signals.octave import center_frequencies
 from pffdtd.signals.wavfile import wavread
 
 
-class MatplotLibCanvas(FigureCanvas):
+class MatplotLibCanvas(FigureCanvasQTAgg):
     fig: Figure
     axes: Axes | np.ndarray[Axes] | np.ndarray[np.ndarray[Axes]]
 
@@ -72,10 +72,11 @@ class MaterialTableModel(QAbstractTableModel):
         super().__init__()
         self._df = read_absorption_database_excel('./sim_data/abstab_wf.xls')
 
-    def data(self, index, role):
+    def data(self, index: QModelIndex, role: int) -> Any:
         if role == Qt.ItemDataRole.DisplayRole:
             value = self._df.iloc[index.row(), index.column()]
             return str(value)
+        return None
 
     def rowCount(self, index):
         return self._df.shape[0]
@@ -91,6 +92,8 @@ class MaterialTableModel(QAbstractTableModel):
 
             if orientation == Qt.Orientation.Vertical:
                 return str(self._df.index[section])
+
+        return None
 
 
 class MaterialTable(QWidget):
@@ -173,11 +176,13 @@ class OpenFilesListModel(QAbstractListModel):
         super().__init__(parent=parent)
         self._open_files = []
 
-    def data(self, index, role) -> Any:
+    def data(self, index: QModelIndex, role: int) -> Any:
         if 0 <= index.row() < self.rowCount():
-            if role == Qt.DisplayRole:
+            if role == Qt.ItemDataRole.DisplayRole:
                 path = self._open_files[index.row()]
                 return path.stem
+
+        return None
 
     def rowCount(self, index: QModelIndex = QModelIndex()) -> int:
         return len(self._open_files)
@@ -195,23 +200,20 @@ class MainWindow(QMainWindow):
         # Status Bar
         self.status = QLabel()
         self.status.setText('Foo bar baz.')
+        self.status.setAlignment(Qt.AlignmentFlag.AlignLeft)
 
         self.progress = QProgressBar()
         self.progress.setRange(0, 100)
         self.progress.setValue(0)
 
-        self.statusBar().addPermanentWidget(self.status)
-        self.statusBar().addPermanentWidget(self.progress)
+        self.statusBar().addPermanentWidget(self.status, stretch=6)
+        self.statusBar().addPermanentWidget(self.progress, stretch=4)
 
-        # Toolbar
-        toolbar = QToolBar('My main toolbar')
-        self.addToolBar(toolbar)
-
-        # Create the "Open" action
-        openAction = QAction('&Open...', self)
-        openAction.setShortcut('Ctrl+O')
-        openAction.setStatusTip('Open a impulse file')
-        openAction.triggered.connect(self.onOpenWavFile)
+        # Create the "Import IR" action
+        importImpulseAction = QAction('&Import IR...', self)
+        importImpulseAction.setShortcut('Ctrl+Shift+I')
+        importImpulseAction.setStatusTip('Open a impulse file')
+        importImpulseAction.triggered.connect(self.onImportImpulseResponse)
 
         # Create the "Exit" action
         exitAction = QAction('&Exit...', self)
@@ -222,9 +224,19 @@ class MainWindow(QMainWindow):
         # Menu Bar
         menu = self.menuBar()
         fileMenu = menu.addMenu('&File')
-        fileMenu.addAction(openAction)
+
+        importMenu = fileMenu.addMenu('&Import')
+        importMenu.addAction(importImpulseAction)
+
         fileMenu.addSeparator()
         fileMenu.addAction(exitAction)
+
+        # Toolbar
+        toolbar = QToolBar('My main toolbar')
+        toolbar.addAction(importImpulseAction)
+        toolbar.addSeparator()
+        toolbar.addAction(exitAction)
+        self.addToolBar(toolbar)
 
         # Open Files
         self.fileListModel = OpenFilesListModel(self)
@@ -256,7 +268,7 @@ class MainWindow(QMainWindow):
     def onExit(self):
         QApplication.quit()
 
-    def onOpenWavFile(self):
+    def onImportImpulseResponse(self):
         path, _ = QFileDialog.getOpenFileName(
             self,
             'Open WAV File',
