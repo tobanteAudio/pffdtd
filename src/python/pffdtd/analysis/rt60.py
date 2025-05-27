@@ -70,10 +70,9 @@ def decay_time(edc_dB, fs, t20=False):
 
 
 def reverberation_time(x, fs, freqs, plot=False, ax: Axes | None = None) -> pd.DataFrame:
-    if not ax:
-        ax = plt.gca()
+    results: list[dict[str, float]] = []
+    edc_dBs: list[np.ndarray] = []
 
-    results = []
     for frequency in freqs:
         bandpass = octave_bandpass(frequency, fs, fraction=3, order=2)
         filtered = sosfilt(bandpass, x)
@@ -83,6 +82,7 @@ def reverberation_time(x, fs, freqs, plot=False, ax: Axes | None = None) -> pd.D
         t20 = decay_time(edc_dB, fs, t20=True)
         c50 = clarity(filtered, fs, 50)
         c80 = clarity(filtered, fs, 80)
+        edc_dBs.append(edc_dB)
         results.append({
             'Frequency': frequency,
             'EDT': edt,
@@ -92,11 +92,14 @@ def reverberation_time(x, fs, freqs, plot=False, ax: Axes | None = None) -> pd.D
             'C80': c80,
         })
 
-        if plot:
-            t = np.linspace(0, edc_dB.shape[-1]/fs, edc_dB.shape[-1])
-            ax.plot(t, edc_dB, label=f'{frequency:.1f} Hz')
-
     if plot:
+        if not ax:
+            ax = plt.gca()
+
+        for result, edc_dB in zip(results, edc_dBs):
+            t = np.linspace(0, edc_dB.shape[-1]/fs, edc_dB.shape[-1])
+            ax.plot(t, edc_dB, label=f'{result['Frequency']:.1f} Hz')
+
         ax.set_ylim(-80, 0)
         ax.grid(which='minor', color='#DDDDDD', linestyle=':', linewidth=0.5)
         ax.minorticks_on()
