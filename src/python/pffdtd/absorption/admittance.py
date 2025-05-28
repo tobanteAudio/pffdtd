@@ -162,7 +162,8 @@ def plot_DEF_admittance(fv: np.ndarray, DEF: np.ndarray, model_Rf=None):
     ax.set_xlabel('frequency (Hz)')
     ax.set_ylabel(r'$|R|$')
     ax.margins(0, 0.1)
-    ax.grid(which='both', axis='both')
+    ax.grid(which='minor', color='#DDDDDD', linestyle=':', linewidth=0.5)
+    ax.minorticks_on()
 
     ax = fig.add_subplot(2, 1, 2)
     ax.plot(fv, np.angle(Rf), linestyle='-')
@@ -173,7 +174,8 @@ def plot_DEF_admittance(fv: np.ndarray, DEF: np.ndarray, model_Rf=None):
     ax.set_xlabel('frequency (Hz)')
     ax.set_ylabel(r'$\angle R$')
     ax.margins(0, 0.1)
-    ax.grid(which='both', axis='both')
+    ax.grid(which='minor', color='#DDDDDD', linestyle=':', linewidth=0.5)
+    ax.minorticks_on()
 
     fig = plt.figure()
     # specific (normalised) admittance (abs/ang)
@@ -186,7 +188,8 @@ def plot_DEF_admittance(fv: np.ndarray, DEF: np.ndarray, model_Rf=None):
     ax.set_xlabel('frequency (Hz)')
     ax.set_ylabel(r'$|Y|$')
     ax.margins(0, 0.1)
-    ax.grid(which='both', axis='both')
+    ax.grid(which='minor', color='#DDDDDD', linestyle=':', linewidth=0.5)
+    ax.minorticks_on()
 
     ax = fig.add_subplot(2, 1, 2)
     ax.plot(fv, np.angle(Yn), linestyle='-')
@@ -197,7 +200,8 @@ def plot_DEF_admittance(fv: np.ndarray, DEF: np.ndarray, model_Rf=None):
     ax.set_xlabel('frequency (Hz)')
     ax.set_ylabel(r'$\angle Y$')
     ax.margins(0, 0.1)
-    ax.grid(which='both', axis='both')
+    ax.grid(which='minor', color='#DDDDDD', linestyle=':', linewidth=0.5)
+    ax.minorticks_on()
 
     fig = plt.figure()
     # specific (normalised) admittance (real/imag)
@@ -210,7 +214,8 @@ def plot_DEF_admittance(fv: np.ndarray, DEF: np.ndarray, model_Rf=None):
     ax.set_xlabel('frequency (Hz)')
     ax.set_ylabel(r'$\Re(Y)$')
     ax.margins(0, 0.1)
-    ax.grid(which='both', axis='both')
+    ax.grid(which='minor', color='#DDDDDD', linestyle=':', linewidth=0.5)
+    ax.minorticks_on()
 
     ax = fig.add_subplot(2, 1, 2)
     ax.plot(fv, np.imag(Yn), linestyle='-')
@@ -221,7 +226,8 @@ def plot_DEF_admittance(fv: np.ndarray, DEF: np.ndarray, model_Rf=None):
     ax.set_xlabel('frequency (Hz)')
     ax.set_ylabel(r'$\Im(Y)$')
     ax.margins(0, 0.1)
-    ax.grid(which='both', axis='both')
+    ax.grid(which='minor', color='#DDDDDD', linestyle=':', linewidth=0.5)
+    ax.minorticks_on()
 
     plt.show()
 
@@ -337,7 +343,7 @@ def fit_to_Sabs_oct_11(Sabs, filename, plot=False, verbose=False):
         assert np.all(np.sum(DEF > 0, axis=-1))  # at least one non-zero
         h5f.create_dataset('DEF', data=np.atleast_2d(DEF))
 
-    print(f'--MATERIALS: Fit {Path(filename).stem}')
+    print(f'--MATERIALS: Fit {Path(filename).stem} ({np.round(Sabs, 2)})')
     if verbose:
         print(f'{DEF=}')
     if plot:

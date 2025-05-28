@@ -11,7 +11,7 @@ from matplotlib.ticker import ScalarFormatter
 import pandas as pd
 from scipy.signal import sosfilt
 
-from pffdtd.signals.octave import octave_bandpass
+from pffdtd.signals.octave import center_frequencies, octave_bandpass
 from pffdtd.signals.wavfile import collect_wav_files, wavread
 
 
@@ -69,12 +69,20 @@ def decay_time(edc_dB, fs, t20=False):
     return t60
 
 
-def reverberation_time(x, fs, freqs, plot=False, ax: Axes | None = None) -> pd.DataFrame:
+def reverberation_time(
+    x,
+    fs,
+    freqs,
+    plot: bool = False,
+    ax: Axes | None = None,
+    filter_order: int = 4,
+    octave_fraction: int = 3,
+) -> pd.DataFrame:
     results: list[dict[str, float]] = []
     edc_dBs: list[np.ndarray] = []
 
     for frequency in freqs:
-        bandpass = octave_bandpass(frequency, fs, fraction=3, order=2)
+        bandpass = octave_bandpass(frequency, fs, fraction=octave_fraction, order=filter_order)
         filtered = sosfilt(bandpass, x)
         edc_dB = energy_decay_curve(filtered)
         edt = early_decay_time(edc_dB, fs)
@@ -148,13 +156,10 @@ def _plot_tolerances(rt60, freqs, fmin, fmax, ax: Axes):
 
 def run(files: list[str], fmin: float, fmax: float, target: float | None = None):
     # ISO 1/3 octaves
-    center_freqs = np.array([
-        20, 25, 31.5, 40, 50, 63, 80, 100, 125, 160,
-        200, 250, 315, 400, 500, 630, 800, 1000, 1250, 1600,
-        2000, 2500, 3150, 4000, 5000, 6300, 8000, 10000, 12500, 16000,
-        20000
-    ])
-
+    fraction = 3
+    order = 2
+    center_freqs = center_frequencies(fraction, f_ref=1000, oct_down=6, oct_up=5)
+    center_freqs = center_freqs[(center_freqs >= 20.0) & (center_freqs <= 20_000.0)]
     center_freqs = center_freqs[(center_freqs >= fmin) & (center_freqs <= fmax)]
 
     file_times: list[pd.DataFrame] = []
@@ -162,7 +167,7 @@ def run(files: list[str], fmin: float, fmax: float, target: float | None = None)
     for path in files:
         file = pathlib.Path(path).absolute()
         fs, ir = wavread(file)
-        rt60 = reverberation_time(ir, fs, center_freqs)
+        rt60 = reverberation_time(ir, fs, center_freqs, filter_order=order, octave_fraction=fraction)
 
         file_times.append(rt60)
         file_names.append(file.stem[:4])

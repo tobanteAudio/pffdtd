@@ -165,7 +165,6 @@ class MaterialTable(QWidget):
 
         ax.grid(which='minor', color='#DDDDDD', linestyle=':', linewidth=0.5)
         ax.legend(loc='upper left')
-        # ax.grid(which='both')
         self.canvas.draw()
 
 

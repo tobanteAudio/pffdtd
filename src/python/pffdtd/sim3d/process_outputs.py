@@ -162,15 +162,6 @@ class ProcessOutputs:
         tv = np.arange(Nt)*Ts
         r_out = self.r_out
 
-        # fig = plt.figure()
-        # ax = fig.add_subplot(1, 1, 1)
-        # for out in u_out:
-        # ax.plot(tv,out,linestyle='-')
-        # ax.set_title('raw grid outputs')
-        # ax.margins(0, 0.1)
-        # ax.set_xlabel('time (s)')
-        # ax.grid(which='both', axis='both')
-
         fig = plt.figure()
         ax = fig.add_subplot(1, 1, 1)
         for i in range(r_out.shape[0]):
@@ -185,7 +176,7 @@ class ProcessOutputs:
     # plot the final processed outputs
     def plot_filtered_outputs(self):
         # possibly resampled
-        r_out_f = self.r_out_f
+        r_out_f = np.atleast_2d(self.r_out_f)
         Nt_f = self.Nt_f
         Ts_f = self.Ts_f
         Fs_f = self.Fs_f
