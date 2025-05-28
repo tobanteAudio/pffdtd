@@ -19,13 +19,16 @@ class LivingRoom(Setup3D):
     diff_source = True
     materials = {
         'Book Shelf': 'wood.h5',
-        'Ceiling': 'concrete_painted.h5',
-        'Coffee Table': 'wood.h5',
+        'Carpet': 'carpet.h5',
+        'Ceiling': 'concrete_painted_mod.h5',
+        'Coffee Table Frame': 'wood.h5',
+        'Coffee Table Top': 'sandstone_rough.h5',
         'Couch': 'absorber_8000_150mm.h5',
-        'Desk Large': 'wood.h5',
+        'Desk Large Frame': 'metal_iron.h5',
+        'Desk Large Top': 'wood.h5',
         'Desk Small': 'wood.h5',
         'Door': 'wood.h5',
-        'Floor': 'wood_floor.h5',
+        'Floor': 'parquet_on_counterfloor.h5',
         'Kallax': 'wood.h5',
         'Monitors': 'wood.h5',
         'Speakers': 'wood.h5',
@@ -34,13 +37,13 @@ class LivingRoom(Setup3D):
         'TV 55': 'wood.h5',
         'TV Table': 'wood.h5',
         'Walls': 'concrete_painted.h5',
-        'Window': 'glas_thin.h5',
+        'Window': 'glas_window_ordinary.h5',
     }
     duration = 2.0
     Tc = 20
     rh = 50
     fcc = True
-    ppw = 7.75
+    ppw = 10.5
     fmax = 3200.0
     save_folder = '../../sim_data/LivingRoom/cpu'
     save_folder_gpu = '../../sim_data/LivingRoom/gpu'
@@ -50,28 +53,34 @@ class LivingRoom(Setup3D):
 
     def generate_materials(self):
         self._print('Generate materials')
-        iso_octaves = center_frequencies(1, 1000, 6, 5)
 
+        # ISO octaves                       16     32    63    125   250   500   1000  2000  4000  8000  16000
         # autopep8: off
+        carpet                  = np.array([0.01,  0.02, 0.05, 0.17, 0.18, 0.21, 0.50, 0.63, 0.83, 0.90, 0.92])
+        concrete_painted        = np.array([0.01,  0.01, 0.01, 0.05, 0.06, 0.07, 0.09, 0.08, 0.08, 0.08, 0.08])
+        concrete_painted_mod    = np.array([0.012, 0.02, 0.06, 0.14, 0.06, 0.07, 0.09, 0.08, 0.08, 0.08, 0.08])
+        glas_thin               = np.array([0.15,  0.40, 0.30, 0.20, 0.06, 0.04, 0.03, 0.02, 0.02, 0.02, 0.01])
+        glas_window_ordinary    = np.array([0.20,  0.30, 0.40, 0.35, 0.25, 0.18, 0.12, 0.07, 0.04, 0.04, 0.02])
+        metal_iron              = np.array([0.01,  0.01, 0.01, 0.01, 0.01, 0.02, 0.02, 0.03, 0.03, 0.03, 0.02])
+        parquet_on_counterfloor = np.array([0.10,  0.15, 0.20 ,0.20 ,0.15, 0.10, 0.10, 0.05, 0.10, 0.05, 0.05])
+        sandstone_rough         = np.array([0.01,  0.01, 0.02, 0.02, 0.02, 0.03, 0.04, 0.05, 0.05, 0.06, 0.05])
+        wood                    = np.array([0.10,  0.11, 0.13, 0.15, 0.11, 0.10, 0.07, 0.06, 0.07, 0.07, 0.07])
+        # autopep8: on
+
+        iso_octaves = center_frequencies(1, 1000, 6, 5)
         absorber_8000_150mm = porous_absorber(0.15, 8000.0, frequency=iso_octaves, offset_zeros=True, angle=45)
 
-        # ISO octaves                   16    32    63    125   250   500   1000  2000  4000  8000  16000
-        concrete_painted    = np.array([0.01*2, 0.01*2, 0.01*4, 0.05*2.75, 0.06, 0.07, 0.09, 0.08, 0.08, 0.08, 0.08])
-        glas_thick          = np.array([0.15, 0.30, 0.27, 0.18, 0.06, 0.04, 0.03, 0.02, 0.02, 0.02, 0.01])
-        glas_thin           = np.array([0.15, 0.40, 0.30, 0.20, 0.06, 0.04, 0.03, 0.02, 0.02, 0.02, 0.01])
-        metal_iron          = np.array([0.01, 0.01, 0.01, 0.01, 0.01, 0.02, 0.02, 0.03, 0.03, 0.03, 0.02])
-        wood                = np.array([0.10, 0.11, 0.13, 0.15, 0.11, 0.10, 0.07, 0.06, 0.07, 0.07, 0.07])
-        wood_floor          = np.array([0.11, 0.12, 0.13, 0.15, 0.12, 0.10, 0.07, 0.06, 0.06, 0.04, 0.03])
-
         folder = Path(self.mat_folder)
-        fit_to_Sabs_oct_11(absorber_8000_150mm , filename=folder / 'absorber_8000_150mm.h5')
-        fit_to_Sabs_oct_11(concrete_painted    , filename=folder / 'concrete_painted.h5'   )
-        fit_to_Sabs_oct_11(glas_thick          , filename=folder / 'glas_thick.h5'         )
-        fit_to_Sabs_oct_11(glas_thin           , filename=folder / 'glas_thin.h5'          )
-        fit_to_Sabs_oct_11(metal_iron          , filename=folder / 'metal_iron.h5'         )
-        fit_to_Sabs_oct_11(wood                , filename=folder / 'wood.h5'               )
-        fit_to_Sabs_oct_11(wood_floor          , filename=folder / 'wood_floor.h5'         )
-        # autopep8: on
+        fit_to_Sabs_oct_11(absorber_8000_150mm, filename=folder / 'absorber_8000_150mm.h5')
+        fit_to_Sabs_oct_11(carpet, filename=folder / 'carpet.h5')
+        fit_to_Sabs_oct_11(concrete_painted, filename=folder / 'concrete_painted.h5')
+        fit_to_Sabs_oct_11(concrete_painted_mod, filename=folder / 'concrete_painted_mod.h5')
+        fit_to_Sabs_oct_11(glas_window_ordinary, filename=folder / 'glas_window_ordinary.h5')
+        fit_to_Sabs_oct_11(glas_thin, filename=folder / 'glas_thin.h5')
+        fit_to_Sabs_oct_11(metal_iron, filename=folder / 'metal_iron.h5')
+        fit_to_Sabs_oct_11(parquet_on_counterfloor, filename=folder / 'parquet_on_counterfloor.h5')
+        fit_to_Sabs_oct_11(sandstone_rough, filename=folder / 'sandstone_rough.h5')
+        fit_to_Sabs_oct_11(wood, filename=folder / 'wood.h5')
 
     def generate_model(self, constants):
         self._print('Generate model')
@@ -89,10 +98,13 @@ class LivingRoom(Setup3D):
 
         m = MeshModelBuilder()
         m.add('Book Shelf', obj / 'book_shelf.obj', [200, 200, 200], reverse=True)
+        m.add('Carpet', obj / 'carpet.obj', [125, 31, 31], reverse=True)
         m.add('Ceiling', obj / 'ceiling.obj', [150, 150, 150], reverse=True)
-        m.add('Coffee Table', obj / 'coffee_table.obj', [10, 10, 10], reverse=True)
+        m.add('Coffee Table Frame', obj / 'coffee_table_frame.obj', [103, 70, 55], reverse=True)
+        m.add('Coffee Table Top', obj / 'coffee_table_top.obj', [10, 10, 10], reverse=True)
         m.add('Couch', obj / 'couch.obj', [29, 50, 112], reverse=True)
-        m.add('Desk Large', obj / 'desk_large.obj', [103, 70, 55], reverse=True)
+        m.add('Desk Large Frame', obj / 'desk_large_frame.obj', [120, 120, 120], reverse=True)
+        m.add('Desk Large Top', obj / 'desk_large_top.obj', [103, 70, 55], reverse=True)
         m.add('Desk Small', obj / 'desk_small.obj', [200, 200, 200], reverse=True)
         m.add('Door', obj / 'door.obj', [103, 70, 55], reverse=True)
         m.add('Floor', obj / 'floor.obj', [133, 94, 66], reverse=True)
