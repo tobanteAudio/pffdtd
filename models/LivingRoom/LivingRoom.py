@@ -20,7 +20,7 @@ class LivingRoom(Setup3D):
     materials = {
         'Book Shelf': 'wood.h5',
         'Carpet': 'carpet.h5',
-        'Ceiling': 'concrete_painted_mod.h5',
+        'Ceiling': 'rabbitzdecke_330.h5',
         'Coffee Table Frame': 'wood.h5',
         'Coffee Table Top': 'sandstone_rough.h5',
         'Couch': 'absorber_8000_150mm.h5',
@@ -36,7 +36,7 @@ class LivingRoom(Setup3D):
         'TV 42': 'wood.h5',
         'TV 55': 'wood.h5',
         'TV Table': 'wood.h5',
-        'Walls': 'concrete_painted.h5',
+        'Walls': 'vollziegel_mauerwerk_28.h5',
         'Window': 'glas_window_ordinary.h5',
     }
     duration = 2.0
@@ -57,13 +57,13 @@ class LivingRoom(Setup3D):
         # ISO octaves                       16     32    63    125   250   500   1000  2000  4000  8000  16000
         # autopep8: off
         carpet                  = np.array([0.01,  0.02, 0.05, 0.17, 0.18, 0.21, 0.50, 0.63, 0.83, 0.90, 0.92])
-        concrete_painted        = np.array([0.01,  0.01, 0.01, 0.05, 0.06, 0.07, 0.09, 0.08, 0.08, 0.08, 0.08])
         concrete_painted_mod    = np.array([0.012, 0.02, 0.06, 0.14, 0.06, 0.07, 0.09, 0.08, 0.08, 0.08, 0.08])
-        glas_thin               = np.array([0.15,  0.40, 0.30, 0.20, 0.06, 0.04, 0.03, 0.02, 0.02, 0.02, 0.01])
         glas_window_ordinary    = np.array([0.20,  0.30, 0.40, 0.35, 0.25, 0.18, 0.12, 0.07, 0.04, 0.04, 0.02])
         metal_iron              = np.array([0.01,  0.01, 0.01, 0.01, 0.01, 0.02, 0.02, 0.03, 0.03, 0.03, 0.02])
+        rabbitzdecke_330        = np.array([0.02,  0.15, 0.24, 0.25, 0.20, 0.10, 0.05, 0.05, 0.06, 0.06, 0.05])
         parquet_on_counterfloor = np.array([0.10,  0.15, 0.20 ,0.20 ,0.15, 0.10, 0.10, 0.05, 0.10, 0.05, 0.05])
         sandstone_rough         = np.array([0.01,  0.01, 0.02, 0.02, 0.02, 0.03, 0.04, 0.05, 0.05, 0.06, 0.05])
+        vollziegel_mauerwerk_28 = np.array([0.02,  0.02, 0.14, 0.16, 0.13, 0.15, 0.11, 0.13, 0.14, 0.10, 0.13])
         wood                    = np.array([0.10,  0.11, 0.13, 0.15, 0.11, 0.10, 0.07, 0.06, 0.07, 0.07, 0.07])
         # autopep8: on
 
@@ -72,14 +72,14 @@ class LivingRoom(Setup3D):
 
         folder = Path(self.mat_folder)
         fit_to_Sabs_oct_11(absorber_8000_150mm, filename=folder / 'absorber_8000_150mm.h5')
-        fit_to_Sabs_oct_11(carpet, filename=folder / 'carpet.h5')
-        fit_to_Sabs_oct_11(concrete_painted, filename=folder / 'concrete_painted.h5')
+        fit_to_Sabs_oct_11(np.maximum(carpet, parquet_on_counterfloor), filename=folder / 'carpet.h5')
         fit_to_Sabs_oct_11(concrete_painted_mod, filename=folder / 'concrete_painted_mod.h5')
         fit_to_Sabs_oct_11(glas_window_ordinary, filename=folder / 'glas_window_ordinary.h5')
-        fit_to_Sabs_oct_11(glas_thin, filename=folder / 'glas_thin.h5')
         fit_to_Sabs_oct_11(metal_iron, filename=folder / 'metal_iron.h5')
+        fit_to_Sabs_oct_11(rabbitzdecke_330, filename=folder / 'rabbitzdecke_330.h5')
         fit_to_Sabs_oct_11(parquet_on_counterfloor, filename=folder / 'parquet_on_counterfloor.h5')
         fit_to_Sabs_oct_11(sandstone_rough, filename=folder / 'sandstone_rough.h5')
+        fit_to_Sabs_oct_11(vollziegel_mauerwerk_28, filename=folder / 'vollziegel_mauerwerk_28.h5')
         fit_to_Sabs_oct_11(wood, filename=folder / 'wood.h5')
 
     def generate_model(self, constants):
