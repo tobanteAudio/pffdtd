@@ -17,7 +17,7 @@ model_dir="$root_dir/models/$sim_name"
 materials_dir="$root_dir/materials"
 
 fmin=20
-fmax=3200
+fmax=6400
 smoothing=0
 
 # Delete old sim

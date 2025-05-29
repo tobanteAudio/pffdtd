@@ -95,6 +95,8 @@ def rt60(rt60_txt):
     a = read_rew_rt60_txt(a_path)
     b = read_rew_rt60_txt(b_path)
     print(a)
+    print('-'*80)
+    print(b)
 
     _, axs = plt.subplots(2, 2, constrained_layout=True)
 

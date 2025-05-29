@@ -18,31 +18,32 @@ class LivingRoom(Setup3D):
     source_signal = 'impulse-highpass-40'
     diff_source = True
     materials = {
-        'Book Shelf': 'wood.h5',
+        'Book Shelf': 'wood_painted_430.h5',
         'Carpet': 'carpet.h5',
         'Ceiling': 'rabbitzdecke_330.h5',
         'Coffee Table Frame': 'wood.h5',
         'Coffee Table Top': 'sandstone_rough.h5',
         'Couch': 'absorber_8000_150mm.h5',
+        'Desk Large Cover': 'curtain_149.h5',
         'Desk Large Frame': 'metal_iron.h5',
         'Desk Large Top': 'wood.h5',
-        'Desk Small': 'wood.h5',
+        'Desk Small': 'wood_painted_430.h5',
         'Door': 'wood.h5',
         'Floor': 'parquet_on_counterfloor.h5',
-        'Kallax': 'wood.h5',
-        'Monitors': 'wood.h5',
+        'Kallax': 'wood_painted_430.h5',
+        'Monitors': 'glass_207.h5',
         'Speakers': 'wood.h5',
         'Speaker Stands': 'metal_iron.h5',
-        'TV 42': 'wood.h5',
-        'TV 55': 'wood.h5',
-        'TV Table': 'wood.h5',
-        'Walls': 'vollziegel_mauerwerk_28.h5',
-        'Window': 'glas_window_ordinary.h5',
+        'TV 42': 'glass_207.h5',
+        'TV 55': 'glass_207.h5',
+        'TV Table': 'wood_painted_430.h5',
+        'Walls': 'brickwork_painted_36.h5',
+        'Window': 'glass_window.h5',
     }
-    duration = 2.0
+    duration = 1.8
     Tc = 20
     rh = 50
-    fcc = True
+    fcc = False
     ppw = 10.5
     fmax = 3200.0
     save_folder = '../../sim_data/LivingRoom/cpu'
@@ -56,15 +57,18 @@ class LivingRoom(Setup3D):
 
         # ISO octaves                       16     32    63    125   250   500   1000  2000  4000  8000  16000
         # autopep8: off
-        carpet                  = np.array([0.01,  0.02, 0.05, 0.17, 0.18, 0.21, 0.50, 0.63, 0.83, 0.90, 0.92])
-        concrete_painted_mod    = np.array([0.012, 0.02, 0.06, 0.14, 0.06, 0.07, 0.09, 0.08, 0.08, 0.08, 0.08])
-        glas_window_ordinary    = np.array([0.20,  0.30, 0.40, 0.35, 0.25, 0.18, 0.12, 0.07, 0.04, 0.04, 0.02])
-        metal_iron              = np.array([0.01,  0.01, 0.01, 0.01, 0.01, 0.02, 0.02, 0.03, 0.03, 0.03, 0.02])
-        rabbitzdecke_330        = np.array([0.02,  0.15, 0.24, 0.25, 0.20, 0.10, 0.05, 0.05, 0.06, 0.06, 0.05])
-        parquet_on_counterfloor = np.array([0.10,  0.15, 0.20 ,0.20 ,0.15, 0.10, 0.10, 0.05, 0.10, 0.05, 0.05])
-        sandstone_rough         = np.array([0.01,  0.01, 0.02, 0.02, 0.02, 0.03, 0.04, 0.05, 0.05, 0.06, 0.05])
-        vollziegel_mauerwerk_28 = np.array([0.02,  0.02, 0.14, 0.16, 0.13, 0.15, 0.11, 0.13, 0.14, 0.10, 0.13])
-        wood                    = np.array([0.10,  0.11, 0.13, 0.15, 0.11, 0.10, 0.07, 0.06, 0.07, 0.07, 0.07])
+        brickwork_painted_36    = np.array([0.01, 0.01, 0.01, 0.01, 0.01, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02])*3
+        carpet                  = np.array([0.01, 0.02, 0.05, 0.17, 0.18, 0.21, 0.50, 0.63, 0.83, 0.90, 0.92])
+        curtain_149             = np.array([0.01, 0.02, 0.08, 0.15, 0.20, 0.30, 0.37, 0.44, 0.50, 0.50, 0.50])
+        glass_window_ordinary   = np.array([0.20, 0.30, 0.40, 0.35, 0.25, 0.18, 0.12, 0.07, 0.04, 0.04, 0.02])
+        glass_207               = np.array([0.02, 0.04, 0.08, 0.08, 0.04, 0.03, 0.03, 0.02, 0.02, 0.02, 0.02])
+        metal_iron              = np.array([0.01, 0.01, 0.01, 0.01, 0.01, 0.02, 0.02, 0.03, 0.03, 0.03, 0.02])
+        rabbitzdecke_330        = np.array([0.02, 0.15, 0.24, 0.25, 0.20, 0.10, 0.05, 0.05, 0.06, 0.06, 0.05])
+        parquet_on_counterfloor = np.array([0.10, 0.15, 0.20 ,0.20 ,0.15, 0.10, 0.10, 0.05, 0.10, 0.05, 0.05])
+        sandstone_rough         = np.array([0.01, 0.01, 0.02, 0.02, 0.02, 0.03, 0.04, 0.05, 0.05, 0.06, 0.05])
+        vollziegel_mauerwerk_28 = np.array([0.02, 0.02, 0.14, 0.16, 0.13, 0.15, 0.11, 0.13, 0.14, 0.10, 0.13])
+        wood                    = np.array([0.10, 0.11, 0.13, 0.15, 0.11, 0.10, 0.07, 0.06, 0.07, 0.07, 0.07])
+        wood_painted_430        = np.array([0.10, 0.11, 0.11, 0.11, 0.12, 0.12, 0.12, 0.10, 0.10, 0.10, 0.07])
         # autopep8: on
 
         iso_octaves = center_frequencies(1, 1000, 6, 5)
@@ -72,15 +76,18 @@ class LivingRoom(Setup3D):
 
         folder = Path(self.mat_folder)
         fit_to_Sabs_oct_11(absorber_8000_150mm, filename=folder / 'absorber_8000_150mm.h5')
+        fit_to_Sabs_oct_11(brickwork_painted_36, filename=folder / 'brickwork_painted_36.h5')
         fit_to_Sabs_oct_11(np.maximum(carpet, parquet_on_counterfloor), filename=folder / 'carpet.h5')
-        fit_to_Sabs_oct_11(concrete_painted_mod, filename=folder / 'concrete_painted_mod.h5')
-        fit_to_Sabs_oct_11(glas_window_ordinary, filename=folder / 'glas_window_ordinary.h5')
+        fit_to_Sabs_oct_11(curtain_149, filename=folder / 'curtain_149.h5')
+        fit_to_Sabs_oct_11(np.maximum(glass_window_ordinary, curtain_149), filename=folder / 'glass_window.h5')
+        fit_to_Sabs_oct_11(glass_207, filename=folder / 'glass_207.h5')
         fit_to_Sabs_oct_11(metal_iron, filename=folder / 'metal_iron.h5')
         fit_to_Sabs_oct_11(rabbitzdecke_330, filename=folder / 'rabbitzdecke_330.h5')
         fit_to_Sabs_oct_11(parquet_on_counterfloor, filename=folder / 'parquet_on_counterfloor.h5')
         fit_to_Sabs_oct_11(sandstone_rough, filename=folder / 'sandstone_rough.h5')
         fit_to_Sabs_oct_11(vollziegel_mauerwerk_28, filename=folder / 'vollziegel_mauerwerk_28.h5')
         fit_to_Sabs_oct_11(wood, filename=folder / 'wood.h5')
+        fit_to_Sabs_oct_11(wood_painted_430, filename=folder / 'wood_painted_430.h5')
 
     def generate_model(self, constants):
         self._print('Generate model')
@@ -88,8 +95,10 @@ class LivingRoom(Setup3D):
         dir = Path('.')
         obj = dir/'obj'
 
-        s1 = [3.65-0.59, 6.0-0.3, 1.12]
-        s2 = [3.65-0.59, 6.0-2.4, 1.12]
+        mul = 3.0 if self.fcc else 2.0
+        offset = constants.h * mul
+        s1 = [3.65-(0.54+offset), 6.0-0.3, 1.12]
+        s2 = [3.65-(0.54+offset), 6.0-2.4, 1.12]
 
         r1 = s2.copy()
         r1[0] -= 0.7
@@ -103,6 +112,7 @@ class LivingRoom(Setup3D):
         m.add('Coffee Table Frame', obj / 'coffee_table_frame.obj', [103, 70, 55], reverse=True)
         m.add('Coffee Table Top', obj / 'coffee_table_top.obj', [10, 10, 10], reverse=True)
         m.add('Couch', obj / 'couch.obj', [29, 50, 112], reverse=True)
+        m.add('Desk Large Cover', obj / 'desk_large_cover.obj', [200, 12, 12], reverse=True)
         m.add('Desk Large Frame', obj / 'desk_large_frame.obj', [120, 120, 120], reverse=True)
         m.add('Desk Large Top', obj / 'desk_large_top.obj', [103, 70, 55], reverse=True)
         m.add('Desk Small', obj / 'desk_small.obj', [200, 200, 200], reverse=True)
