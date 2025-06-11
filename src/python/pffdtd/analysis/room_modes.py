@@ -78,12 +78,12 @@ def detect_room_modes(
     num_modes,
     plot,
 ):
-    directory = sim_dir
+    directory = pathlib.Path(sim_dir)
     paths = filename
     if not paths:
         paths = collect_wav_files(directory, '*_out_normalised.wav')
 
-    with h5py.File(sim_dir / 'constants.h5', 'r') as constants:
+    with h5py.File(directory / 'constants.h5', 'r') as constants:
         c = float(constants['c'][...])
 
     L = length
@@ -133,7 +133,8 @@ def detect_room_modes(
         peaks, _ = find_peaks(dB, width=2, height=50.0)
         measured_mode_freqs = freqs[peaks]
 
-        print(measured_mode_freqs[:10])
+        print(measured_mode_freqs[:max(num_modes, 10)])
+        print(frequency_spacing_index([{'frequency': freq} for freq in measured_mode_freqs[:25]]))
 
         plt.plot(freqs, dB, linestyle='-', label=f'{file.stem[:4]}')
 

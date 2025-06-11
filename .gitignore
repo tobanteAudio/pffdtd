@@ -15,6 +15,7 @@ imgui.ini
 mmap_dat
 /models/Atmos
 /models/CP
+/models/private
 *.FCBak
 
 /venv
