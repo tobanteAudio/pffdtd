@@ -36,6 +36,12 @@ struct HDF5Reader {
 
   ~HDF5Reader() { H5Fclose(_handle); }
 
+  HDF5Reader(HDF5Reader const& other) = delete;
+  HDF5Reader(HDF5Reader&& other)      = delete;
+
+  auto operator=(HDF5Reader const& other) -> HDF5Reader& = delete;
+  auto operator=(HDF5Reader&& other) -> HDF5Reader&      = delete;
+
   [[nodiscard]] auto handle() const noexcept -> hid_t { return _handle; }
 
   template<typename T>
@@ -134,6 +140,12 @@ struct HDF5Writer {
       : _handle{H5Fcreate(path.string().c_str(), H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT)} {}
 
   ~HDF5Writer() { H5Fclose(_handle); }
+
+  HDF5Writer(HDF5Writer const& other) = delete;
+  HDF5Writer(HDF5Writer&& other)      = delete;
+
+  auto operator=(HDF5Writer const& other) -> HDF5Writer& = delete;
+  auto operator=(HDF5Writer&& other) -> HDF5Writer&      = delete;
 
   auto write(char const* name, stdex::mdspan<double const, stdex::dextents<size_t, 2>> buf) const -> void {
     hsize_t dims[2]{

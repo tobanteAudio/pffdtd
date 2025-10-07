@@ -25,6 +25,7 @@ template<typename Real>
 struct Double {
   constexpr Double() = default;
 
+  // NOLINTNEXTLINE(hicpp-explicit-conversions)
   constexpr Double(Real x) noexcept {
     auto const [h, l] = split(x);
     _high             = h;
