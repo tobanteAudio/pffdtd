@@ -10,12 +10,12 @@ from pffdtd.absorption.admittance import write_freq_ind_mat_from_Yn, convert_Sab
 from pffdtd.geometry.math import point_on_circle
 from pffdtd.signals.wavfile import wavread
 from pffdtd.sim3d.setup import sim_setup_3d
-from pffdtd.sim3d.testing import run_engine, skip_if_native_engine_unavailable
+from pffdtd.sim3d.testing import SIM3D_ENGINES, run_engine, skip_if_native_engine_unavailable
 from pffdtd.sim3d.process_outputs import process_outputs
 
 
 @pytest.mark.slow
-@pytest.mark.parametrize('engine', ['python', 'cpu'])
+@pytest.mark.parametrize('engine', SIM3D_ENGINES)
 def test_sim3d_infinite_baffle(tmp_path, engine):
     skip_if_native_engine_unavailable(engine)
 

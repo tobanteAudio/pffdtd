@@ -12,12 +12,12 @@ from pffdtd.analysis.localization import tetrahedron_microphone_array
 from pffdtd.signals.wavfile import wavread
 from pffdtd.sim3d.model_builder import RoomModelBuilder
 from pffdtd.sim3d.setup import sim_setup_3d
-from pffdtd.sim3d.testing import run_engine, skip_if_native_engine_unavailable
+from pffdtd.sim3d.testing import SIM3D_ENGINES, run_engine, skip_if_native_engine_unavailable
 from pffdtd.sim3d.process_outputs import process_outputs
 
 
 @pytest.mark.slow
-@pytest.mark.parametrize('engine', ['python', 'cpu'])
+@pytest.mark.parametrize('engine', SIM3D_ENGINES)
 def test_sim3d_locate_sound_source(tmp_path, engine):
     skip_if_native_engine_unavailable(engine)
 

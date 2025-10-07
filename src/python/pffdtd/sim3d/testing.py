@@ -9,6 +9,8 @@ import pytest
 
 from pffdtd.sim3d.engine import EnginePython3D
 
+SIM3D_ENGINES = ['python', 'cpu']
+
 
 def run_engine(sim_dir, engine):
     if engine == 'python':

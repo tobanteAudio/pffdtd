@@ -8,12 +8,12 @@ from pffdtd.absorption.admittance import write_freq_ind_mat_from_Yn, convert_Sab
 from pffdtd.analysis.room_modes import detect_room_modes, find_nearest
 from pffdtd.sim3d.model_builder import RoomModelBuilder
 from pffdtd.sim3d.setup import sim_setup_3d
-from pffdtd.sim3d.testing import run_engine, skip_if_native_engine_unavailable
+from pffdtd.sim3d.testing import SIM3D_ENGINES, run_engine, skip_if_native_engine_unavailable
 from pffdtd.sim3d.process_outputs import process_outputs
 
 
 @pytest.mark.slow
-@pytest.mark.parametrize('engine', ['python', 'cpu'])
+@pytest.mark.parametrize('engine', SIM3D_ENGINES)
 @pytest.mark.parametrize(
     'room,fmax,ppw,fcc,dx_scale,tolerance_pct',
     [
