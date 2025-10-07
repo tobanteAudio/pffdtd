@@ -13,7 +13,7 @@ target_link_libraries(pffdtd
         fmt::fmt
         HDF5::HDF5
         OpenMP::OpenMP_CXX
-        std::mdspan
+        mdspan::mdspan
 )
 
 target_sources(pffdtd
