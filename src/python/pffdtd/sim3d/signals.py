@@ -49,9 +49,25 @@ class SimSignals:
         print(f'--SIGNALS: {fstring}')
 
     def prepare_source_pts(self, Sxyz):
-        in_alpha, in_ixyz = self.get_linear_interp_weights(Sxyz)
+        # in_alpha, in_ixyz = self.get_linear_interp_weights(Sxyz[0])
+        # self.in_alpha = in_alpha
+        # self.in_ixyz = in_ixyz
+
+        Sxyz = np.atleast_2d(Sxyz)
+        in_alpha = np.zeros(Sxyz.shape[0]*8, np.float64)
+        in_ixyz = np.zeros(Sxyz.shape[0]*8, dtype=np.int64)
+
+        for s in range(Sxyz.shape[0]):
+            s_alpha, s_ixyz = self.get_linear_interp_weights(Sxyz[s])
+            in_alpha[s*8:s*8+8] = s_alpha
+            in_ixyz[s*8:s*8+8] = s_ixyz
+
         self.in_alpha = in_alpha
         self.in_ixyz = in_ixyz
+        self.in_count = Sxyz.shape[0]
+        self.print(f'{self.in_alpha.shape=}')
+        self.print(f'{self.in_ixyz.shape=}')
+        self.print(f'{self.in_count=}')
 
     # a few signals to choose from
     def prepare_source_signals(self, duration, sig_type='impulse'):
@@ -93,7 +109,7 @@ class SimSignals:
             in_sig[:len(mls)] = mls
             self.print(f'Generate MLS with nbits = {nbits} and len = {len(mls)}')
 
-        in_sigs = in_alpha[:, None]*in_sig[None, :]
+        in_sigs = in_alpha[:, None]*in_sig[None, :]/self.in_count
 
         self.in_sig = in_sig
         self.in_sigs = in_sigs

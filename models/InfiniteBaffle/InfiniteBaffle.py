@@ -16,7 +16,7 @@ class InfiniteBaffle(Setup3D):
     model_file = 'model.json'
     mat_folder = '../../sim_data/InfiniteBaffle/materials'
     duration = 0.3
-    source_index = 1
+    source_index = [1, 2]
     source_signal = 'impulse'
     Tc = 20
     rh = 50
@@ -59,7 +59,8 @@ class InfiniteBaffle(Setup3D):
                 }
             },
             'sources': [
-                {'name': 'S1', 'xyz': [width/2, length-offset, height/2]},
+                {'name': 'S1', 'xyz': [width/2, length-offset, (height/2)-0.5]},
+                {'name': 'S2', 'xyz': [width/2, length-offset, (height/2)+1.5]},
             ],
             'receivers': [
                 {'name': 'R1', 'xyz': [width/2, offset, height/2 - 0.50]},

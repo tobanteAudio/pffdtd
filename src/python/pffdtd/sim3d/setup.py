@@ -58,7 +58,6 @@ def sim_setup_3d(
 ):
     assert Tc is not None
     assert rh is not None
-    assert source_num > 0
     assert insig_type is not None
     assert fmax is not None
     assert PPW is not None
@@ -85,7 +84,9 @@ def sim_setup_3d(
     room_geo.print_stats()
 
     # sources have to be specified in advance (edit JSON if necessary)
-    Sxyz = room_geo.Sxyz[source_num-1]  # one source (one-based indexing)
+    Sidx = np.atleast_1d(source_num)
+    assert np.all(Sidx > 0)
+    Sxyz = room_geo.Sxyz[Sidx-1]  # one source (one-based indexing)
     Rxyz = room_geo.Rxyz  # many receivers
 
     # link up the wall materials to impedance datasets
