@@ -15,12 +15,14 @@
 
 namespace pffdtd {
 
-/// https://hal.science/hal-01351529v3/document
-/// https://inria.hal.science/inria-00070314/document
-/// https://people.eecs.berkeley.edu/~jrs/papers/robustr.pdf
-/// https://github.com/sukop/doubledouble
-/// https://github.com/JuliaMath/DoubleFloats.jl
-/// https://github.com/FlorisSteenkamp/double-double
+/// DoubleDouble extented precision
+///
+/// - https://hal.science/hal-01351529v3/document
+/// - https://inria.hal.science/inria-00070314/document
+/// - https://people.eecs.berkeley.edu/~jrs/papers/robustr.pdf
+/// - https://github.com/sukop/doubledouble
+/// - https://github.com/JuliaMath/DoubleFloats.jl
+/// - https://github.com/FlorisSteenkamp/double-double
 template<typename Real>
 struct Double {
   constexpr Double() = default;

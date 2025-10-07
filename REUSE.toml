@@ -14,8 +14,8 @@ path = [
     "models/CTK_Church/model_export.json",
     "models/CTK_Church/receivers.csv",
     "models/CTK_Church/sources.csv",
-    "models/Musikverein_ConcertHall/Musikverein_SU2017.skp",
     "models/Musikverein_ConcertHall/model_export.json",
+    "models/Musikverein_ConcertHall/Musikverein_SU2017.skp",
     "models/Musikverein_ConcertHall/receivers.csv",
     "models/Musikverein_ConcertHall/sources.csv",
 ]
@@ -27,6 +27,8 @@ path = [
     "cmake/profile/linux_sycl",
     "cmake/profile/windows_sycl",
     "doc/data/*.csv",
+    "Doxyfile",
+    "models/**/*.obj",
     "models/BassReflex/freecad/BassReflex.FCStd",
     "models/BassReflex/model.json",
     "models/Diffusor3D/model.json",
@@ -36,7 +38,6 @@ path = [
     "models/Modes/model.json",
     "models/ProStudio/model.json",
     "models/Studio/model.json",
-    "models/**/*.obj",
 ]
 SPDX-FileCopyrightText = "2024 Tobias Hienzsch"
 SPDX-License-Identifier = "MIT"
