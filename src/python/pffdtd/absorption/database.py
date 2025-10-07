@@ -207,13 +207,13 @@ def main(database_excel, plot, save_csv) -> None:
     print('--------------------------')
 
     bands = [{'freq': band, 'min': df[band].min(), 'max': df[band].max(), 'mean': df[band].mean()} for band in iso_octaves]
-    mins = [band['min'] for band in bands]
-    maxs = [band['max'] for band in bands]
+    # mins = [band['min'] for band in bands]
+    # maxs = [band['max'] for band in bands]
     means = [band['mean'] for band in bands]
 
     if plot:
-        for oct in iso_octaves:
-            plt.scatter([oct]*len(df), df[oct])
+        for octave in iso_octaves:
+            plt.scatter([octave]*len(df), df[octave])
         # plt.errorbar(iso_octaves, means, yerr=[mins, maxs], label='Glass')
         plt.semilogx(iso_octaves, means, label='Mean')
         # plt.semilogx(iso_octaves, maxs, label='Max')

@@ -150,8 +150,8 @@ class MaterialTable(QWidget):
             self.canvas.draw()
             return
 
+        bands = ALL_BANDS
         bands = [63, 125, 250, 500, 1000, 2000, 4000, 8000]
-        # bands = ALL_BANDS
 
         ax = self.canvas.axes
 
