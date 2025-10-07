@@ -47,21 +47,21 @@ struct HDF5Reader {
     } else {
       auto set = H5Dopen(_handle, dataset, H5P_DEFAULT);
       if constexpr (std::is_same_v<T, int64_t>) {
-        auto val = T{};
-        auto ptr = static_cast<void*>(&val);
-        auto err = H5Dread(set, H5T_NATIVE_INT64, H5S_ALL, H5S_ALL, H5P_DEFAULT, ptr);
+        auto val  = T{};
+        auto* ptr = static_cast<void*>(&val);
+        auto err  = H5Dread(set, H5T_NATIVE_INT64, H5S_ALL, H5S_ALL, H5P_DEFAULT, ptr);
         checkErrorAndCloseDataset(dataset, set, err);
         return val;
       } else if constexpr (std::is_same_v<T, int8_t>) {
-        auto val = T{};
-        auto ptr = static_cast<void*>(&val);
-        auto err = H5Dread(set, H5T_NATIVE_INT8, H5S_ALL, H5S_ALL, H5P_DEFAULT, ptr);
+        auto val  = T{};
+        auto* ptr = static_cast<void*>(&val);
+        auto err  = H5Dread(set, H5T_NATIVE_INT8, H5S_ALL, H5S_ALL, H5P_DEFAULT, ptr);
         checkErrorAndCloseDataset(dataset, set, err);
         return val;
       } else if constexpr (std::is_same_v<T, double>) {
-        auto val = T{};
-        auto ptr = static_cast<void*>(&val);
-        auto err = H5Dread(set, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, ptr);
+        auto val  = T{};
+        auto* ptr = static_cast<void*>(&val);
+        auto err  = H5Dread(set, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, ptr);
         checkErrorAndCloseDataset(dataset, set, err);
         return val;
       } else {
@@ -116,7 +116,7 @@ struct HDF5Reader {
   }
 
   private:
-  auto checkErrorAndCloseDataset(char const* name, hid_t set, herr_t err) -> void {
+  static auto checkErrorAndCloseDataset(char const* name, hid_t set, herr_t err) -> void {
     if (err != 0) {
       raisef<std::runtime_error>("dataset read in: {}", name);
     }
@@ -135,7 +135,7 @@ struct HDF5Writer {
 
   ~HDF5Writer() { H5Fclose(_handle); }
 
-  auto write(char const* name, stdex::mdspan<double const, stdex::dextents<size_t, 2>> buf) -> void {
+  auto write(char const* name, stdex::mdspan<double const, stdex::dextents<size_t, 2>> buf) const -> void {
     hsize_t dims[2]{
         static_cast<hsize_t>(buf.extent(0)),
         static_cast<hsize_t>(buf.extent(1)),

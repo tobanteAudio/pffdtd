@@ -17,11 +17,12 @@ Checks: >
   concurrency-*,
 
   cppcoreguidelines-*,
+  -cppcoreguidelines-macro-usage,
+  -cppcoreguidelines-owning-memory,
   -cppcoreguidelines-pro-bounds-array-to-pointer-decay,
   -cppcoreguidelines-pro-bounds-constant-array-index,
   -cppcoreguidelines-pro-bounds-pointer-arithmetic,
   -cppcoreguidelines-pro-type-reinterpret-cast,
-  -cppcoreguidelines-owning-memory,
 
   hicpp-*,
   -hicpp-no-array-decay,
@@ -38,22 +39,29 @@ Checks: >
   -openmp-use-default-none,
 
   performance-*,
+
   portability-*,
+  -portability-avoid-pragma-once,
 
   readability-*,
   readability-identifier-naming,
   -readability-identifier-length,
   -readability-math-missing-parentheses,
+  -readability-use-concise-preprocessor-directives,
 
   -*-avoid-c-arrays,
   -*-magic-numbers,
   -*-vararg,
 
+FormatStyle: file
+HeaderFileExtensions: ["hpp"]
+ImplementationFileExtensions: ["cpp"]
 WarningsAsErrors: "*"
-FormatStyle: none
 CheckOptions:
   - key: bugprone-easily-swappable-parameters.MinimumLength
     value: 4
+  - key: modernize-use-trailing-return-type.TransformLambdas
+    value: none
   - key: cppcoreguidelines-avoid-do-while.IgnoreMacros
     value: true
   - key: readability-function-cognitive-complexity.DescribeBasicIncrements

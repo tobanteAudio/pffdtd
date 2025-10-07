@@ -573,7 +573,7 @@ void writeOutputs(Simulation3D const& sim, std::filesystem::path const& simDir) 
 void printLastSample(Simulation3D const& sim) {
   int64_t const Nt           = sim.Nt;
   int64_t const Nr           = sim.Nr;
-  double* u_out              = sim.u_out.get();
+  double const* u_out        = sim.u_out.get();
   int64_t const* out_reorder = sim.out_reorder.data();
   // print last samples
   fmt::println("RAW OUTPUTS");
