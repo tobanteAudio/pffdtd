@@ -45,7 +45,7 @@ jobs:
             cmake_flags: '-D OpenMP_ROOT=`brew list libomp | grep libomp.a | sed -E "s/\/lib\/.*//"`'
             build_type: "Release"
             cxx_flags: ""
-            python_version: "3.12"
+            python_version: "3.13"
             pffdtd_engine_exe: "build/src/cpp/pffdtd-engine"
 
           - name: Windows
@@ -55,7 +55,7 @@ jobs:
             cmake_flags: ""
             build_type: "Release"
             cxx_flags: "/EHsc"
-            python_version: "3.12"
+            python_version: "3.13"
             pffdtd_engine_exe: "build/src/cpp/pffdtd-engine.exe"
 
     steps:
@@ -72,19 +72,17 @@ jobs:
         if: runner.os == 'Linux'
         run: |
           sudo apt update -y
-          sudo apt install -y libomp-dev ninja-build gcovr
+          sudo apt install -y libomp-dev gcovr
           pip3 install --break-system-packages conan
 
       - name: Install dependencies (macOS)
         if: runner.os == 'macOS'
-        run: brew install conan hdf5 libomp llvm ninja
+        run: brew install conan hdf5 libomp llvm
 
       - name: Install dependencies (Windows)
         if: runner.os == 'Windows'
         shell: bash
-        run: |
-          choco install ninja
-          pip3 install --upgrade conan
+        run: pip3 install --upgrade conan
 
       - name: Set up Visual Studio shell
         if: runner.os == 'Windows'
