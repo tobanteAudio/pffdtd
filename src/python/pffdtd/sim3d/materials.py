@@ -19,7 +19,7 @@ class SimMaterials:
 
         self.save_folder = save_folder
 
-    def package(self, mat_files_dict, mat_list, read_folder):
+    def package(self, mat_files_dict, mat_list, read_folder, verbose=False):
         mat_list = mat_list[:]  # make copy of input
         if '_RIGID' in mat_list:
             mat_list.remove('_RIGID')
@@ -47,7 +47,10 @@ class SimMaterials:
                 assert DEF.ndim == 2
                 assert DEF.shape[1] == 3
 
-                print(f'{mat=} {DEF=}')
+                if verbose:
+                    self.print(f'{mat=} {DEF=}')
+                else:
+                    self.print(f'{mat=}')
                 h5f.create_dataset(f'mat_{i:02d}_DEF', data=DEF)
                 Mb[i] = DEF.shape[0]
 
