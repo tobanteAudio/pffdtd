@@ -49,7 +49,7 @@ jobs:
             pffdtd_engine_exe: "build/src/cpp/pffdtd-engine"
 
           - name: Windows
-            os: windows-latest
+            os: windows-2022
             osx_target: ""
             cmake_prefix_path: ""
             cmake_flags: ""
