@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: 2025 Tobias Hienzsch
+import json
 from pathlib import Path
 import signal
 import sys
@@ -11,6 +12,8 @@ from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 from matplotlib.ticker import ScalarFormatter
 import numpy as np
+from scipy.signal import sosfilt
+
 
 from PySide6.QtCore import (
     QAbstractListModel,
@@ -32,6 +35,7 @@ from PySide6.QtWidgets import (
     QHBoxLayout,
     QMainWindow,
     QProgressBar,
+    QSlider,
     QSplitter,
     QTableView,
     QTabWidget,
@@ -41,10 +45,11 @@ from PySide6.QtWidgets import (
 )
 
 from pffdtd.common.plot import plot_styles
-from pffdtd.absorption.database import read_absorption_database_excel
+from pffdtd.absorption.database import read_absorption_database_excel, ALL_BANDS
 from pffdtd.analysis.response import plot_musical_response
 from pffdtd.analysis.rt60 import reverberation_time
 from pffdtd.analysis.summary import plot_impulse_response_summary
+from pffdtd.signals.iir import linkwitz_riley_crossover
 from pffdtd.signals.octave import center_frequencies
 from pffdtd.signals.wavfile import wavread
 
@@ -124,7 +129,7 @@ class MaterialTable(QWidget):
         tableWithSearch.setLayout(vbox)
 
         # PLOT
-        self.canvas = MatplotLibCanvas(self, width=5, height=4)
+        self.canvas = MatplotLibCanvas(self, width=5, height=4, subplot_args={'nrows': 2, 'ncols': 1, 'sharex': True})
 
         # LAYOUT
         splitter = QSplitter(Qt.Orientation.Vertical)
@@ -141,31 +146,195 @@ class MaterialTable(QWidget):
         rows = self.table.selectionModel().selectedRows()
         ids = [get_id(r) for r in rows]
 
-        ax = self.canvas.axes
-        ax.clear()
-
         if len(ids) == 0:
             self.canvas.draw()
             return
 
         bands = [63, 125, 250, 500, 1000, 2000, 4000, 8000]
-        ax.set_xlabel('Frequency [Hz]')
-        ax.set_ylim(0.0, 1.0)
-        ax.set_ylabel('Absorption [Sabs]')
+        # bands = ALL_BANDS
+
+        ax = self.canvas.axes
+
+        Sabs_plot: Axes = ax[0]
+        dB_plot: Axes = ax[1]
+
+        Sabs_plot.set_xscale('linear')
+        dB_plot.set_xscale('linear')
+
+        self.canvas.clear_all_axes()
+
+        Sabs_plot.set_xlabel('Frequency [Hz]')
+        Sabs_plot.set_ylabel('Absorption [Sabs]')
+        Sabs_plot.set_xlim(50, 10000.0)
+        Sabs_plot.set_ylim(0.0, 1.0)
+
+        dB_plot.set_xlabel('Frequency [Hz]')
+        dB_plot.set_ylabel('Reflection [dB]')
+        dB_plot.set_xlim(50, 10000.0)
+        dB_plot.set_ylim(-20.0, 0.0)
 
         for idx in ids:
-            coefficients = self.model._df.loc[int(idx)][bands]
+            coefficients = self.model._df.loc[int(idx)][bands].to_numpy().astype(float)
             description = self.model._df.loc[int(idx)]['description']
-            ax.semilogx(bands, coefficients, label=description[:150])
-            ax.scatter(bands, coefficients, color='red')
+
+            Sabs_plot.semilogx(bands, coefficients)
+            Sabs_plot.scatter(bands, coefficients, color='red')
+
+            dB = 10*np.log10(np.maximum(1-coefficients, 1e-6))
+            dB_plot.semilogx(bands, dB, label=description[:150])
+            dB_plot.scatter(bands, dB, color='red')
 
         formatter = ScalarFormatter()
         formatter.set_scientific(False)
-        ax.xaxis.set_major_formatter(formatter)
 
-        ax.grid(which='minor', color='#DDDDDD', linestyle=':', linewidth=0.5)
-        ax.legend(loc='upper left')
+        Sabs_plot.xaxis.set_major_formatter(formatter)
+        Sabs_plot.grid(which='minor', color='#DDDDDD', linestyle=':', linewidth=0.5)
+        # Sabs_plot.legend(loc='lower left')
+
+        dB_plot.xaxis.set_major_formatter(formatter)
+        dB_plot.grid(which='minor', color='#DDDDDD', linestyle=':', linewidth=0.5)
+        dB_plot.legend(loc='lower left')
+
+        # Sabs_plot.set_title()
+
         self.canvas.draw()
+
+
+class XoverPreview(QWidget):
+    def __init__(self):
+        super().__init__()
+
+        ir_low_path = 'sim_data/RedBullStudiosBerlin/gpu_sub/R001_out_native.wav'  # sys.argv[1]
+        self.low = wavread(ir_low_path)
+
+        ir_high_path = 'sim_data/RedBullStudiosBerlin/gpu/R001_out_native.wav'  # sys.argv[2]
+        self.high = wavread(ir_high_path)
+
+        model_path = 'models/private/RedBullStudiosBerlin/model.json'
+        with open(model_path, 'r') as f:
+            model = json.load(f)
+
+        listener_pos = np.array(model['receivers'][0]['xyz'])
+        top_pos = (np.array(model['sources'][0]['xyz'])+np.array(model['sources'][1]['xyz']))/2
+        sub_pos = np.array(model['sources'][2]['xyz'])
+
+        distance_top = np.linalg.norm(top_pos-listener_pos)
+        distance_sub = np.linalg.norm(sub_pos-listener_pos)
+        distance_delta = distance_sub-distance_top
+        time_delta = 1e6/343.2*distance_delta
+
+        print(f'Distance Top:   {distance_top*100:.1f} cm')
+        print(f'Distance Sub:   {distance_sub*100:.1f} cm')
+        print(f'Distance Delta: {distance_delta*100:.1f} cm')
+        print(f'Distance Delta: {time_delta:.0f} us')
+
+        self.frequency = QSlider()
+        self.frequency.setRange(60, 200)
+        self.frequency.setValue(80)
+        self.frequency.setOrientation(Qt.Orientation.Horizontal)
+        self.frequency.valueChanged.connect(self.updatePlot)
+
+        self.delay = QSlider()
+        self.delay.setRange(0, 10000)
+        self.delay.setValue(int(time_delta))
+        self.delay.setOrientation(Qt.Orientation.Horizontal)
+        self.delay.valueChanged.connect(self.updatePlot)
+
+        self.order = QLineEdit()
+
+        vbox = QVBoxLayout()
+        vbox.addWidget(self.frequency)
+        vbox.addWidget(self.delay)
+        vbox.addWidget(self.order)
+
+        self.parameters = QWidget()
+        self.parameters.setLayout(vbox)
+
+        self.canvas = MatplotLibCanvas(self, width=5, height=4)
+
+        splitter = QSplitter(Qt.Orientation.Vertical)
+        splitter.addWidget(self.parameters)
+        splitter.addWidget(self.canvas)
+        layout = QHBoxLayout()
+        layout.addWidget(splitter)
+        self.setLayout(layout)
+        self.updatePlot()
+
+    def updatePlot(self):
+        self.canvas.clear_all_axes()
+
+        fs_low, ir_low = self.low
+        fs_high, ir_high = self.high
+        assert fs_low == fs_high
+        assert ir_low.shape == ir_high.shape
+
+        delay_samples = max(int(np.ceil((self.delay.value()/1e6)*fs_low)), 0)
+        ir_low = np.pad(ir_low.copy(), (0, delay_samples), 'constant', constant_values=0)
+        ir_high = np.pad(ir_high.copy(), (delay_samples, 0), 'constant', constant_values=0)
+
+        frequency = self.frequency.value()
+        sos_low, sos_high = linkwitz_riley_crossover(frequency, fs_low, order=8)
+        filt_low = sosfilt(sos_low, ir_low)
+        filt_high = sosfilt(sos_high, ir_high)
+        mix = filt_low+filt_high
+
+        freqs = np.fft.rfftfreq(ir_low.shape[0], 1/fs_low)
+        H_low = np.fft.rfft(filt_low)
+        H_high = np.fft.rfft(filt_high)
+        H_mix = np.fft.rfft(mix)
+
+        N = 24
+        fmax = 300
+        freqs, H_low = rfft_to_N_per_octave(filt_low, fs_low, N, fmax)
+        freqs, H_high = rfft_to_N_per_octave(filt_high, fs_high, N, fmax)
+        freqs, H_mix = rfft_to_N_per_octave(mix, fs_low, N, fmax)
+
+        # _, ax = plt.subplots(1, 1, constrained_layout=True)
+        ax: Axes = self.canvas.axes
+        ax.semilogx(freqs, 20*np.log10(np.maximum(np.abs(H_low), 1e-6)), linestyle='--', label='Low')
+        ax.semilogx(freqs, 20*np.log10(np.maximum(np.abs(H_high), 1e-6)), linestyle='--', label='High')
+        ax.semilogx(freqs, 20*np.log10(np.maximum(np.abs(H_mix), 1e-6)), label='Mix')
+        ax.set_xlim(20, 300)
+        ax.set_ylim(-40, 5)
+        ax.set_ylabel('Amplitude [dB]')
+        ax.set_title(f'Crossover @ {frequency:.2f} Hz - {self.delay.value()} us')
+        ax.grid(which='minor', color='#DDDDDD', linestyle=':', linewidth=0.5)
+        ax.legend()
+
+        self.canvas.draw()
+
+
+def rfft_to_N_per_octave(x, fs, N, fmax):
+    """
+    Inputs:
+      - x  : real-valued time signal (1D ndarray of length N)
+      - fs : sampling rate in Hz
+    Returns:
+      - f_log : shape (n_bins,), the log-spaced freq array (96 bins/octave)
+      - mag_log: shape (n_bins,), the interpolated magnitude |RFFT(x)| at f_log
+    """
+    # N = len(x)
+    # 1) Compute RFFT and its linear frequency axis
+    X = np.fft.rfft(x)
+    f_lin = np.fft.rfftfreq(len(x), d=1.0/fs)    # [0, Δf, 2Δf, ..., fs/2], len = len(x)//2+1
+    mag_lin = np.abs(X)
+
+    # 2) Choose f_min and f_max
+    f_min = fs / len(x)          # first nonzero bin
+    f_max = min(fmax, fs / 2)          # Nyquist
+
+    # 3) How many octaves from f_min to f_max?
+    n_octaves = np.log2(f_max / f_min)     # = log2((fs/2)/(fs/N)) = log2(N/2)
+    n_bins = int(np.floor(n_octaves * N)) + 1
+
+    # 4) Build log-spaced frequencies: one bin per semitone
+    k = np.arange(n_bins)                               # k = 0,1,...,n_bins-1
+    f_log = f_min * (2.0 ** (k / N))                      # semitone steps
+
+    # 5) Interpolate magnitude onto log axis
+    mag_log = np.interp(f_log, f_lin, mag_lin)
+
+    return f_log, mag_log
 
 
 class OpenFilesListModel(QAbstractListModel):
@@ -248,12 +417,14 @@ class MainWindow(QMainWindow):
         self.musical = MatplotLibCanvas(self, width=5, height=4, dpi=100)
         self.edc = MatplotLibCanvas(self, width=5, height=4, dpi=100)
         self.materials = MaterialTable()
+        self.xover = XoverPreview()
 
         self.tabs = QTabWidget(tabPosition=QTabWidget.TabPosition.North)
         self.tabs.addTab(self.summary, 'Summary')
         self.tabs.addTab(self.musical, 'Musical')
         self.tabs.addTab(self.edc, 'EDC')
         self.tabs.addTab(self.materials, 'Materials')
+        self.tabs.addTab(self.xover, 'Xover')
 
         # Main Layout
         splitter = QSplitter(Qt.Orientation.Horizontal)
