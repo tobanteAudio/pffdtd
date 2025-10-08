@@ -51,7 +51,7 @@ cmake -S . -B build -G Ninja -D CMAKE_BUILD_TYPE=Release -D CMAKE_C_COMPILER=cla
 ```shell
 source /opt/intel/oneapi/setvars.sh
 
-cmake -S. -B build -G Ninja -D CMAKE_BUILD_TYPE=Release -D CMAKE_C_COMPILER=icx -D CMAKE_CXX_COMPILER=icpx -D PFFDTD_ENABLE_SYCL_ONEAPI=ON -D CMAKE_PROJECT_TOP_LEVEL_INCLUDES=external/cmake-conan/conan_provider.cmake -D CONAN_HOST_PROFILE=../cmake/profile/linux_sycl
+SETVARS_ARGS="--force" cmake -S. -B build -G Ninja -D CMAKE_BUILD_TYPE=Release -D CMAKE_C_COMPILER=icx -D CMAKE_CXX_COMPILER=icpx -D PFFDTD_ENABLE_SYCL_ONEAPI=ON -D CMAKE_PROJECT_TOP_LEVEL_INCLUDES=external/cmake-conan/conan_provider.cmake -D CONAN_HOST_PROFILE=../cmake/profile/linux_sycl
 cmake --build build
 
 # Using hyper-threads is usally a slow down. Use the number of physical cores.
