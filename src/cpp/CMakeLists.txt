@@ -14,6 +14,7 @@ target_link_libraries(pffdtd
         HDF5::HDF5
         OpenMP::OpenMP_CXX
         mdspan::mdspan
+        pffdtd::compiler_warnings
 )
 
 target_sources(pffdtd
@@ -98,12 +99,6 @@ if(PFFDTD_HAS_METAL)
     set_target_properties(pffdtd PROPERTIES LINK_FLAGS "-Wl,-sectcreate,addseg,addsect,${SHADER_LIBRARY}")
     add_dependencies(pffdtd pffdtd-engine-metal-shaders)
 endif()
-
-if((CMAKE_CXX_COMPILER_ID STREQUAL "MSVC") OR (CMAKE_CXX_COMPILER_FRONTEND_VARIANT STREQUAL "MSVC"))
-    target_compile_options(pffdtd PUBLIC /W3)
-else ()
-    target_compile_options(pffdtd PUBLIC -Wall -Wextra -Wno-deprecated-declarations)
-endif ()
 
 add_executable(pffdtd-engine main.cpp)
 target_link_libraries(pffdtd-engine PRIVATE CLI11::CLI11 pffdtd::pffdtd)

@@ -34,6 +34,9 @@ if(PFFDTD_ENABLE_METAL AND APPLE)
     set(PFFDTD_HAS_METAL ON)
 endif()
 
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+include(compiler_warnings)
+
 include(FetchContent)
 FetchContent_Declare(mdspan GIT_REPOSITORY "https://github.com/kokkos/mdspan" GIT_TAG "stable" GIT_SHALLOW TRUE)
 FetchContent_MakeAvailable(mdspan)
