@@ -13,7 +13,7 @@ class PFFDTD(ConanFile):
         self.requires('fmt/11.1.4')
 
         if self.settings.os != 'Macos':
-            self.requires('hdf5/1.14.5')
+            self.requires('hdf5/1.14.6')
 
     def config_options(self):
         pass
