@@ -56,7 +56,6 @@ Checks:
 
 FormatStyle: file
 HeaderFileExtensions: ["hpp"]
-ImplementationFileExtensions: ["cpp", "cu"]
 WarningsAsErrors: "*"
 CheckOptions:
   bugprone-easily-swappable-parameters.MinimumLength: 4
