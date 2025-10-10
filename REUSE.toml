@@ -38,6 +38,8 @@ path = [
     "models/Modes/model.json",
     "models/ProStudio/model.json",
     "models/Studio/model.json",
+    "vcpkg-configuration.json",
+    "vcpkg.json",
 ]
 SPDX-FileCopyrightText = "2024 Tobias Hienzsch"
 SPDX-License-Identifier = "MIT"
