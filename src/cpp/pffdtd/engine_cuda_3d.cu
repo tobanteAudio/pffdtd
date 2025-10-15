@@ -531,13 +531,20 @@ auto print_gpu_details(int i) -> uint64_t {
   std::printf("  Peak Memory Bandwidth: %.3f GB/s\n", 2.0 * prop.memoryClockRate * (prop.memoryBusWidth / 8.0) / 1.0e6);
   std::printf(
       "  Total global memory: [ %.3f GB | %.3f GiB | %lu MiB ]\n",
-      (double)prop.totalGlobalMem / (1e9),
+      (double)prop.totalGlobalMem / 1e9,
       (double)prop.totalGlobalMem / 1073741824ULL,
       prop.totalGlobalMem >> 20
   );
+  std::printf("  L2 size: %.3f MB\n", static_cast<double>(prop.l2CacheSize) / 1e6);
+  std::printf("  Max grid size:  [%d, %d, %d]\n", prop.maxGridSize[0], prop.maxGridSize[1], prop.maxGridSize[2]);
+  std::printf("  Max block size: [%d, %d, %d]\n", prop.maxThreadsDim[0], prop.maxThreadsDim[1], prop.maxThreadsDim[2]);
+  std::printf("  Max threads per block: %d\n", prop.maxThreadsPerBlock);
+  std::printf("  Shared memory per block: %zu\n", prop.sharedMemPerBlock);
   std::printf("  Registers per block: %d\n", prop.regsPerBlock);
   std::printf("  Concurrent Kernels: %d\n", prop.concurrentKernels);
   std::printf("  Async Engine: %d\n", prop.asyncEngineCount);
+  std::printf("  Multi processors: %d\n", prop.multiProcessorCount);
+  std::printf("  Warp size: %d\n", prop.warpSize);
   std::printf("\n");
   return prop.totalGlobalMem;
 }
