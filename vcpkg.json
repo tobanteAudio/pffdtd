@@ -1,7 +1,3 @@
 {
-  "dependencies": [
-    "fmt",
-    "hdf5",
-    "cli11"
-  ]
+  "dependencies": ["cli11", "fmt", "hdf5"]
 }
