@@ -205,7 +205,7 @@ auto run(Simulation3D const& sim) -> void {
 
     // air update for schemes
     if (grid == Grid::CART) { // cartesian scheme
-#pragma omp parallel for
+#pragma omp parallel for collapse(2)
       for (int64_t ix = 1; ix < Nx - 1; ix++) {
         for (int64_t iy = 1; iy < Ny - 1; iy++) {
           for (int64_t iz = 1; iz < Nz - 1; iz++) { // contiguous
