@@ -55,9 +55,10 @@ if(PFFDTD_HAS_SYCL)
     target_compile_definitions(pffdtd PUBLIC PFFDTD_HAS_SYCL=1)
 
     if(PFFDTD_ENABLE_SYCL_ONEAPI)
-        set_source_files_properties(pffdtd/engine_sycl_2d.cpp PROPERTIES COMPILE_FLAGS "-fsycl-targets=nvptx64-nvidia-cuda")
-        set_source_files_properties(pffdtd/engine_sycl_3d.cpp PROPERTIES COMPILE_FLAGS "-fsycl-targets=nvptx64-nvidia-cuda")
-        target_link_libraries(pffdtd PRIVATE "-fsycl-targets=nvptx64-nvidia-cuda")
+        set(PFFDTD_SYCL_FLAGS "-fsycl-targets=spir64,nvptx64-nvidia-cuda -Xsycl-target-backend=nvptx64-nvidia-cuda --offload-arch=sm_89")
+        set_source_files_properties(pffdtd/engine_sycl_2d.cpp PROPERTIES COMPILE_FLAGS ${PFFDTD_SYCL_FLAGS})
+        set_source_files_properties(pffdtd/engine_sycl_3d.cpp PROPERTIES COMPILE_FLAGS ${PFFDTD_SYCL_FLAGS})
+        target_link_libraries(pffdtd PRIVATE ${PFFDTD_SYCL_FLAGS})
     endif()
 endif()
 
