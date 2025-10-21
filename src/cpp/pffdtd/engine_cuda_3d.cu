@@ -532,10 +532,14 @@ auto print_gpu_details(int i) -> uint64_t {
   std::printf(
       "  Total global memory: [ %.3f GB | %.3f GiB | %lu MiB ]\n",
       (double)prop.totalGlobalMem / 1e9,
-      (double)prop.totalGlobalMem / 1073741824ULL,
+      (double)prop.totalGlobalMem / (1024 * 1024 * 1024),
       prop.totalGlobalMem >> 20
   );
-  std::printf("  L2 size: %.3f MB\n", static_cast<double>(prop.l2CacheSize) / 1e6);
+  std::printf(
+      "  L2 cache memory: [ %.3f MB | %.3f MiB ]\n",
+      static_cast<double>(prop.l2CacheSize) / 1e6,
+      static_cast<double>(prop.l2CacheSize) / (1024 * 1024)
+  );
   std::printf("  Max grid size:  [%d, %d, %d]\n", prop.maxGridSize[0], prop.maxGridSize[1], prop.maxGridSize[2]);
   std::printf("  Max block size: [%d, %d, %d]\n", prop.maxThreadsDim[0], prop.maxThreadsDim[1], prop.maxThreadsDim[2]);
   std::printf("  Max threads per block: %d\n", prop.maxThreadsPerBlock);
