@@ -29,7 +29,15 @@ cd "$model_dir"
 pffdtd sim3d setup "$sim_setup"
 
 # Run sim
-OMP_PROC_BIND=spread OMP_NUM_THREADS=16 $pffdtd_engine sim3d -e cuda -p "64" -s "$sim_dir"
+OMP_PLACES=cores OMP_PROC_BIND=close OMP_NUM_THREADS=16 $pffdtd_engine sim3d -e cuda -p "64" -s "$sim_dir"
+# nsys profile --force-overwrite true -t cuda,osrt,nvtx --sample=none -o prof $pffdtd_engine sim3d -e cuda -p "64" -s "$sim_dir"
+# /usr/local/cuda-12.6/bin/ncu \
+#     --kernel-name-base demangled \
+#     --kernel-name "regex:KernelAirCart" \
+#     --launch-skip 20 --launch-count 1 \
+#     --section="SpeedOfLight" --section="LaunchStats" --section="Occupancy" --section="MemoryWorkloadAnalysis" \
+#     $pffdtd_engine sim3d -e cuda -p "64" -s "$sim_dir"
+
 # pffdtd sim3d engine --sim_dir="$sim_dir" --plot --draw_backend="mayavi" --json_model="${model_dir}/model.json"
 
 # Post-process
