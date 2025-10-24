@@ -10,6 +10,7 @@ import numpy as np
 from scipy import signal
 
 from pffdtd.analysis.room_modes import room_modes
+from pffdtd.analysis.summary import plot_impulse_response_summary
 
 
 @click.command(name='report', help='Generate report.')
@@ -42,36 +43,39 @@ def main(sim_dir, out_file) -> None:
     a = np.array([1, -1])
     out = signal.lfilter(b, a, out)
 
-    out /= np.max(np.abs(out))
-
     sos = signal.butter(4, fmin, fs=fs, btype='high', output='sos')
     out = signal.sosfilt(sos, out)
 
     sos = signal.butter(4, fmax, fs=fs, btype='low', output='sos')
     out = signal.sosfilt(sos, out)
 
-    # out *= signal.windows.hann(out.shape[-1])
-    spectrum: np.ndarray = np.fft.rfft(out, axis=-1)
-    frequencies: np.ndarray = np.fft.rfftfreq(out.shape[-1], 1/fs)
-    times: np.ndarray = np.linspace(0.0, out.shape[-1]/fs, out.shape[-1])
+    out /= np.max(np.abs(out))
 
-    dB: np.ndarray = 20*np.log10(np.abs(spectrum)+np.spacing(1))
-    dB = dB-np.max(dB)
+    # # out *= signal.windows.hann(out.shape[-1])
+    # spectrum: np.ndarray = np.fft.rfft(out, axis=-1)
+    # frequencies: np.ndarray = np.fft.rfftfreq(out.shape[-1], 1/fs)
+    # times: np.ndarray = np.linspace(0.0, out.shape[-1]/fs, out.shape[-1])
 
-    print(times.shape)
+    # dB: np.ndarray = 20*np.log10(np.abs(spectrum)+np.spacing(1))
+    # dB = dB-np.max(dB)
 
-    modes = room_modes(3.65, 6, 3)[:30]
-    modes_f = [mode['frequency'] for mode in modes]
+    # print(times.shape)
 
-    plt.plot(times, out.squeeze(), label=f'{15}deg')
-    plt.grid(which='both')
-    plt.legend()
-    plt.show()
+    # modes = room_modes(3.65, 6, 3)[:30]
+    # modes_f = [mode['frequency'] for mode in modes]
 
-    plt.semilogx(frequencies, dB.squeeze(), label=f'{15}deg')
-    plt.vlines(modes_f, -60, 0.0, colors='r', linestyles='--')
-    plt.xlim(10, 500)
-    plt.ylim(-80, 0)
-    plt.grid(which='both')
-    plt.legend()
+    # plt.plot(times, out.squeeze(), label=f'{15}deg')
+    # plt.grid(which='both')
+    # plt.legend()
+    # plt.show()
+
+    # plt.semilogx(frequencies, dB.squeeze(), label=f'{15}deg')
+    # plt.vlines(modes_f, -60, 0.0, colors='r', linestyles='--')
+    # plt.xlim(10, 500)
+    # plt.ylim(-80, 0)
+    # plt.grid(which='both')
+    # plt.legend()
+    # plt.show()
+
+    plot_impulse_response_summary(out[0, :], fs, fmax=fmax, smoothing=0.0, window=('tukey', 0.005))
     plt.show()

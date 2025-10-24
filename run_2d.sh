@@ -11,7 +11,7 @@ root_dir="$(cd "$(dirname "$0")" && pwd)"
 python_dir="$root_dir/src/python"
 engine_exe="$root_dir/$build_dir/src/cpp/pffdtd-engine"
 
-sim_name="Diffusor"
+sim_name="Modes2D"
 sim_dir="$root_dir/sim_data/$sim_name/cpu"
 sim_setup="${sim_name}.py"
 model_dir="$root_dir/models/$sim_name"
@@ -33,5 +33,5 @@ DPCPP_CPU_PLACES=cores DPCPP_CPU_CU_AFFINITY=spread DPCPP_CPU_NUM_CUS=$jobs OMP_
 pffdtd sim2d process-outputs --fmin=20 --sim_dir="$sim_dir" "$sim_dir/out.h5"
 
 # Report
-# pffdtd sim2d report --sim_dir="$sim_dir" "$sim_dir/out.h5"
-pffdtd diffusion measurement "$sim_dir"
+pffdtd sim2d report --sim_dir="$sim_dir" "$sim_dir/out.h5"
+# pffdtd diffusion measurement "$sim_dir"
