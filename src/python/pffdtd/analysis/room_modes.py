@@ -12,7 +12,7 @@ from scipy.signal import find_peaks, windows
 from scipy.io import wavfile
 
 from pffdtd.geometry.math import iceil
-from pffdtd.signals.music import hz_to_note
+from pffdtd.signals.music import cents_deviation, hz_to_note
 from pffdtd.signals.wavfile import collect_wav_files
 
 
@@ -155,6 +155,7 @@ def detect_room_modes(
             errors.append({
                 'Mode Hz': round(mode, 3),
                 'Nearest Peak Hz': round(nearest, 3),
+                'Error Cents': round(cents_deviation(mode, nearest), 3),
                 'Error Hz': round(error, 3),
                 'Error %': round(error_pct, 3),
             })
