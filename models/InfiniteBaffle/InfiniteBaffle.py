@@ -6,6 +6,8 @@ import numpy as np
 
 from pffdtd.sim3d.setup import Setup3D
 
+MULTI_SOURCE = False
+
 
 class InfiniteBaffle(Setup3D):
     """Point source on infinite baffle in an anechoic chamber
@@ -16,7 +18,7 @@ class InfiniteBaffle(Setup3D):
     model_file = 'model.json'
     mat_folder = '../../sim_data/InfiniteBaffle/materials'
     duration = 0.3
-    source_index = [1, 2]
+    source_index = [1, 2] if MULTI_SOURCE else 1
     source_signal = 'impulse'
     Tc = 20
     rh = 50
@@ -57,19 +59,24 @@ class InfiniteBaffle(Setup3D):
                     'color': [255, 255, 255],
                     'sides': [0, 0, 0, 0]
                 }
-            },
-            'sources': [
+            }
+        }
+
+        if MULTI_SOURCE:
+            model['sources'] = [
                 {'name': 'S1', 'xyz': [width/2, length-offset, (height/2)-0.5]},
                 {'name': 'S2', 'xyz': [width/2, length-offset, (height/2)+1.5]},
-            ],
-            'receivers': [
+            ]
+            model['receivers'] = [
                 {'name': 'R1', 'xyz': [width/2, offset, height/2 - 0.50]},
                 {'name': 'R2', 'xyz': [width/2, offset, height/2 - 0.25]},
                 {'name': 'R3', 'xyz': [width/2, offset, height/2 + 0.00]},
                 {'name': 'R4', 'xyz': [width/2, offset, height/2 + 0.25]},
                 {'name': 'R5', 'xyz': [width/2, offset, height/2 + 0.50]},
             ]
-        }
+        else:
+            model['sources'] = [{'name': 'S1', 'xyz': [width/2, length-offset, height/2]}]
+            model['receivers'] = [{'name': 'R1', 'xyz': [width/2, offset, height/2]}]
 
         src = np.array(model['sources'][0]['xyz'])
         ref = np.linalg.norm(src - np.array(model['receivers'][0]['xyz']))
