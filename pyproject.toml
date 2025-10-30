@@ -64,7 +64,13 @@ where = ["src/python"]
 
 [tool.pytest.ini_options]
 minversion = "7.0"
-addopts = ["-ra", "--strict-markers", "--strict-config"]
+addopts = [
+    "-ra",
+    "--strict-markers",
+    "--strict-config",
+    "--durations=10",
+    "--durations-min=1.0",
+]
 xfail_strict = true
 filterwarnings = ["error"]
 testpaths = ["src/python/test/*"]
