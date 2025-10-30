@@ -37,6 +37,7 @@ path = [
     "models/Localization/model.json",
     "models/Modes/model.json",
     "models/ProStudio/model.json",
+    "models/ReverberationTime/model.json",
     "models/Studio/model.json",
     "vcpkg-configuration.json",
     "vcpkg.json",
