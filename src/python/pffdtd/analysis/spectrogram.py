@@ -27,6 +27,8 @@ def plot_spectrogram(x, fs, *, window='hann', min_dB=-100, color_map='gouraud', 
     ax.set_ylabel('Frequency [Hz]')
     ax.set_yscale('log')
     ax.set_ylim(frequencies[1], fs / 2)
+    ax.grid(False, which='major')
+    ax.grid(False, which='minor')
 
 
 @click.command(name='spectrogram', help='Spectral decay plot (STFT).')
