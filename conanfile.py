@@ -9,7 +9,7 @@ class PFFDTD(ConanFile):
     generators = 'CMakeToolchain', 'CMakeDeps'
 
     def requirements(self):
-        self.requires('cli11/2.5.0')
+        self.requires('cli11/2.6.0')
         self.requires('fmt/12.0.0')
         self.requires('hdf5/1.14.6')
 
