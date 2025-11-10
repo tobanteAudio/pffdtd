@@ -20,15 +20,16 @@ def generate_sine_wave(frequency, duration, fs, dB_rms=-20.0):
 @click.option('--duration', default=10.0, type=float)
 @click.option('--frequency', default=440.0, type=float)
 @click.option('--fs', default=48000, type=int)
-def main(output, duration, frequency, fs):
-    x = generate_sine_wave(frequency, duration, fs)
+@click.option('--rms_dbFS', 'rms_dbFS', default=-20.0, type=float)
+def main(output, duration, frequency, fs, rms_dbFS):
+    x = generate_sine_wave(frequency, duration, fs, rms_dbFS)
     peak = np.max(np.abs(x))
     rms = np.sqrt(np.mean(x**2))
 
     print(f'Peak:  {20*np.log10(peak):.1f} dBFS ({105+20*np.log10(peak):.1f} dBC SPL)')
     print(f'RMS:   {20*np.log10(rms):.1f} dBFS (85 dBC SPL)')
     print(f'Crest: {20*np.log10(crest_factor(x)):.2f} dB')
-    print(f'Mean:  {abs(np.mean(x))}')
+    print(f'Mean:  {abs(np.mean(x)):.6f}')
 
     if len(output) == 1:
         wavwrite(output[0], fs, x)
