@@ -2,6 +2,7 @@
 # SPDX-FileCopyrightText: 2025 Tobias Hienzsch
 import click
 import numpy as np
+import pandas as pd
 
 from pffdtd.signals.octave import center_frequencies
 from pffdtd.sim3d.constants import SimConstants
@@ -76,17 +77,18 @@ def main():
     bmax = [6, 3.65, 3.12]  # Tobi Office
     bmax = [17, 15, 9]
     bmax = [6.77, 7.6, 4.4]  # Pro Studio
-    fmax = 16_000.0
+    bmax = [50, 20, 15]  # Musikverein ConcertHall
+    fmax = 20_000.0
     ppw = 10.5
     fcc = False
 
-    # bmax = [4000, 2500, 750]  # Airport
-    # bmax = [300, 250, 75]  # Generic Stadium
-    # bmax = [100, 100, 60]  # Generic Arena
-    # bmax = [315, 280, 133]  # Wembley
-    # fmax = 20_000.0
-    # ppw = 3.21
-    # fcc = False
+    bmax = [4000, 2500, 750]  # Airport
+    bmax = [100, 100, 60]  # Generic Arena
+    bmax = [315, 280, 133]  # Wembley
+    bmax = [300, 250, 75]  # Generic Stadium
+    fmax = 5_000.0
+    ppw = 3.21
+    fcc = False
 
     constants = SimConstants(20, 50, fmax=fmax, PPW=ppw, fcc=fcc)
     grid = CartGrid(constants.h, 3.0, bmin, bmax, fcc)
@@ -99,6 +101,53 @@ def main():
     print(f'float64 = {ram_f64:.3f} GB / {ram_f64/1e3:.3f} TB')
     print('')
 
-    print_cluster_stats(ram_f64, 'NVIDIA', 'H200', 141, 8, 700*8+2500, 300000, 30)
-    print_cluster_stats(ram_f64, 'AMD', 'MI325X', 256, 8, 1000*8+2500, 20000*8+10000, 20)
-    print_cluster_stats(ram_f64, 'CPU', 'EPYC 9005F', 64*12, 2, 2600, 28000, 6.0)
+    # print_cluster_stats(ram_f64, 'NVIDIA', 'H200', 141, 8, 700*8+2500, 300000, 30)
+    # print_cluster_stats(ram_f64, 'AMD', 'MI325X', 256, 8, 1000*8+2500, 20000*8+10000, 20)
+    # print_cluster_stats(ram_f64, 'CPU', 'EPYC 9005F', 64*12, 2, 2600, 28000, 6.0)
+
+    df = pd.DataFrame.from_records([
+        {
+            'Brand': 'NVIDIA',
+            'Device': 'H200',
+            'RAM': 141,
+            'Devices / Node': 8,
+            'TDP / Node': 700*8+2500,
+            'Price': 300_000,
+            # 'Rental price / hour': 30,
+        },
+        {
+            'Brand': 'AMD',
+            'Device': 'MI325X',
+            'RAM': 256,
+            'Devices / Node': 8,
+            'TDP / Node': 1000*8+2500,
+            'Price': 200_000,
+            # 'Rental price / hour': 20,
+        },
+        {
+            'Brand': 'AMD',
+            'Device': 'EPYC 9005F',
+            'RAM': 64*12,
+            'Devices / Node': 2,
+            'TDP / Node': 2600,
+            'Price': 30_000,
+            # 'Rental price / hour': 6,
+        },
+    ])
+
+    df['Device count'] = np.ceil(ram_f64/df['RAM']).astype(int)
+    df['Node count'] = np.ceil(df['Device count']/df['Devices / Node']).astype(int)
+
+    df['Cluster power (kW)'] = df['Node count']*df['TDP / Node']/1e3
+    df['Cluster price (M)'] = df['Node count']*df['Price']/1e6
+
+    energy_cost = 0.15
+    data_center_pue = 1.3
+    daily_energy_cost = df['Cluster power (kW)']*energy_cost*24*data_center_pue
+    df['Energy cost / year (T)'] = (daily_energy_cost*365/1000).round(3)
+
+    # df['Rental profit / day'] = (df['Node count']*24*df['Rental price / hour'])-daily_energy_cost
+    # df['Rental profit / year (M)'] = df['Rental profit / day']*365/1e6
+    # df['ROI'] = np.ceil(df['Cluster price (M)']*1e6/(df['Rental profit / day']))
+
+    print(df.T.to_markdown())
