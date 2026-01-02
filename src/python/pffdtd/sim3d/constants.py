@@ -62,10 +62,10 @@ class SimConstants:
 
         if verbose:
             self.print(f'c    = {c:.2f} m/s')
-            self.print(f'Ts   = {Ts*1000:.6f} ms')
+            self.print(f'Ts   = {Ts*1e3:.6f} ms / {Ts*1e6:.3f} us')
             self.print(f'fs   = {fs:.2f} Hz')
             self.print(f'fmax = {fmax:.2f} Hz')
-            self.print(f'h    = {h:.5f} m / {h*1000:.2f} mm')
+            self.print(f'h    = {h:.5f} m / {h*1e3:.2f} mm')
             self.print(f'l    = {l}')
             self.print(f'l2   = {l2}')
 
