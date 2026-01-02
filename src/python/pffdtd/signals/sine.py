@@ -15,6 +15,46 @@ def generate_sine_wave(frequency, duration, fs, dB_rms=-20.0):
     return normalize_to_RMS_dBFS(x, dB_rms)
 
 
+def generate_exponential_sine_sweep(T, f1, f2, fs, fade_ms=50) -> tuple[np.ndarray, np.ndarray]:
+    """Generate Farina-style exponential (logarithmic) sine sweep and its inverse.
+
+    - https://www.melaudia.net/zdoc/sweepSine.PDF
+    - https://dsp.stackexchange.com/questions/41696/calculating-the-inverse-filter-for-the-exponential-sine-sweep-method
+
+    Parameters
+    ----------
+    T : duration in seconds
+    f0 : start frequency in hertz
+    f1 : end frequency in hertz
+    fs : sample-rate
+
+    Returns
+    -------
+    sweep : excitation signal
+    inv : inverse filter (for convolution with the recorded signal)
+    """
+    R = np.log(f2 / f1)
+    t = np.arange(0, int(T * fs)) / fs
+
+    phase = 2 * np.pi * f1 * T / R * (np.exp(R * t / T) - 1.0)
+    sweep = np.sin(phase)
+    sweep /= np.max(np.abs(sweep))
+
+    fade_len = int(fade_ms / 1000.0 * fs)
+    if fade_len > 0:
+        fade = 0.5 * (1 - np.cos(np.pi * np.arange(fade_len) / fade_len))
+        window = np.ones_like(sweep)
+        window[:fade_len] = fade
+        window[-fade_len:] = fade[::-1]
+        sweep *= window
+
+    k = np.exp(R * t / T)
+    inv = sweep[::-1] / k
+    inv /= np.max(np.abs(inv))
+
+    return sweep, inv
+
+
 @click.command(name='sine', help='Generate sine wave.')
 @click.argument('output', nargs=-1, type=click.Path())
 @click.option('--duration', default=10.0, type=float)
