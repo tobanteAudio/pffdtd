@@ -417,14 +417,14 @@ class MainWindow(QMainWindow):
         self.musical = MatplotLibCanvas(self, width=5, height=4, dpi=100)
         self.edc = MatplotLibCanvas(self, width=5, height=4, dpi=100)
         self.materials = MaterialTable()
-        self.xover = XoverPreview()
+        # self.xover = XoverPreview()
 
         self.tabs = QTabWidget(tabPosition=QTabWidget.TabPosition.North)
         self.tabs.addTab(self.summary, 'Summary')
         self.tabs.addTab(self.musical, 'Musical')
         self.tabs.addTab(self.edc, 'EDC')
         self.tabs.addTab(self.materials, 'Materials')
-        self.tabs.addTab(self.xover, 'Xover')
+        # self.tabs.addTab(self.xover, 'Xover')
 
         # Main Layout
         splitter = QSplitter(Qt.Orientation.Horizontal)
