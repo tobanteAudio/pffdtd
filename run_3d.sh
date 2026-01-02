@@ -43,7 +43,7 @@ pffdtd sim3d setup "$sim_setup"
 local_dir="$sim_dir"
 remote_cmd="/home/tobante/Developer/tobanteAudio/pffdtd/build/src/cpp/pffdtd-engine sim3d -e cuda -p 64 -s ."
 remote_dir="/tmp/$sim_name"
-remote_host="tobante@192.168.0.16"
+remote_host="tobante@192.168.0.14"
 
 ssh "$remote_host" "mkdir -p -- '$remote_dir'"
 rsync -az --delete --chmod=Du=rwx,Fu=rw,go-rwx -e ssh "$local_dir"/ "$remote_host":"$remote_dir"/
