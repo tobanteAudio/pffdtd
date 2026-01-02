@@ -2,6 +2,7 @@
 # SPDX-FileCopyrightText: 2025 Tobias Hienzsch
 from pathlib import Path
 
+from pffdtd.absorption.admittance import convert_Sabs_to_Yn, write_freq_ind_mat_from_Yn
 from pffdtd.sim3d.model_builder import MeshModelBuilder
 from pffdtd.sim3d.setup import Setup3D
 
@@ -9,10 +10,13 @@ from pffdtd.sim3d.setup import Setup3D
 class BassReflex(Setup3D):
     model_file = 'model.json'
     mat_folder = '../../sim_data/BassReflex/materials'
+    materials = {
+        'Board': 'board.h5',
+    }
     source_index = 1
     source_signal = 'impulse'
     diff_source = True
-    duration = 10.0
+    duration = 0.3
     Tc = 20
     rh = 50
     fcc = False
@@ -26,6 +30,13 @@ class BassReflex(Setup3D):
     bmin = [-0.05, -0.05, -0.05]
     bmax = [+0.80, +0.75, +0.105]
 
+    def generate_materials(self):
+        print('--BASS-REFLEX: Generate materials')
+
+        folder = Path(self.mat_folder)
+        filename = folder / 'board.h5'
+        write_freq_ind_mat_from_Yn(convert_Sabs_to_Yn(0.3), filename=filename)
+
     def generate_model(self, constants):
         print('--BASS-REFLEX: Generate model')
 
@@ -33,7 +44,7 @@ class BassReflex(Setup3D):
         obj_dir = dir/'obj'
 
         m = MeshModelBuilder()
-        m.add('_RIGID', obj_dir / 'box-slot.obj', [125, 125, 125], reverse=True, sides=0)
+        m.add('Board', obj_dir / 'box-slot.obj', [125, 125, 125], reverse=True)
         m.add_source('S1', [0.375, 0.05, 0.858/2])
 
         m.add_receiver('R1', [0.375, 0.00, 0.08/2])
