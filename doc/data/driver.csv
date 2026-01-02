@@ -43,7 +43,7 @@ Mundorf AMT 29CM1.1-R,AMT,,8,,,,,,,,,,,,,,,,,1500.0,,250.0,100.0,2.83,,,,,,,800,
 Mundorf AMT U160W1.1-R,AMT,,4,,,,,,,,,,,,,,,1200.0,28000.0,1750.0,15.0,140.0,93.0,2.83,,,,,,0.63,315,
 Mundorf AMT U60W1.1-C,AMT,,4,,,,,,,,,,,,,,,2100.0,34000.0,2350.0,10.0,70.0,93.0,2.83,,,,,,0.254,200,
 Oberton ND72CT/HB,Compression,1.4,8,,,,6.78,,,,,,,,,,,500.0,19000.0,,100.0,200.0,109.0,2.83,,,,,,2.95,380,https://audioxpress.com/article/test-bench-oberton-nd72ct-hb-1-4-compression-driver
-Purifi Audio PTT10.0X04-NAB-01,Woofer,10.0,4,12.6,0.00062,0.0994,3.9,0.35,5.5,0.33,,0.03597,,,68.0,14.75,25.0,,,24.0,100.0,200.0,88.0,2.83,82.0,,,,,6.0,900,https://audioxpress.com/article/test-bench-purifi-audio-ptt10-0x04-nab-01-10-midbass-woofer
+Purifi Audio PTT10.0X04-NAB-01,Woofer,10.0,4,12.6,0.00062,0.0994,3.9,0.35,5.5,0.33,,0.03597,,,68.0,14.75,25.0,,,24.0,120.0,400.0,88.0,2.83,82.0,,,,,6.0,900,https://audioxpress.com/article/test-bench-purifi-audio-ptt10-0x04-nab-01-10-midbass-woofer
 Radian 475PB,Compression,1.0,8,,,,6.2,,,,,,,,,,,1000.0,25000.0,,50.0,100.0,109.5,2.83,,,,,,2.9,250,https://audioxpress.com/article/test-bench-radian-audio-engineering-475pb-1-inch-compression-driver
 Radian 745PB,Compression,1.4,8,,,,6.2,,,,,,,,,,,500.0,20000.0,,100.0,200.0,109.5,2.83,,,,,,5.09,325,https://audioxpress.com/article/test-bench-radian-audio-engineering-745pb-1-4-compression-driver
 Radian 835PB,Compression,1.4,8,,,,6.2,,,,,,,,,,,500.0,20000.0,,100.0,200.0,110.5,2.83,,,,,,6.63,400,https://audioxpress.com/article/test-bench-radian-audio-835pb-1-4-ferrite-compression-driver
