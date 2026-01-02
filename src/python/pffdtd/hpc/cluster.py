@@ -73,22 +73,25 @@ def main():
 
     bmax = [11.2, 7.3, 3.2]
     bmax = [12, 8, 6]
-    bmax = [9, 7, 5]
-    bmax = [6, 3.65, 3.12]  # Tobi Office
     bmax = [17, 15, 9]
+    bmax = [9, 7, 5]
+    bmax = [4.765, 1.74, 1.489]  # Mercedes S124
+    bmax = [6, 3.65, 3.12]  # Tobi Office
     bmax = [6.77, 7.6, 4.4]  # Pro Studio
     bmax = [50, 20, 15]  # Musikverein ConcertHall
-    fmax = 20_000.0
+    fmax = 20000
     ppw = 10.5
     fcc = False
 
-    bmax = [4000, 2500, 750]  # Airport
-    bmax = [100, 100, 60]  # Generic Arena
-    bmax = [315, 280, 133]  # Wembley
-    bmax = [300, 250, 75]  # Generic Stadium
-    fmax = 5_000.0
-    ppw = 3.21
-    fcc = False
+    # bmax = [4000, 2500, 750]  # Airport
+    # bmax = [300, 250, 75]  # Generic Stadium
+    # bmax = [100, 100, 60]  # Generic Arena
+    # bmax = [157, 157, 112]  # Sphere Las Vegas
+    # bmax = [315, 280, 133]  # Wembley
+    # bmax = [298, 240, 56]  # Metlife Stadium
+    # fmax = 20_000.0
+    # ppw = 3.21
+    # fcc = False
 
     constants = SimConstants(20, 50, fmax=fmax, PPW=ppw, fcc=fcc)
     grid = CartGrid(constants.h, 3.0, bmin, bmax, fcc)
@@ -112,8 +115,8 @@ def main():
             'RAM': 141,
             'Devices / Node': 8,
             'TDP / Node': 700*8+2500,
-            'Price': 300_000,
-            # 'Rental price / hour': 30,
+            'Price': 281872,
+            'Rental price / hour': 28,
         },
         {
             'Brand': 'AMD',
@@ -121,8 +124,17 @@ def main():
             'RAM': 256,
             'Devices / Node': 8,
             'TDP / Node': 1000*8+2500,
-            'Price': 200_000,
-            # 'Rental price / hour': 20,
+            'Price': 233796.85,
+            'Rental price / hour': 25,
+        },
+        {
+            'Brand': 'NVIDIA',
+            'Device': 'Blackwell 6000',
+            'RAM': 96,
+            'Devices / Node': 8,
+            'TDP / Node': 600*8+320*2+1000,
+            'Price': 87000,
+            'Rental price / hour': 12,
         },
         {
             'Brand': 'AMD',
@@ -131,23 +143,24 @@ def main():
             'Devices / Node': 2,
             'TDP / Node': 2600,
             'Price': 30_000,
-            # 'Rental price / hour': 6,
+            'Rental price / hour': 6,
         },
     ])
 
+    df['Price / RAM'] = (df['Price']/(df['RAM']*df['Devices / Node'])).round(2)
     df['Device count'] = np.ceil(ram_f64/df['RAM']).astype(int)
     df['Node count'] = np.ceil(df['Device count']/df['Devices / Node']).astype(int)
 
     df['Cluster power (kW)'] = df['Node count']*df['TDP / Node']/1e3
-    df['Cluster price (M)'] = df['Node count']*df['Price']/1e6
+    df['Cluster price (M)'] = (df['Node count']*df['Price']/1e6).round(3)
 
-    energy_cost = 0.15
+    energy_cost = 0.2
     data_center_pue = 1.3
     daily_energy_cost = df['Cluster power (kW)']*energy_cost*24*data_center_pue
     df['Energy cost / year (T)'] = (daily_energy_cost*365/1000).round(3)
 
-    # df['Rental profit / day'] = (df['Node count']*24*df['Rental price / hour'])-daily_energy_cost
-    # df['Rental profit / year (M)'] = df['Rental profit / day']*365/1e6
+    # df['Rental profit / day'] = ((df['Node count']*24*df['Rental price / hour'])-daily_energy_cost).round(2)
+    # df['Rental profit / year (M)'] = (df['Rental profit / day']*365/1e6).round(3)
     # df['ROI'] = np.ceil(df['Cluster price (M)']*1e6/(df['Rental profit / day']))
 
-    print(df.T.to_markdown())
+    print(df.T.to_markdown(tablefmt='simple_grid'))
