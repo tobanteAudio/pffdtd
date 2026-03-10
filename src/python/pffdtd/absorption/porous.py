@@ -152,7 +152,7 @@ def main(csv_file, angle, reflection, temperature) -> None:
             label += f' with {air_gap*100:.0f}cm air gap'
 
         if reflection:
-            ax.semilogx(frequency, convert_nabs_to_R(absorber), label=label)
+            ax.semilogx(frequency, 20*np.log10(convert_nabs_to_R(absorber)+1e-9), label=label)
         else:
             ax.semilogx(frequency, absorber, label=label)
 
