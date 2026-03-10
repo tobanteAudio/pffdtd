@@ -6,23 +6,23 @@ Tascam MM-4D/IN-X,converter,839,0.885,1
 Tascam AK-RS1,converter,62,0.7,3
 Dante AVIO AES3 IO Adapter 2x2,converter,279,,2
 Genelec 8341,speaker,2699,9.8,2
-Genelec 7350 APM,speaker,1259,19.0,2
-Genelec 7360 APM,speaker,1999,27.0,
+Genelec 7350 APM,speaker,1259,19.0,
+Genelec 7360 APM,speaker,1999,27.0,2
 Earthworks Audio M23 Gen2,microphone,629,0.14,2
 NTI Audio M2211,microphone,1645,0.2,2
 Focusrite Red 8 Line,converter,2929,4.84,1
 Focusrite RedNet AM2,converter,699,0.81,
 Focusrite RedNet PCIeNX,converter,1574,,
 RME Digiface Dante,converter,1289,,
-ESI planet 22x,converter,484,0.782,1
+ESI planet 22x,converter,484,0.782,2
 beyerdynamic DT-770 Pro 250 Ohm,speaker,149,0.5,2
 Mac Mini,computer,1500,0.73,1
 MacBook Pro 14,computer,2864,,
 NTi DS3 Dodecahedron Speaker,speaker,5200,7.5,1
 NTi DS3 Power Amplifier,speaker,3750,5.0,1
 NTi DS3 Stand,stand,233,2.3,1
-Neumann KU100,microphone,8999,9.5,
-Neumann PA100,microphone,85,,
+Neumann KU100,microphone,8999,9.5,1
+Neumann PA100,microphone,85,,1
 SonnetTech RackMac Mini,computer,349,2.7,1
 SonnetTech xMac Mini,computer,1800,13.15,
 Thomann Rack Case 8U,case,119,6.8,1
@@ -33,10 +33,11 @@ Genelec 8000-409BB Floor Stand,stand,105,10.6,2
 Genelec 8000-831 Peli Case,case,1607,10,
 Genelec 8000-841 Peli Case,case,1755,10,1
 DynaMount motorized stand,stand,1500,10,2
-K&M 21021,stand,78,5.88,2
+K&M 21021,stand,78,5.88,4
 K&M 26250,stand,92,2.8,4
 K&M 26019,case,64,1.18,1
 Flyht Pro Gorilla Bag SB-L 6in1 L,case,39,2.6,1
 Flight case,case,500,40,2
 K&M 12160 DJ Table,stand,185,12.2,2
 K&M 18826 Equipment Stand Bundle,stand,175,12.84,
+EcoFlow DELTA Pro 3,power,2500,55,1
