@@ -32,7 +32,7 @@ struct HDF5Reader {
           raisef<std::invalid_argument>("file '{}' does not exist", path.string());
         }
         return H5Fopen(path.string().c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
-      }()} {}
+      }()} { }
 
   ~HDF5Reader() { H5Fclose(_handle); }
 
@@ -137,7 +137,7 @@ struct HDF5Reader {
 
 struct HDF5Writer {
   explicit HDF5Writer(std::filesystem::path const& path)
-      : _handle{H5Fcreate(path.string().c_str(), H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT)} {}
+      : _handle{H5Fcreate(path.string().c_str(), H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT)} { }
 
   ~HDF5Writer() { H5Fclose(_handle); }
 

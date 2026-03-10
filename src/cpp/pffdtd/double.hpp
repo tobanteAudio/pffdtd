@@ -34,7 +34,7 @@ struct Double {
     _low              = l;
   }
 
-  constexpr Double(Real x, Real y) noexcept : _high{x}, _low{y} {}
+  constexpr Double(Real x, Real y) noexcept : _high{x}, _low{y} { }
 
   [[nodiscard]] constexpr auto high() const noexcept -> Real { return _high; }
 
@@ -165,6 +165,6 @@ struct Double {
 };
 
 template<typename Real>
-struct FloatTraits<Double<Real>> : FloatTraits<Real> {};
+struct FloatTraits<Double<Real>> : FloatTraits<Real> { };
 
 } // namespace pffdtd
