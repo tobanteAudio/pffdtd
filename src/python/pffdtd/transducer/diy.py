@@ -40,10 +40,10 @@ def main():
         'bryston_9B_4ch': 16009,
     }
 
-    quattro_t15 = price['tad_td_4001']+price['tad_tl_1601b']*4
+    # quattro_t15 = price['tad_td_4001']+price['tad_tl_1601b']*4
     # quattro_d15 = price['radian_950_neopb_8']+price['dayton_audio_rss390']*4
     # quattro_d12 = price['radian_950_neopb_8']+price['dayton_audio_rss315']*4
-    quattro_s12 = price['radian_950_neopb_8']+price['scan_speak_32w_4878t00']*4
+    # quattro_s12 = price['radian_950_neopb_8']+price['scan_speak_32w_4878t00']*4
 
     # duo_t15 = price['tad_td_4001']+price['tad_tl_1601b']*2
     # duo_d15 = price['radian_950_neopb_8']+price['dayton_audio_rss390']*2
@@ -52,23 +52,25 @@ def main():
     # duo_p10 = price['radian_951PB_8']+price["purifi-ptt10.0x08-nab-01"]*2
 
     # toby_312dvm = price['dayton_audio_rss315']+price['volt_vm752']+price['morel_tsct_1044']
+    toby_310pvm = price['purifi-ptt10.0x08-nab-01']+price['volt_vm752']+price['morel_tsct_1044']
+    toby_320pvm = 2*price['purifi-ptt10.0x08-nab-01']+price['volt_vm752']+price['morel_tsct_1044']
     toby_312svm = price['scan_speak_32w_4878t00']+price['volt_vm752']+price['morel_tsct_1044']
     toby_322svm = 2*price['scan_speak_32w_4878t00']+price['volt_vm752']+price['morel_tsct_1044']
 
     # toby_315dvm = price['dayton_audio_rss390']+price['volt_vm752']+price['morel_tsct_1044']
-    toby_315tvm = price['tad_tl_1601b']+price['volt_vm752']+price['morel_tsct_1044']
-    toby_325tvm = 2*price['tad_tl_1601b']+price['volt_vm752']+price['morel_tsct_1044']
+    # toby_315tvm = price['tad_tl_1601b']+price['volt_vm752']+price['morel_tsct_1044']
+    # toby_325tvm = 2*price['tad_tl_1601b']+price['volt_vm752']+price['morel_tsct_1044']
 
-    # toby_sub12s = price['scan_speak_32w_4878t00']
+    toby_sub12s = price['scan_speak_32w_4878t00']
     # toby_sub12d = price['dayton_audio_rss315']
     # toby_sub15d = price['dayton_audio_rss390']
-    # toby_sub15t = price['tad_tl_1601b']
+    toby_sub15t = price['tad_tl_1601b']
     # toby_sub18d = price['dayton_audio_rss460']
     toby_sub18t = price['tad_tl_1801']
 
     print(pd.DataFrame.from_records([
-        {'name': 'Quattro-T15', '1x': quattro_t15, '2x': quattro_t15*2},
-        {'name': 'Quattro-S12', '1x': quattro_s12, '2x': quattro_s12*2},
+        # {'name': 'Quattro-T15', '1x': quattro_t15, '2x': quattro_t15*2},
+        # {'name': 'Quattro-S12', '1x': quattro_s12, '2x': quattro_s12*2},
         # {'name': 'Quattro-D15', '1x': quattro_d15, '2x': quattro_d15*2},
         # {'name': 'Quattro-D12', '1x': quattro_d12, '2x': quattro_d12*2},
 
@@ -80,10 +82,12 @@ def main():
 
         {'name': '322-SVM', '1x': toby_322svm, '2x': toby_322svm*2},
         {'name': '312-SVM', '1x': toby_312svm, '2x': toby_312svm*2},
+        {'name': '320-PVM', '1x': toby_320pvm, '2x': toby_320pvm*2},
+        {'name': '310-PVM', '1x': toby_310pvm, '2x': toby_310pvm*2},
         # {'name': '312-DVM', '1x': toby_312dvm, '2x': toby_312dvm*2},
         # {'name': '315-DVM', '1x': toby_315dvm, '2x': toby_315dvm*2},
-        {'name': '315-TVM', '1x': toby_315tvm, '2x': toby_315tvm*2},
-        {'name': '325-TVM', '1x': toby_325tvm, '2x': toby_325tvm*2},
+        # {'name': '315-TVM', '1x': toby_315tvm, '2x': toby_315tvm*2},
+        # {'name': '325-TVM', '1x': toby_325tvm, '2x': toby_325tvm*2},
 
         # {'name': 'S12-D', '1x': toby_sub12d, '2x': toby_sub12d*2},
         # {'name': 'S15-D', '1x': toby_sub15d, '2x': toby_sub15d*2},
@@ -92,7 +96,7 @@ def main():
         # {'name': 'S15-T', '1x': toby_sub15t, '2x': toby_sub15t*2},
         # {'name': 'S18-T', '1x': toby_sub18t, '2x': toby_sub18t*2},
         # {'name': 'S15-T2', '1x': toby_sub15t*2, '2x': toby_sub15t*4},
-        {'name': 'S18-T2', '1x': toby_sub18t*2, '2x': toby_sub18t*4},
+        # {'name': 'S18-T2', '1x': toby_sub18t*2, '2x': toby_sub18t*4},
     ]).sort_values(by='2x', ascending=False).to_markdown(index=False))
 
     # 884 x 498 x 568mm
