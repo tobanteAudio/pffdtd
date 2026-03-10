@@ -8,8 +8,8 @@ def main():
     W = 3.65
     H = 3.12
 
-    L = 8
-    W = 5
+    L = 8.5
+    W = 6.5
     H = 3.5
 
     floor_area = L*W
@@ -24,7 +24,7 @@ def main():
     drywall_weight = wall_area*drywall_surface_mass
 
     osb_density = 600
-    osb_thickness = 0.018
+    osb_thickness = 0.025
     osb_surface_mass = osb_density*osb_thickness
     osb_weight = wall_area*osb_surface_mass
 
@@ -36,15 +36,17 @@ def main():
 
     stud_width = 0.1
     stud_thickness = 0.06
-    stud_density = 400
+    stud_density = 470
     stud_count_length = int(math.ceil(L/(sonorock_width+stud_thickness))*2)
     stud_count_width = int(math.ceil(W/(sonorock_width+stud_thickness))*2)
     stud_count = stud_count_width+stud_count_length
     stud_volume = H*stud_width*stud_thickness*stud_count
     stud_weight = stud_volume*stud_density
 
-    floor_stud_count = int(math.ceil(L/(sonorock_width+stud_thickness)))
-    floor_stud_volume = W*stud_width*stud_thickness*floor_stud_count
+    floor_stud_width = 0.1
+    floor_stud_thickness = 0.1
+    floor_stud_count = int(math.ceil(L/(sonorock_width+floor_stud_thickness)))
+    floor_stud_volume = W*floor_stud_width*floor_stud_thickness*floor_stud_count
     floor_stud_weight = floor_stud_volume*stud_density
     floor_sonorock_weight = floor_area*sonorock_surface_mass
     floor_osb_weight = floor_area*osb_surface_mass*2
