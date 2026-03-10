@@ -1,0 +1,27 @@
+# SPDX-License-Identifier: MIT
+# SPDX-FileCopyrightText: 2026 Tobias Hienzsch
+# exec(open("/Users/tobante/Developer/tobanteAudio/pffdtd/src/freecad/links.py", "r", encoding="utf-8").read(), {"__name__": "__main__"})
+import FreeCAD
+import FreeCADGui as Gui
+
+
+def set_draw_style(doc: FreeCAD.Document) -> None:
+    print(doc.Name)
+    FreeCAD.setActiveDocument(doc.Name)
+    FreeCAD.ActiveDocument = FreeCAD.getDocument(doc.Name)
+    Gui.ActiveDocument = Gui.getDocument(doc.Name)
+    Gui.runCommand('Std_DrawStyle', 5)
+    Gui.runCommand('Std_PerspectiveCamera', 1)
+
+
+def main():
+    doc = FreeCAD.ActiveDocument
+    for dep in doc.getDependentDocuments():
+        dep.load(dep.getFileName())
+        # dep = FreeCAD.openDocument(dep.getFileName())
+        set_draw_style(dep)
+    set_draw_style(doc)
+
+
+if __name__ == '__main__':
+    main()
