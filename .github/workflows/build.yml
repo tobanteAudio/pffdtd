@@ -45,7 +45,7 @@ jobs:
             cmake_flags: '-D OpenMP_ROOT=`brew list libomp | grep libomp.a | sed -E "s/\/lib\/.*//"`'
             build_type: "Release"
             cxx_flags: ""
-            python_version: "3.13"
+            python_version: "3.14"
             pffdtd_engine_exe: "build/src/cpp/pffdtd-engine"
 
           - name: Windows
@@ -55,7 +55,7 @@ jobs:
             cmake_flags: ""
             build_type: "Release"
             cxx_flags: "/EHsc"
-            python_version: "3.13"
+            python_version: "3.14"
             pffdtd_engine_exe: "build/src/cpp/pffdtd-engine.exe"
 
     steps:
