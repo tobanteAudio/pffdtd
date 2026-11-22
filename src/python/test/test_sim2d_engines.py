@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: 2024 Tobias Hienzsch
-
+import ctypes
 import os
 import pathlib
 import subprocess
@@ -14,6 +14,20 @@ import pytest
 from pffdtd.geometry.math import to_ixy
 from pffdtd.cli import main as cli
 from pffdtd.sim2d.setup import sim_setup_2d
+
+
+def metal_device_available():
+    if sys.platform != 'darwin':
+        return False
+
+    try:
+        metal = ctypes.CDLL('/System/Library/Frameworks/Metal.framework/Metal')
+        create_device = metal.MTLCreateSystemDefaultDevice
+        create_device.argtypes = []
+        create_device.restype = ctypes.c_void_p
+        return bool(create_device())
+    except (OSError, AttributeError):
+        return False
 
 
 def model(*, Lx=None, Ly=None, Nx=None, Ny=None, dx=None, X=None, Y=None, in_mask=None):
@@ -83,7 +97,7 @@ def test_sim2d_engines(tmp_path):
 
 
 @pytest.mark.slow
-@pytest.mark.skipif(sys.platform != 'darwin', reason='Metal is only available on macOS')
+@pytest.mark.skipif(not metal_device_available(), reason='No Metal device is available')
 @pytest.mark.skipif(os.environ.get('PFFDTD_ENGINE_EXE') is None, reason='Native 2D engine not available')
 def test_sim2d_metal_engine(tmp_path):
     sim_setup_2d(
