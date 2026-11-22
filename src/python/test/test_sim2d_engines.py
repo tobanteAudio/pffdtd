@@ -1,10 +1,8 @@
 # SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: 2024 Tobias Hienzsch
-import ctypes
 import os
 import pathlib
 import subprocess
-import sys
 
 from click.testing import CliRunner
 import h5py
@@ -13,21 +11,8 @@ import pytest
 
 from pffdtd.geometry.math import to_ixy
 from pffdtd.cli import main as cli
+from pffdtd.common.metal import metal_device_available
 from pffdtd.sim2d.setup import sim_setup_2d
-
-
-def metal_device_available():
-    if sys.platform != 'darwin':
-        return False
-
-    try:
-        metal = ctypes.CDLL('/System/Library/Frameworks/Metal.framework/Metal')
-        create_device = metal.MTLCreateSystemDefaultDevice
-        create_device.argtypes = []
-        create_device.restype = ctypes.c_void_p
-        return bool(create_device())
-    except (OSError, AttributeError):
-        return False
 
 
 def model(*, Lx=None, Ly=None, Nx=None, Ny=None, dx=None, X=None, Y=None, in_mask=None):

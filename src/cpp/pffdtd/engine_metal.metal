@@ -115,9 +115,9 @@ namespace sim3d {
   int64_t const Nz   = constants.Nz;
   int64_t const NzNy = constants.NzNy;
 
-  int64_t const x = id.x + 1;
+  int64_t const x = id.z + 1;
   int64_t const y = id.y + 1;
-  int64_t const z = id.z + 1;
+  int64_t const z = id.x + 1;
   int64_t const i = x * NzNy + y * Nz + z;
 
   if (get_bit<int>(bn_mask[i / 8], i % 8) != 0) {
@@ -170,7 +170,7 @@ namespace sim3d {
     device int8_t const* mat_bnl [[buffer(5)]],
     device float const* mat_beta [[buffer(6)]],
     device MatQuad<float> const* mat_quads [[buffer(7)]],
-    device uint8_t const* Mb [[buffer(8)]],
+    device int8_t const* Mb [[buffer(8)]],
     constant Constants3D<float>& constants [[buffer(9)]],
     uint id [[thread_position_in_grid]]
 ) {
@@ -213,12 +213,12 @@ namespace sim3d {
 [[kernel]] void boundaryLossABC(
     device float* u0 [[buffer(0)]],
     device float const* u2ba [[buffer(1)]],
-    device float const* Q_bna [[buffer(2)]],
+    device int8_t const* Q_bna [[buffer(2)]],
     device int64_t const* bna_ixyz [[buffer(3)]],
     constant Constants3D<float>& constants [[buffer(4)]],
     uint id [[thread_position_in_grid]]
 ) {
-  auto const lQ = constants.l * Q_bna[id];
+  auto const lQ = constants.l * static_cast<float>(Q_bna[id]);
   auto const ib = bna_ixyz[id];
   u0[ib]        = (u0[ib] + lQ * u2ba[id]) / (1.0F + lQ);
 }
@@ -231,8 +231,8 @@ namespace sim3d {
   auto const Nz   = constants.Nz;
   auto const NzNy = constants.NzNy;
 
-  auto const x = static_cast<int64_t>(id.x);
-  auto const y = static_cast<int64_t>(id.y);
+  auto const x = static_cast<int64_t>(id.y);
+  auto const y = static_cast<int64_t>(id.x);
   auto const i = x * NzNy + y * Nz;
 
   u1[i + 0]      = u1[i + 2];
@@ -248,8 +248,8 @@ namespace sim3d {
   auto const Nz   = constants.Nz;
   auto const NzNy = constants.NzNy;
 
-  auto const x = static_cast<int64_t>(id.x);
-  auto const z = static_cast<int64_t>(id.y);
+  auto const x = static_cast<int64_t>(id.y);
+  auto const z = static_cast<int64_t>(id.x);
 
   u1[x * NzNy + 0 * Nz + z]        = u1[x * NzNy + 2 * Nz + z];
   u1[x * NzNy + (Ny - 1) * Nz + z] = u1[x * NzNy + (Ny - 3) * Nz + z];
@@ -264,8 +264,8 @@ namespace sim3d {
   auto const Nz   = constants.Nz;
   auto const NzNy = constants.NzNy;
 
-  auto const y = static_cast<int64_t>(id.x);
-  auto const z = static_cast<int64_t>(id.y);
+  auto const y = static_cast<int64_t>(id.y);
+  auto const z = static_cast<int64_t>(id.x);
 
   u1[0 * NzNy + y * Nz + z]        = u1[2 * NzNy + y * Nz + z];
   u1[(Nx - 1) * NzNy + y * Nz + z] = u1[(Nx - 3) * NzNy + y * Nz + z];

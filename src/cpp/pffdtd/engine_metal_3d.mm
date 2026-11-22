@@ -10,19 +10,54 @@
 
 #include <fmt/format.h>
 
+#include <algorithm>
 #include <vector>
 
 namespace pffdtd {
 
 namespace {
 
+constexpr auto simdGroupsPerThreadgroup = NSUInteger{8};
+
+auto threadsPerThreadgroup1D(id<MTLComputePipelineState> pipeline) -> MTLSize {
+  auto const width      = pipeline.threadExecutionWidth;
+  auto const maxThreads = pipeline.maxTotalThreadsPerThreadgroup;
+  PFFDTD_ASSERT(width > 0);
+  PFFDTD_ASSERT(maxThreads >= width);
+
+  auto const simdGroups = std::min(simdGroupsPerThreadgroup, maxThreads / width);
+  return MTLSizeMake(width * simdGroups, 1, 1);
+}
+
+auto threadsPerThreadgroup2D(id<MTLComputePipelineState> pipeline) -> MTLSize {
+  auto const width      = pipeline.threadExecutionWidth;
+  auto const maxThreads = pipeline.maxTotalThreadsPerThreadgroup;
+  PFFDTD_ASSERT(width > 0);
+  PFFDTD_ASSERT(maxThreads >= width);
+
+  auto const rows = std::min(simdGroupsPerThreadgroup, maxThreads / width);
+  return MTLSizeMake(width, rows, 1);
+}
+
+auto threadsPerThreadgroup3D(id<MTLComputePipelineState> pipeline) -> MTLSize {
+  auto const width      = pipeline.threadExecutionWidth;
+  auto const maxThreads = pipeline.maxTotalThreadsPerThreadgroup;
+  PFFDTD_ASSERT(width > 0);
+  PFFDTD_ASSERT(maxThreads >= width);
+
+  auto const rows  = std::min(NSUInteger{2}, maxThreads / width);
+  auto const depth = std::min(NSUInteger{2}, maxThreads / (width * rows));
+  return MTLSizeMake(width, rows, depth);
+}
+
 template<typename Real>
 auto run(Simulation3D const& sim) {
   @autoreleasepool {
 
+    PFFDTD_ASSERT(sim.grid == Grid::CART);
+
     // Device
-    NSArray* devices     = MTLCopyAllDevices();
-    id<MTLDevice> device = devices[0];
+    id<MTLDevice> device = MTLCreateSystemDefaultDevice();
     PFFDTD_ASSERT(device != nil);
     summary(device);
 
@@ -42,6 +77,18 @@ auto run(Simulation3D const& sim) {
     id<MTLComputePipelineState> kernelAddSource       = makeComputePipeline(library, "pffdtd::sim3d::addSource");
     id<MTLComputePipelineState> kernelReadOutput      = makeComputePipeline(library, "pffdtd::sim3d::readOutput");
 
+    auto const airThreads      = threadsPerThreadgroup3D(kernelAirCart);
+    auto const rigidThreads    = threadsPerThreadgroup1D(kernelRigidCart);
+    auto const copyFromThreads = threadsPerThreadgroup1D(kernelCopyFromGrid);
+    auto const copyToThreads   = threadsPerThreadgroup1D(kernelCopyToGrid);
+    auto const lossFDThreads   = threadsPerThreadgroup1D(kernelBoundaryLossFD);
+    auto const lossABCThreads  = threadsPerThreadgroup1D(kernelBoundaryLossABC);
+    auto const haloXYThreads   = threadsPerThreadgroup2D(kernelFlipHaloXY);
+    auto const haloXZThreads   = threadsPerThreadgroup2D(kernelFlipHaloXZ);
+    auto const haloYZThreads   = threadsPerThreadgroup2D(kernelFlipHaloYZ);
+    auto const sourceThreads   = threadsPerThreadgroup1D(kernelAddSource);
+    auto const outputThreads   = threadsPerThreadgroup1D(kernelReadOutput);
+
     auto const Nx   = sim.Nx;
     auto const Ny   = sim.Ny;
     auto const Nz   = sim.Nz;
@@ -60,20 +107,25 @@ auto run(Simulation3D const& sim) {
     auto const a1  = static_cast<Real>(sim.a1);
     auto const a2  = static_cast<Real>(sim.a2);
 
+    auto const in_sigs_real   = convertTo<Real>(sim.in_sigs);
+    auto const ssaf_bnl_real  = convertTo<Real>(sim.ssaf_bnl);
+    auto const mat_beta_real  = convertTo<Real>(sim.mat_beta);
+    auto const mat_quads_real = convertTo<Real>(sim.mat_quads);
+
     fmt::println("COPY-BUFFERS");
     id<MTLBuffer> out_ixyz  = makeBuffer(device, sim.out_ixyz, MTLResourceStorageModeShared);
     id<MTLBuffer> in_ixyz   = makeBuffer(device, sim.in_ixyz, MTLResourceStorageModeShared);
-    id<MTLBuffer> in_sigs   = makeBuffer(device, sim.in_sigs, MTLResourceStorageModeShared);
+    id<MTLBuffer> in_sigs   = makeBuffer(device, in_sigs_real, MTLResourceStorageModeShared);
     id<MTLBuffer> adj_bn    = makeBuffer(device, sim.adj_bn, MTLResourceStorageModeShared);
     id<MTLBuffer> bn_mask   = makeBuffer(device, sim.bn_mask, MTLResourceStorageModeShared);
     id<MTLBuffer> bn_ixyz   = makeBuffer(device, sim.bn_ixyz, MTLResourceStorageModeShared);
     id<MTLBuffer> bnl_ixyz  = makeBuffer(device, sim.bnl_ixyz, MTLResourceStorageModeShared);
     id<MTLBuffer> bna_ixyz  = makeBuffer(device, sim.bna_ixyz, MTLResourceStorageModeShared);
-    id<MTLBuffer> ssaf_bnl  = makeBuffer(device, sim.ssaf_bnl, MTLResourceStorageModeShared);
-    id<MTLBuffer> mat_beta  = makeBuffer(device, sim.mat_beta, MTLResourceStorageModeShared);
+    id<MTLBuffer> ssaf_bnl  = makeBuffer(device, ssaf_bnl_real, MTLResourceStorageModeShared);
+    id<MTLBuffer> mat_beta  = makeBuffer(device, mat_beta_real, MTLResourceStorageModeShared);
     id<MTLBuffer> mat_bnl   = makeBuffer(device, sim.mat_bnl, MTLResourceStorageModeShared);
     id<MTLBuffer> Mb        = makeBuffer(device, sim.Mb, MTLResourceStorageModeShared);
-    id<MTLBuffer> mat_quads = makeBuffer(device, sim.mat_quads, MTLResourceStorageModeShared);
+    id<MTLBuffer> mat_quads = makeBuffer(device, mat_quads_real, MTLResourceStorageModeShared);
     id<MTLBuffer> Q_bna     = makeBuffer(device, sim.Q_bna, MTLResourceStorageModeShared);
 
     fmt::println("EMPTY-BUFFERS");
@@ -119,58 +171,13 @@ auto run(Simulation3D const& sim) {
       id<MTLBuffer> timestep = [device newBufferWithBytes:&n length:sizeof(n) options:MTLResourceStorageModeShared];
       PFFDTD_ASSERT(timestep != nil);
 
-      // Rigid
-      id<MTLComputeCommandEncoder> rigidUpdate = [commandBuffer computeCommandEncoder];
-      [rigidUpdate setComputePipelineState:kernelRigidCart];
-      [rigidUpdate setBuffer:u0 offset:0 atIndex:0];
-      [rigidUpdate setBuffer:u1 offset:0 atIndex:1];
-      [rigidUpdate setBuffer:bn_ixyz offset:0 atIndex:2];
-      [rigidUpdate setBuffer:adj_bn offset:0 atIndex:3];
-      [rigidUpdate setBuffer:constants offset:0 atIndex:4];
-      [rigidUpdate dispatchThreads:MTLSizeMake(Nb, 1, 1) threadsPerThreadgroup:MTLSizeMake(1, 1, 1)];
-      [rigidUpdate endEncoding];
-
-      // Copy to boundary buffer
-      id<MTLComputeCommandEncoder> copyToBoundary = [commandBuffer computeCommandEncoder];
-      [copyToBoundary setComputePipelineState:kernelCopyFromGrid];
-      [copyToBoundary setBuffer:u0b offset:0 atIndex:0];
-      [copyToBoundary setBuffer:u0 offset:0 atIndex:1];
-      [copyToBoundary setBuffer:bnl_ixyz offset:0 atIndex:2];
-      [copyToBoundary dispatchThreads:MTLSizeMake(Nbl, 1, 1) threadsPerThreadgroup:MTLSizeMake(1, 1, 1)];
-      [copyToBoundary endEncoding];
-
-      // Apply rigid loss
-      id<MTLComputeCommandEncoder> boundaryLoss = [commandBuffer computeCommandEncoder];
-      [boundaryLoss setComputePipelineState:kernelBoundaryLossFD];
-      [boundaryLoss setBuffer:u0b offset:0 atIndex:0];
-      [boundaryLoss setBuffer:u2b offset:0 atIndex:1];
-      [boundaryLoss setBuffer:vh1 offset:0 atIndex:2];
-      [boundaryLoss setBuffer:gh1 offset:0 atIndex:3];
-      [boundaryLoss setBuffer:ssaf_bnl offset:0 atIndex:4];
-      [boundaryLoss setBuffer:mat_bnl offset:0 atIndex:5];
-      [boundaryLoss setBuffer:mat_beta offset:0 atIndex:6];
-      [boundaryLoss setBuffer:mat_quads offset:0 atIndex:7];
-      [boundaryLoss setBuffer:Mb offset:0 atIndex:8];
-      [boundaryLoss setBuffer:constants offset:0 atIndex:9];
-      [boundaryLoss dispatchThreads:MTLSizeMake(Nbl, 1, 1) threadsPerThreadgroup:MTLSizeMake(1, 1, 1)];
-      [boundaryLoss endEncoding];
-
-      // Copy from boundary buffer
-      id<MTLComputeCommandEncoder> copyFromBoundary = [commandBuffer computeCommandEncoder];
-      [copyFromBoundary setComputePipelineState:kernelCopyToGrid];
-      [copyFromBoundary setBuffer:u0 offset:0 atIndex:0];
-      [copyFromBoundary setBuffer:u0b offset:0 atIndex:1];
-      [copyFromBoundary setBuffer:bnl_ixyz offset:0 atIndex:2];
-      [copyFromBoundary dispatchThreads:MTLSizeMake(Nbl, 1, 1) threadsPerThreadgroup:MTLSizeMake(1, 1, 1)];
-      [copyFromBoundary endEncoding];
-
-      // Copy to ABC buffer
+      // Copy the previous state at the absorbing boundary.
       id<MTLComputeCommandEncoder> copyToABC = [commandBuffer computeCommandEncoder];
       [copyToABC setComputePipelineState:kernelCopyFromGrid];
       [copyToABC setBuffer:u2ba offset:0 atIndex:0];
       [copyToABC setBuffer:u0 offset:0 atIndex:1];
       [copyToABC setBuffer:bna_ixyz offset:0 atIndex:2];
-      [copyToABC dispatchThreads:MTLSizeMake(Nba, 1, 1) threadsPerThreadgroup:MTLSizeMake(1, 1, 1)];
+      [copyToABC dispatchThreads:MTLSizeMake(Nba, 1, 1) threadsPerThreadgroup:copyFromThreads];
       [copyToABC endEncoding];
 
       // Flip halo XY
@@ -178,7 +185,7 @@ auto run(Simulation3D const& sim) {
       [flipHaloXY setComputePipelineState:kernelFlipHaloXY];
       [flipHaloXY setBuffer:u1 offset:0 atIndex:0];
       [flipHaloXY setBuffer:constants offset:0 atIndex:1];
-      [flipHaloXY dispatchThreads:MTLSizeMake(Nx, Ny, 1) threadsPerThreadgroup:MTLSizeMake(1, 1, 1)];
+      [flipHaloXY dispatchThreads:MTLSizeMake(Ny, Nx, 1) threadsPerThreadgroup:haloXYThreads];
       [flipHaloXY endEncoding];
 
       // Flip halo XZ
@@ -186,7 +193,7 @@ auto run(Simulation3D const& sim) {
       [flipHaloXZ setComputePipelineState:kernelFlipHaloXZ];
       [flipHaloXZ setBuffer:u1 offset:0 atIndex:0];
       [flipHaloXZ setBuffer:constants offset:0 atIndex:1];
-      [flipHaloXZ dispatchThreads:MTLSizeMake(Nx, Nz, 1) threadsPerThreadgroup:MTLSizeMake(1, 1, 1)];
+      [flipHaloXZ dispatchThreads:MTLSizeMake(Nz, Nx, 1) threadsPerThreadgroup:haloXZThreads];
       [flipHaloXZ endEncoding];
 
       // Flip halo YZ
@@ -194,19 +201,8 @@ auto run(Simulation3D const& sim) {
       [flipHaloYZ setComputePipelineState:kernelFlipHaloYZ];
       [flipHaloYZ setBuffer:u1 offset:0 atIndex:0];
       [flipHaloYZ setBuffer:constants offset:0 atIndex:1];
-      [flipHaloYZ dispatchThreads:MTLSizeMake(Ny, Nz, 1) threadsPerThreadgroup:MTLSizeMake(1, 1, 1)];
+      [flipHaloYZ dispatchThreads:MTLSizeMake(Nz, Ny, 1) threadsPerThreadgroup:haloYZThreads];
       [flipHaloYZ endEncoding];
-
-      // Add source
-      id<MTLComputeCommandEncoder> addSource = [commandBuffer computeCommandEncoder];
-      [addSource setComputePipelineState:kernelAddSource];
-      [addSource setBuffer:u0 offset:0 atIndex:0];
-      [addSource setBuffer:in_sigs offset:0 atIndex:1];
-      [addSource setBuffer:in_ixyz offset:0 atIndex:2];
-      [addSource setBuffer:constants offset:0 atIndex:3];
-      [addSource setBuffer:timestep offset:0 atIndex:4];
-      [addSource dispatchThreads:MTLSizeMake(Ns, 1, 1) threadsPerThreadgroup:MTLSizeMake(1, 1, 1)];
-      [addSource endEncoding];
 
       // Air update
       id<MTLComputeCommandEncoder> airUpdate = [commandBuffer computeCommandEncoder];
@@ -215,7 +211,7 @@ auto run(Simulation3D const& sim) {
       [airUpdate setBuffer:u1 offset:0 atIndex:1];
       [airUpdate setBuffer:bn_mask offset:0 atIndex:2];
       [airUpdate setBuffer:constants offset:0 atIndex:3];
-      [airUpdate dispatchThreads:MTLSizeMake(Nx - 2, Ny - 2, Nz - 2) threadsPerThreadgroup:MTLSizeMake(1, 1, 1)];
+      [airUpdate dispatchThreads:MTLSizeMake(Nz - 2, Ny - 2, Nx - 2) threadsPerThreadgroup:airThreads];
       [airUpdate endEncoding];
 
       // ABC loss
@@ -226,8 +222,55 @@ auto run(Simulation3D const& sim) {
       [abcLoss setBuffer:Q_bna offset:0 atIndex:2];
       [abcLoss setBuffer:bna_ixyz offset:0 atIndex:3];
       [abcLoss setBuffer:constants offset:0 atIndex:4];
-      [abcLoss dispatchThreads:MTLSizeMake(Nba, 1, 1) threadsPerThreadgroup:MTLSizeMake(1, 1, 1)];
+      [abcLoss dispatchThreads:MTLSizeMake(Nba, 1, 1) threadsPerThreadgroup:lossABCThreads];
       [abcLoss endEncoding];
+
+      // Rigid boundary update
+      id<MTLComputeCommandEncoder> rigidUpdate = [commandBuffer computeCommandEncoder];
+      [rigidUpdate setComputePipelineState:kernelRigidCart];
+      [rigidUpdate setBuffer:u0 offset:0 atIndex:0];
+      [rigidUpdate setBuffer:u1 offset:0 atIndex:1];
+      [rigidUpdate setBuffer:bn_ixyz offset:0 atIndex:2];
+      [rigidUpdate setBuffer:adj_bn offset:0 atIndex:3];
+      [rigidUpdate setBuffer:constants offset:0 atIndex:4];
+      [rigidUpdate dispatchThreads:MTLSizeMake(Nb, 1, 1) threadsPerThreadgroup:rigidThreads];
+      [rigidUpdate endEncoding];
+
+      if (Nbl > 0) {
+        // Copy lossy boundary nodes to their state buffer.
+        id<MTLComputeCommandEncoder> copyToBoundary = [commandBuffer computeCommandEncoder];
+        [copyToBoundary setComputePipelineState:kernelCopyFromGrid];
+        [copyToBoundary setBuffer:u0b offset:0 atIndex:0];
+        [copyToBoundary setBuffer:u0 offset:0 atIndex:1];
+        [copyToBoundary setBuffer:bnl_ixyz offset:0 atIndex:2];
+        [copyToBoundary dispatchThreads:MTLSizeMake(Nbl, 1, 1) threadsPerThreadgroup:copyFromThreads];
+        [copyToBoundary endEncoding];
+
+        // Apply frequency-dependent boundary loss.
+        id<MTLComputeCommandEncoder> boundaryLoss = [commandBuffer computeCommandEncoder];
+        [boundaryLoss setComputePipelineState:kernelBoundaryLossFD];
+        [boundaryLoss setBuffer:u0b offset:0 atIndex:0];
+        [boundaryLoss setBuffer:u2b offset:0 atIndex:1];
+        [boundaryLoss setBuffer:vh1 offset:0 atIndex:2];
+        [boundaryLoss setBuffer:gh1 offset:0 atIndex:3];
+        [boundaryLoss setBuffer:ssaf_bnl offset:0 atIndex:4];
+        [boundaryLoss setBuffer:mat_bnl offset:0 atIndex:5];
+        [boundaryLoss setBuffer:mat_beta offset:0 atIndex:6];
+        [boundaryLoss setBuffer:mat_quads offset:0 atIndex:7];
+        [boundaryLoss setBuffer:Mb offset:0 atIndex:8];
+        [boundaryLoss setBuffer:constants offset:0 atIndex:9];
+        [boundaryLoss dispatchThreads:MTLSizeMake(Nbl, 1, 1) threadsPerThreadgroup:lossFDThreads];
+        [boundaryLoss endEncoding];
+
+        // Copy the updated lossy boundary nodes back to the grid.
+        id<MTLComputeCommandEncoder> copyFromBoundary = [commandBuffer computeCommandEncoder];
+        [copyFromBoundary setComputePipelineState:kernelCopyToGrid];
+        [copyFromBoundary setBuffer:u0 offset:0 atIndex:0];
+        [copyFromBoundary setBuffer:u0b offset:0 atIndex:1];
+        [copyFromBoundary setBuffer:bnl_ixyz offset:0 atIndex:2];
+        [copyFromBoundary dispatchThreads:MTLSizeMake(Nbl, 1, 1) threadsPerThreadgroup:copyToThreads];
+        [copyFromBoundary endEncoding];
+      }
 
       // Read receiver
       id<MTLComputeCommandEncoder> readOutput = [commandBuffer computeCommandEncoder];
@@ -237,8 +280,19 @@ auto run(Simulation3D const& sim) {
       [readOutput setBuffer:out_ixyz offset:0 atIndex:2];
       [readOutput setBuffer:constants offset:0 atIndex:3];
       [readOutput setBuffer:timestep offset:0 atIndex:4];
-      [readOutput dispatchThreads:MTLSizeMake(Nr, 1, 1) threadsPerThreadgroup:MTLSizeMake(1, 1, 1)];
+      [readOutput dispatchThreads:MTLSizeMake(Nr, 1, 1) threadsPerThreadgroup:outputThreads];
       [readOutput endEncoding];
+
+      // Add the source to the next state after the stencil and boundary updates.
+      id<MTLComputeCommandEncoder> addSource = [commandBuffer computeCommandEncoder];
+      [addSource setComputePipelineState:kernelAddSource];
+      [addSource setBuffer:u0 offset:0 atIndex:0];
+      [addSource setBuffer:in_sigs offset:0 atIndex:1];
+      [addSource setBuffer:in_ixyz offset:0 atIndex:2];
+      [addSource setBuffer:constants offset:0 atIndex:3];
+      [addSource setBuffer:timestep offset:0 atIndex:4];
+      [addSource dispatchThreads:MTLSizeMake(Ns, 1, 1) threadsPerThreadgroup:sourceThreads];
+      [addSource endEncoding];
 
       // Wait
       [commandBuffer commit];

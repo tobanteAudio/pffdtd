@@ -29,7 +29,7 @@ cd "$model_dir"
 pffdtd sim3d setup "$sim_setup"
 
 # Run sim
-# OMP_PLACES=cores OMP_PROC_BIND=close OMP_NUM_THREADS=16 $pffdtd_engine sim3d -e cpu -p "64" -s "$sim_dir"
+OMP_PLACES=cores OMP_PROC_BIND=close OMP_NUM_THREADS=16 $pffdtd_engine sim3d -e cpu -p "32" -s "$sim_dir"
 # nsys profile --force-overwrite true -t cuda,osrt,nvtx --sample=none -o prof $pffdtd_engine sim3d -e cuda -p "64" -s "$sim_dir"
 # /usr/local/cuda-12.6/bin/ncu \
 #     --kernel-name-base demangled \
@@ -40,15 +40,15 @@ pffdtd sim3d setup "$sim_setup"
 
 # pffdtd sim3d engine --sim_dir="$sim_dir" --plot --draw_backend="mayavi" --json_model="${model_dir}/model.json"
 
-local_dir="$sim_dir"
-remote_cmd="/home/tobante/Developer/tobanteAudio/pffdtd/build/src/cpp/pffdtd-engine sim3d -e cuda -p 64 -s ."
-remote_dir="/tmp/$sim_name"
-remote_host="tobante@192.168.0.14"
+# local_dir="$sim_dir"
+# remote_cmd="/home/tobante/Developer/tobanteAudio/pffdtd/build/src/cpp/pffdtd-engine sim3d -e cuda -p 64 -s ."
+# remote_dir="/tmp/$sim_name"
+# remote_host="tobante@192.168.0.14"
 
-ssh "$remote_host" "mkdir -p -- '$remote_dir'"
-rsync -az --delete --chmod=Du=rwx,Fu=rw,go-rwx -e ssh "$local_dir"/ "$remote_host":"$remote_dir"/
-ssh -t "$remote_host" "set -euo pipefail; cd -- '$remote_dir'; $remote_cmd"
-rsync -az -e ssh "$remote_host":"$remote_dir"/ "$local_dir"/
+# ssh "$remote_host" "mkdir -p -- '$remote_dir'"
+# rsync -az --delete --chmod=Du=rwx,Fu=rw,go-rwx -e ssh "$local_dir"/ "$remote_host":"$remote_dir"/
+# ssh -t "$remote_host" "set -euo pipefail; cd -- '$remote_dir'; $remote_cmd"
+# rsync -az -e ssh "$remote_host":"$remote_dir"/ "$local_dir"/
 
 # Post-process
 pffdtd sim3d process-outputs --sim_dir="$sim_dir" --resample_Fs 48000 --fcut_lowpass "$fmax" --order_lowpass=8 --symmetric_lowpass --fcut_lowcut "$fmin" --order_lowcut=4 --air_abs_filter="none" --save_wav --plot

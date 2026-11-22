@@ -7,13 +7,16 @@
 #include "pffdtd/time.hpp"
 
 #if not defined(PFFDTD_HAS_METAL)
-  #error "SYCL must be enabled in CMake via PFFDTD_ENABLE_METAL"
+  #error "Metal must be enabled in CMake via PFFDTD_ENABLE_METAL"
 #endif
 
 #include <fmt/format.h>
 
 #include <Foundation/Foundation.h>
 #include <Metal/Metal.h>
+
+#include <algorithm>
+#include <cstring>
 
 namespace pffdtd {
 
@@ -45,17 +48,28 @@ inline id<MTLComputePipelineState> makeComputePipeline(id<MTLLibrary> library, c
 
 template<typename T, typename ModeT>
 id<MTLBuffer> makeBuffer(id<MTLDevice> device, std::vector<T> const& data, ModeT mode) {
-  auto const size   = data.size() * sizeof(T);
-  id<MTLBuffer> buf = [device newBufferWithBytes:data.data() length:size options:mode];
+  auto const size = data.size() * sizeof(T);
+  id<MTLBuffer> buf;
+  if (data.empty()) {
+    buf = [device newBufferWithLength:sizeof(T) options:mode];
+    PFFDTD_ASSERT(buf != nil);
+    PFFDTD_ASSERT([buf contents] != nullptr);
+    std::memset([buf contents], 0, sizeof(T));
+  } else {
+    buf = [device newBufferWithBytes:data.data() length:size options:mode];
+  }
   PFFDTD_ASSERT(buf != nil);
   return buf;
 }
 
 template<typename T, typename ModeT>
 id<MTLBuffer> makeEmptyBuffer(id<MTLDevice> device, size_t count, ModeT mode) {
-  auto const size   = count * sizeof(T);
-  id<MTLBuffer> buf = [device newBufferWithLength:size options:mode];
+  auto const size           = count * sizeof(T);
+  auto const allocationSize = std::max(size, sizeof(T));
+  id<MTLBuffer> buf         = [device newBufferWithLength:allocationSize options:mode];
   PFFDTD_ASSERT(buf != nil);
+  PFFDTD_ASSERT([buf contents] != nullptr);
+  std::memset([buf contents], 0, allocationSize);
   return buf;
 }
 
