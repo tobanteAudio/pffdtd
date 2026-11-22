@@ -88,12 +88,12 @@ def test_sim2d_engines(tmp_path):
 def test_sim2d_metal_engine(tmp_path):
     sim_setup_2d(
         sim_dir=tmp_path,
-        room=(0.5, 0.5),
+        room=(0.5, 0.65),
         Tc=20,
         rh=50,
         fmax=1000.0,
         ppw=10.5,
-        duration=0.02,
+        duration=0.025,
         refl_coeff=0.991,
         model_factory=multi_source_model,
         apply_loss=True,

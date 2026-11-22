@@ -16,8 +16,9 @@ namespace sim2d {
     constant Constants2D<float>& constants [[buffer(4)]],
     uint2 id [[thread_position_in_grid]]
 ) {
-  int64_t const x   = id.x + 1;
-  int64_t const y   = id.y + 1;
+  // Metal linearizes threads with x varying fastest, so map it to the contiguous y grid dimension.
+  int64_t const x   = id.y + 1;
+  int64_t const y   = id.x + 1;
   int64_t const idx = x * constants.Ny + y;
 
   if (in_mask[idx] == 0) {

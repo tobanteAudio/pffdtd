@@ -17,6 +17,28 @@ namespace pffdtd {
 
 namespace {
 
+constexpr auto simdGroupsPerThreadgroup = NSUInteger{8};
+
+auto threadsPerThreadgroup1D(id<MTLComputePipelineState> pipeline) -> MTLSize {
+  auto const width      = pipeline.threadExecutionWidth;
+  auto const maxThreads = pipeline.maxTotalThreadsPerThreadgroup;
+  PFFDTD_ASSERT(width > 0);
+  PFFDTD_ASSERT(maxThreads >= width);
+
+  auto const simdGroups = std::min(simdGroupsPerThreadgroup, maxThreads / width);
+  return MTLSizeMake(width * simdGroups, 1, 1);
+}
+
+auto threadsPerThreadgroup2D(id<MTLComputePipelineState> pipeline) -> MTLSize {
+  auto const width      = pipeline.threadExecutionWidth;
+  auto const maxThreads = pipeline.maxTotalThreadsPerThreadgroup;
+  PFFDTD_ASSERT(width > 0);
+  PFFDTD_ASSERT(maxThreads >= width);
+
+  auto const rows = std::min(simdGroupsPerThreadgroup, maxThreads / width);
+  return MTLSizeMake(width, rows, 1);
+}
+
 auto toFloat(std::vector<double> const& buf) {
   auto buf32 = std::vector<float>(buf.size());
   std::ranges::transform(buf, buf32.begin(), [](auto v) { return static_cast<float>(v); });
@@ -59,6 +81,12 @@ auto run(Simulation2D const& sim) {
     id<MTLComputePipelineState> addSourceKernel   = makeComputePipeline(library, "pffdtd::sim2d::addSource");
     id<MTLComputePipelineState> readOutputKernel  = makeComputePipeline(library, "pffdtd::sim2d::readOutput");
 
+    auto const airUpdateThreads   = threadsPerThreadgroup2D(airUpdateKernel);
+    auto const rigidUpdateThreads = threadsPerThreadgroup1D(rigidUpdateKernel);
+    auto const rigidLossThreads   = threadsPerThreadgroup1D(rigidLossKernel);
+    auto const addSourceThreads   = threadsPerThreadgroup1D(addSourceKernel);
+    auto const readOutputThreads  = threadsPerThreadgroup1D(readOutputKernel);
+
     // Buffer
     id<MTLBuffer> in_mask   = makeBuffer(device, sim.in_mask, MTLResourceStorageModeShared);
     id<MTLBuffer> bn_ixy    = makeBuffer(device, sim.bn_ixy, MTLResourceStorageModeShared);
@@ -100,7 +128,7 @@ auto run(Simulation2D const& sim) {
       [airUpdate setBuffer:u2 offset:0 atIndex:2];
       [airUpdate setBuffer:in_mask offset:0 atIndex:3];
       [airUpdate setBuffer:constants offset:0 atIndex:4];
-      [airUpdate dispatchThreads:MTLSizeMake(Nx - 2, Ny - 2, 1) threadsPerThreadgroup:MTLSizeMake(1, 1, 1)];
+      [airUpdate dispatchThreads:MTLSizeMake(Ny - 2, Nx - 2, 1) threadsPerThreadgroup:airUpdateThreads];
       [airUpdate endEncoding];
 
       // Rigid Update
@@ -112,7 +140,7 @@ auto run(Simulation2D const& sim) {
       [rigidUpdate setBuffer:bn_ixy offset:0 atIndex:3];
       [rigidUpdate setBuffer:adj_bn offset:0 atIndex:4];
       [rigidUpdate setBuffer:constants offset:0 atIndex:5];
-      [rigidUpdate dispatchThreads:MTLSizeMake(Nb, 1, 1) threadsPerThreadgroup:MTLSizeMake(1, 1, 1)];
+      [rigidUpdate dispatchThreads:MTLSizeMake(Nb, 1, 1) threadsPerThreadgroup:rigidUpdateThreads];
       [rigidUpdate endEncoding];
 
       // Rigid Loss
@@ -123,7 +151,7 @@ auto run(Simulation2D const& sim) {
       [rigidLoss setBuffer:bn_ixy offset:0 atIndex:2];
       [rigidLoss setBuffer:adj_bn offset:0 atIndex:3];
       [rigidLoss setBuffer:constants offset:0 atIndex:4];
-      [rigidLoss dispatchThreads:MTLSizeMake(Nb, 1, 1) threadsPerThreadgroup:MTLSizeMake(1, 1, 1)];
+      [rigidLoss dispatchThreads:MTLSizeMake(Nb, 1, 1) threadsPerThreadgroup:rigidLossThreads];
       [rigidLoss endEncoding];
 
       // Add Source
@@ -133,7 +161,7 @@ auto run(Simulation2D const& sim) {
       [addSource setBuffer:in_sigs offset:0 atIndex:1];
       [addSource setBuffer:in_ixy offset:0 atIndex:2];
       [addSource setBuffer:timestep offset:0 atIndex:3];
-      [addSource dispatchThreads:MTLSizeMake(Ns, 1, 1) threadsPerThreadgroup:MTLSizeMake(1, 1, 1)];
+      [addSource dispatchThreads:MTLSizeMake(Ns, 1, 1) threadsPerThreadgroup:addSourceThreads];
       [addSource endEncoding];
 
       // Read Outputs
@@ -144,7 +172,7 @@ auto run(Simulation2D const& sim) {
       [readOutput setBuffer:out_ixy offset:0 atIndex:2];
       [readOutput setBuffer:constants offset:0 atIndex:3];
       [readOutput setBuffer:timestep offset:0 atIndex:4];
-      [readOutput dispatchThreads:MTLSizeMake(Nr, 1, 1) threadsPerThreadgroup:MTLSizeMake(1, 1, 1)];
+      [readOutput dispatchThreads:MTLSizeMake(Nr, 1, 1) threadsPerThreadgroup:readOutputThreads];
       [readOutput endEncoding];
 
       // Wait
