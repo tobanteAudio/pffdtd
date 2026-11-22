@@ -68,6 +68,10 @@ if(PFFDTD_HAS_METAL)
     target_sources(pffdtd PRIVATE pffdtd/engine_metal_3d.hpp pffdtd/engine_metal_3d.mm)
 
     set(SHADER_FILES "${CMAKE_CURRENT_SOURCE_DIR}/pffdtd/engine_metal.metal")
+    set(SHADER_HEADERS
+        "${CMAKE_CURRENT_SOURCE_DIR}/pffdtd/engine_metal.hpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/pffdtd/mat_quad.hpp"
+    )
     set(SHADER_OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/engine_metal.air")
     set(SHADER_LIBRARY "${CMAKE_CURRENT_BINARY_DIR}/default.metallib")
 
@@ -75,7 +79,7 @@ if(PFFDTD_HAS_METAL)
     add_custom_command(
         OUTPUT ${SHADER_OUTPUT}
         COMMAND xcrun -sdk macosx metal -std=metal3.0 -c ${SHADER_FILES} -o ${SHADER_OUTPUT}
-        DEPENDS ${SHADER_FILES}
+        DEPENDS ${SHADER_FILES} ${SHADER_HEADERS}
         COMMENT "Compiling Metal shader: ${SHADER_FILES}"
         VERBATIM
     )

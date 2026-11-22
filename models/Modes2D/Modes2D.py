@@ -21,7 +21,7 @@ sim_setup_2d(
     rh=50,
     fmax=10_000.0,
     ppw=10.5,
-    duration=10.0,
+    duration=0.75,
     refl_coeff=0.99,
     model_factory=model,
     apply_loss=True,

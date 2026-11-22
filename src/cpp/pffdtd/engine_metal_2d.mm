@@ -32,6 +32,7 @@ auto run(Simulation2D const& sim) {
     auto const Npts        = Nx * Ny;
     auto const Nt          = sim.Nt;
     auto const Nb          = static_cast<int64_t>(sim.adj_bn.size());
+    auto const Ns          = static_cast<int64_t>(sim.in_ixy.size());
     auto const Nr          = static_cast<int64_t>(sim.out_ixy.size());
     auto const loss_factor = sim.loss_factor;
     auto const in_sigs_f32 = toFloat(sim.in_sigs);
@@ -40,13 +41,11 @@ auto run(Simulation2D const& sim) {
         .Nx         = Nx,
         .Ny         = Ny,
         .Nt         = Nt,
-        .in_ixy     = sim.in_ixy.at(0),
         .lossFactor = static_cast<float>(loss_factor),
     };
 
     // Device
-    NSArray* devices     = MTLCopyAllDevices();
-    id<MTLDevice> device = devices[0];
+    id<MTLDevice> device = MTLCreateSystemDefaultDevice();
     PFFDTD_ASSERT(device != nil);
     summary(device);
 
@@ -65,6 +64,7 @@ auto run(Simulation2D const& sim) {
     id<MTLBuffer> bn_ixy    = makeBuffer(device, sim.bn_ixy, MTLResourceStorageModeShared);
     id<MTLBuffer> adj_bn    = makeBuffer(device, sim.adj_bn, MTLResourceStorageModeShared);
     id<MTLBuffer> out_ixy   = makeBuffer(device, sim.out_ixy, MTLResourceStorageModeShared);
+    id<MTLBuffer> in_ixy    = makeBuffer(device, sim.in_ixy, MTLResourceStorageModeShared);
     id<MTLBuffer> in_sigs   = makeBuffer(device, in_sigs_f32, MTLResourceStorageModeShared);
     id<MTLBuffer> constants = [device newBufferWithBytes:&c
                                                   length:sizeof(Constants2D<float>)
@@ -74,7 +74,7 @@ auto run(Simulation2D const& sim) {
     id<MTLBuffer> u0  = makeEmptyBuffer<float>(device, Npts, MTLResourceStorageModeShared);
     id<MTLBuffer> u1  = makeEmptyBuffer<float>(device, Npts, MTLResourceStorageModeShared);
     id<MTLBuffer> u2  = makeEmptyBuffer<float>(device, Npts, MTLResourceStorageModeShared);
-    id<MTLBuffer> out = makeEmptyBuffer<float>(device, Npts, MTLResourceStorageModeShared);
+    id<MTLBuffer> out = makeEmptyBuffer<float>(device, Nr * Nt, MTLResourceStorageModeShared);
 
     // Queue
     id<MTLCommandQueue> commandQueue = [device newCommandQueue];
@@ -131,9 +131,9 @@ auto run(Simulation2D const& sim) {
       [addSource setComputePipelineState:addSourceKernel];
       [addSource setBuffer:u0 offset:0 atIndex:0];
       [addSource setBuffer:in_sigs offset:0 atIndex:1];
-      [addSource setBuffer:constants offset:0 atIndex:2];
+      [addSource setBuffer:in_ixy offset:0 atIndex:2];
       [addSource setBuffer:timestep offset:0 atIndex:3];
-      [addSource dispatchThreads:MTLSizeMake(1, 1, 1) threadsPerThreadgroup:MTLSizeMake(1, 1, 1)];
+      [addSource dispatchThreads:MTLSizeMake(Ns, 1, 1) threadsPerThreadgroup:MTLSizeMake(1, 1, 1)];
       [addSource endEncoding];
 
       // Read Outputs

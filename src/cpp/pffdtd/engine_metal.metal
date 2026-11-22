@@ -79,11 +79,11 @@ namespace sim2d {
 [[kernel]] void addSource(
     device float* u0 [[buffer(0)]],
     device float const* in_sigs [[buffer(1)]],
-    constant Constants2D<float>& constants [[buffer(2)]],
+    device int64_t const* in_ixy [[buffer(2)]],
     constant int64_t& timestep [[buffer(3)]],
     uint id [[thread_position_in_grid]]
 ) {
-  u0[constants.in_ixy] += in_sigs[timestep];
+  u0[in_ixy[id]] += in_sigs[timestep];
 }
 
 [[kernel]] void readOutput(
