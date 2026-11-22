@@ -32,12 +32,12 @@ repos:
       - id: autopep8
 
   - repo: https://github.com/fsfe/reuse-tool
-    rev: v6.2.0
+    rev: v6.3.0
     hooks:
       - id: reuse
 
   - repo: https://github.com/pre-commit/mirrors-clang-format
-    rev: v22.1.0
+    rev: v23.1.5
     hooks:
       - id: clang-format
         types_or: [c, c++, cuda, metal, objective-c]
