@@ -39,13 +39,13 @@ jobs:
             pffdtd_engine_exe: "build/src/cpp/pffdtd-engine"
 
           - name: macOS-ARM64
-            os: macos-14
-            osx_target: "11.0"
+            os: macos-15
+            osx_target: "15.0"
             cmake_prefix_path: ""
             cmake_flags: '-D OpenMP_ROOT=`brew list libomp | grep libomp.a | sed -E "s/\/lib\/.*//"`'
             build_type: "Release"
             cxx_flags: ""
-            python_version: "3.14"
+            python_version: "3.15"
             pffdtd_engine_exe: "build/src/cpp/pffdtd-engine"
 
           - name: Windows
