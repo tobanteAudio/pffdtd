@@ -6,6 +6,10 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import Stats from "three/addons/libs/stats.module.js";
 import { GUI } from "three/addons/libs/lil-gui.module.min.js";
 
+// Model and CSS colors are sRGB inputs. Enable conversion to Three.js's
+// Linear-sRGB working space before constructing any colors.
+THREE.ColorManagement.enabled = true;
+
 let json_data = {};
 
 let geo = {
@@ -70,8 +74,6 @@ async function createRenderer(obj, update) {
 
   let renderer = obj.renderer;
   if (!renderer) {
-    THREE.ColorManagement.enabled = true;
-
     // create the renderer (canvas)
     obj.renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer = obj.renderer;
@@ -79,6 +81,8 @@ async function createRenderer(obj, update) {
     renderer.setSize(scene_container.clientWidth, scene_container.clientHeight);
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.outputColorSpace = THREE.SRGBColorSpace;
+    renderer.toneMapping = THREE.NoToneMapping;
+    renderer.toneMappingExposure = 1;
 
     // add the automatically created <canvas> element to the page
     scene_container.appendChild(renderer.domElement);
@@ -210,7 +214,14 @@ async function createModelGUI() {
   f0m2.add(gui_obj, "opacity", 0, 1).onChange(function (value) {
     //update all opacities identically
     for (let i = 0; i < mats.length; i++) {
-      mat_meshes[mats[i]].material.opacity = value;
+      let material = mat_meshes[mats[i]].material;
+      let transparent = value < 1;
+      material.opacity = value;
+      material.depthWrite = !transparent;
+      if (material.transparent != transparent) {
+        material.transparent = transparent;
+        material.needsUpdate = true;
+      }
     }
   });
 
@@ -316,14 +327,16 @@ async function createModelMesh() {
     );
     mat_geometry.computeVertexNormals();
 
+    let [red, green, blue] = geo.mats_hash[mat].color;
     let material = new THREE.MeshBasicMaterial({
-      color: new THREE.Color(
-        ...geo.mats_hash[mat].color.map(function (c) {
-          return c / 255;
-        })
-      ).convertSRGBToLinear(),
-      transparent: true,
-      opacity: 0.95,
+      color: new THREE.Color().setRGB(
+        red / 255,
+        green / 255,
+        blue / 255,
+        THREE.SRGBColorSpace
+      ),
+      transparent: false,
+      opacity: 1,
       side: THREE.BackSide,
     });
 
