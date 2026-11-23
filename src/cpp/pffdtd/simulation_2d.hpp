@@ -15,6 +15,7 @@ struct Simulation2D {
   int64_t Nx; // Number of x sample nodes
   int64_t Ny; // Number of y sample nodes
   int64_t Nt; // Number of time steps
+  double l2;  // CFL number squared
 
   std::vector<uint8_t> in_mask; // Mask for interior nodes
   std::vector<int64_t> adj_bn;  // Adjacency nodes

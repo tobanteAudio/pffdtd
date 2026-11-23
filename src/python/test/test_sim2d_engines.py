@@ -35,9 +35,10 @@ def multi_source_model(*, Lx=None, Ly=None, Nx=None, Ny=None, dx=None, X=None, Y
 @pytest.mark.slow
 @pytest.mark.skipif(os.environ.get('PFFDTD_ENGINE_EXE') is None, reason='Native 2D engine not available')
 def test_sim2d_engines(tmp_path):
+    room_size = 2.0
     sim_setup_2d(
         sim_dir=tmp_path,
-        room=(2, 2),
+        room=(room_size, room_size),
         Tc=20,
         rh=50,
         fmax=1000.0,
@@ -74,11 +75,22 @@ def test_sim2d_engines(tmp_path):
     with h5py.File(tmp_path / 'out-cpp.h5', 'r') as f:
         out_cpp = f['out'][...]
 
+    with h5py.File(tmp_path / 'constants.h5', 'r') as f:
+        c = float(f['c'][...])
+        fs = float(f['fs'][...])
+
     assert not np.isnan(out_py).any()
     assert not np.isinf(out_py).any()
     assert not np.isnan(out_cpp).any()
     assert not np.isinf(out_cpp).any()
     assert np.allclose(out_py, out_cpp)
+
+    expected_mode = c/(2*room_size)
+    spectrum = np.abs(np.fft.rfft(out_cpp[0]*np.hanning(out_cpp.shape[-1])))
+    frequencies = np.fft.rfftfreq(out_cpp.shape[-1], 1/fs)
+    mode_band = (frequencies > 0.75*expected_mode) & (frequencies < 1.35*expected_mode)
+    measured_mode = frequencies[mode_band][np.argmax(spectrum[mode_band])]
+    assert measured_mode == pytest.approx(expected_mode, rel=0.01)
 
 
 @pytest.mark.slow

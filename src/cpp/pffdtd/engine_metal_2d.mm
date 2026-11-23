@@ -63,6 +63,7 @@ auto run(Simulation2D const& sim) {
         .Nx         = Nx,
         .Ny         = Ny,
         .Nt         = Nt,
+        .l2         = static_cast<float>(sim.l2),
         .lossFactor = static_cast<float>(loss_factor),
     };
 

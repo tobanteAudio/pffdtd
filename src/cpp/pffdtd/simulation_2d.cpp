@@ -3,13 +3,18 @@
 
 #include "simulation_2d.hpp"
 
+#include "pffdtd/assert.hpp"
 #include "pffdtd/hdf.hpp"
 #include "pffdtd/print.hpp"
 
 namespace pffdtd {
 
 auto loadSimulation2D(std::filesystem::path const& dir) -> Simulation2D {
-  auto sim = HDF5Reader{dir / "sim.h5"};
+  auto constants = HDF5Reader{dir / "constants.h5"};
+  auto sim       = HDF5Reader{dir / "sim.h5"};
+  auto const l2  = constants.read<double>("l2");
+  PFFDTD_ASSERT(l2 > 0.0);
+  PFFDTD_ASSERT(l2 <= 0.5);
 
   return Simulation2D{
       .dir = dir,
@@ -17,6 +22,7 @@ auto loadSimulation2D(std::filesystem::path const& dir) -> Simulation2D {
       .Nx = sim.read<int64_t>("Nx"),
       .Ny = sim.read<int64_t>("Ny"),
       .Nt = sim.read<int64_t>("Nt"),
+      .l2 = l2,
 
       .in_mask     = sim.read<std::vector<uint8_t>>("in_mask"),
       .adj_bn      = sim.read<std::vector<int64_t>>("adj_bn"),
@@ -31,6 +37,7 @@ auto loadSimulation2D(std::filesystem::path const& dir) -> Simulation2D {
 
 auto summary(Simulation2D const& sim) -> void {
   println("Nt = {}", sim.Nt);
+  println("l2 = {}", sim.l2);
   println("Nx = {}", sim.Nx);
   println("Ny = {}", sim.Ny);
   println("N = {}", sim.Nx * sim.Ny);

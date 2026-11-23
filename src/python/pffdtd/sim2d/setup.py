@@ -94,7 +94,7 @@ def sim_setup_2d(
     loss_factor = 0
     if apply_loss:
         g = convert_R_to_Yn(refl_coeff)
-        loss_factor = 0.5*np.sqrt(0.5)*g  # a loss factor
+        loss_factor = 0.5*constants.l*g  # a loss factor
 
     # Set up an excitation signal
     in_sigs = np.zeros(Nt, dtype=np.float64)

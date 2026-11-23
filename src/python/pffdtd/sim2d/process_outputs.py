@@ -12,17 +12,21 @@ from scipy import signal
 from pffdtd.signals.wavfile import save_as_wav_files
 
 
-@click.command(name='process-outputs', help='Process raw simulation output.')
-@click.option('--diff', is_flag=True)
-@click.option('--fmin', default=20.0)
-@click.option('--sim_dir', type=click.Path(exists=True))
-@click.argument('out_file', nargs=1,  type=click.Path(exists=True))
-def main(fmin, diff, sim_dir, out_file) -> None:
-    sim_dir = pathlib.Path(sim_dir)
-
+def process_outputs(
+    sim_dir: pathlib.Path,
+    out_file: pathlib.Path,
+    *,
+    resample_Fs: float | None = None,
+    fcut_lowcut: float = 10.0,
+    order_lowcut: int = 4,
+    fcut_lowpass: float | None = None,
+    order_lowpass: int = 4,
+    diff: bool = False,
+):
     with h5py.File(sim_dir / 'constants.h5', 'r') as constants:
         fs = float(constants['fs'][...])
-        fmax = float(constants['fmax'][...])
+        if not fcut_lowpass:
+            fcut_lowpass = float(constants['fmax'][...])
 
     Ts = 1/fs
 
@@ -41,12 +45,26 @@ def main(fmin, diff, sim_dir, out_file) -> None:
 
     out /= np.max(np.abs(out))
 
-    sos = signal.butter(4, fmin, fs=fs, btype='high', output='sos')
+    sos = signal.butter(order_lowcut, fcut_lowcut, fs=fs, btype='high', output='sos')
     out = signal.sosfilt(sos, out)
 
-    sos = signal.butter(4, fmax, fs=fs, btype='low', output='sos')
+    sos = signal.butter(order_lowpass, fcut_lowpass, fs=fs, btype='low', output='sos')
     out = signal.sosfilt(sos, out)
 
-    Fs_target = 48000
-    out_f = resample(out, fs, Fs_target, filter='kaiser_best')
-    save_as_wav_files(out_f, Fs_target, sim_dir, True)
+    out_f = resample(out, fs, resample_Fs, filter='kaiser_best')
+    save_as_wav_files(out_f, resample_Fs, sim_dir, True)
+
+
+@click.command(name='process-outputs', help='Process raw simulation output.')
+@click.option('--diff', is_flag=True)
+@click.option('--fmin', default=20.0)
+@click.option('--sim_dir', type=click.Path(exists=True, path_type=pathlib.Path))
+@click.argument('out_file', nargs=1,  type=click.Path(exists=True, path_type=pathlib.Path))
+def main(fmin, diff, sim_dir, out_file) -> None:
+    process_outputs(
+        sim_dir,
+        out_file,
+        resample_Fs=48000,
+        fcut_lowcut=fmin,
+        diff=diff,
+    )

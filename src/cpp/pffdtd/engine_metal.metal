@@ -25,13 +25,16 @@ namespace sim2d {
     return;
   }
 
-  float const left   = u1[idx - 1];
-  float const right  = u1[idx + 1];
-  float const bottom = u1[idx - constants.Ny];
-  float const top    = u1[idx + constants.Ny];
-  float const last   = u2[idx];
+  float const left      = u1[idx - 1];
+  float const right     = u1[idx + 1];
+  float const bottom    = u1[idx - constants.Ny];
+  float const top       = u1[idx + constants.Ny];
+  float const last      = u2[idx];
+  float const current   = u1[idx];
+  float const neighbors = left + right + bottom + top;
+  float const l2        = constants.l2;
 
-  u0[idx] = 0.5 * (left + right + bottom + top) - last;
+  u0[idx] = (2.0 - 4.0 * l2) * current + l2 * neighbors - last;
 }
 
 [[kernel]] void boundaryRigid(
@@ -54,8 +57,9 @@ namespace sim2d {
   float const bottom    = u1[ib - constants.Ny];
   float const top       = u1[ib + constants.Ny];
   float const neighbors = left + right + top + bottom;
+  float const l2        = constants.l2;
 
-  u0[ib] = (2.0 - 0.5 * K) * last1 + 0.5 * neighbors - last2;
+  u0[ib] = (2.0 - l2 * K) * last1 + l2 * neighbors - last2;
 }
 
 [[kernel]] void boundaryLoss(

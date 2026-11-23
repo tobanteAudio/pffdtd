@@ -13,7 +13,12 @@ from pffdtd.sim3d.engine import EnginePython3D
 SIM3D_ENGINES = ['python', 'cpu']
 
 
-def run_engine(sim_dir, engine):
+def run_engine(
+    sim_dir: pathlib.Path,
+    engine: str,
+    precision: int | None = None,
+    capture_output: bool = True,
+):
     if engine == 'python':
         eng = EnginePython3D(sim_dir)
         eng.run_all(1)
@@ -25,10 +30,15 @@ def run_engine(sim_dir, engine):
         assert exe.exists()
         assert exe.is_file()
 
-        precision = '32' if engine == 'metal' else '64'
+        if not precision:
+            precision = 32 if engine == 'metal' else 64
+
+        if precision == 64 and engine == 'metal':
+            raise ValueError('metal engine only supports precision "32"')
+
         result = subprocess.run(
-            args=[str(exe), 'sim3d', '-e', engine, '-p', precision, '-s', sim_dir],
-            capture_output=True,
+            args=[str(exe), 'sim3d', '-e', engine, '-p', f'{precision}', '-s', str(sim_dir)],
+            capture_output=capture_output,
             check=True,
         )
         assert result.returncode == 0

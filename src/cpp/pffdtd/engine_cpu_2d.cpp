@@ -31,6 +31,7 @@ auto run(Simulation2D const& sim) {
   auto const Nb         = static_cast<int64_t>(sim.adj_bn.size());
   auto const Ns         = static_cast<int64_t>(sim.in_ixy.size());
   auto const Nr         = static_cast<int64_t>(sim.out_ixy.size());
+  auto const l2         = static_cast<Real>(sim.l2);
   auto const lossFactor = static_cast<Real>(sim.loss_factor);
 
   auto u0_buf  = stdex::mdarray<Real, stdex::dextents<size_t, 1>>(Npts);
@@ -57,13 +58,15 @@ auto run(Simulation2D const& sim) {
 #pragma omp parallel for
       for (int64_t x = 1; x < Nx - 1; ++x) {
         for (int64_t y = 1; y < Ny - 1; ++y) {
-          auto const idx    = x * Ny + y;
-          auto const left   = u1[idx - 1];
-          auto const right  = u1[idx + 1];
-          auto const bottom = u1[idx - Ny];
-          auto const top    = u1[idx + Ny];
-          auto const last   = u2[idx];
-          auto const tmp    = static_cast<Real>(0.5) * (left + right + bottom + top) - last;
+          auto const idx       = x * Ny + y;
+          auto const left      = u1[idx - 1];
+          auto const right     = u1[idx + 1];
+          auto const bottom    = u1[idx - Ny];
+          auto const top       = u1[idx + Ny];
+          auto const last      = u2[idx];
+          auto const current   = u1[idx];
+          auto const neighbors = left + right + bottom + top;
+          auto const tmp       = (Real(2) - Real(4) * l2) * current + l2 * neighbors - last;
 
           u0[idx] = sim.in_mask[idx] * tmp;
         }
@@ -86,7 +89,7 @@ auto run(Simulation2D const& sim) {
         auto const top       = u1[ib + Ny];
         auto const neighbors = left + right + top + bottom;
 
-        u0[ib] = (Real(2) - Real(0.5) * K) * last1 + Real(0.5) * neighbors - last2;
+        u0[ib] = (Real(2) - l2 * K) * last1 + l2 * neighbors - last2;
       }
 
 // Boundary Loss

@@ -16,6 +16,11 @@ class Engine2D:
         self.video = video
         self.output_file = out
 
+        with h5py.File(self.sim_dir / 'constants.h5', 'r') as h5f:
+            self.l2 = h5f['l2'][()]
+        if not 0 < self.l2 <= 0.5:
+            raise ValueError(f'Invalid 2D CFL number squared: {self.l2}')
+
         with h5py.File(self.sim_dir / 'sim.h5', 'r') as h5f:
             self.fps = h5f['video_fps'][()]
             self.loss_factor = h5f['loss_factor'][()]
@@ -42,6 +47,7 @@ class Engine2D:
         in_ixy = self.in_ixy
         out_ixy = self.out_ixy
         loss_factor = self.loss_factor
+        l2 = self.l2
         fps = self.fps
 
         print('--SIM-ENGINE: Allocate python memory')
@@ -64,8 +70,8 @@ class Engine2D:
 
         print('--SIM-ENGINE: Run python simulation')
         for nt in tqdm(range(Nt)):
-            stencil_air(u0, u1, u2, in_mask)
-            stencil_boundary_rigid(u0, u1, u2, bn_ixy, adj_bn)
+            stencil_air(u0, u1, u2, in_mask, l2)
+            stencil_boundary_rigid(u0, u1, u2, bn_ixy, adj_bn, l2)
             stencil_boundary_loss(u0, u2, bn_ixy, adj_bn, loss_factor)
 
             u0.flat[in_ixy] += in_sigs[nt]
@@ -94,7 +100,7 @@ class Engine2D:
 
 
 @nb.njit(parallel=True)
-def stencil_air(u0, u1, u2, mask):
+def stencil_air(u0, u1, u2, mask, l2):
     Nx, Ny = u1.shape
     for ix in nb.prange(1, Nx-1):
         for iy in range(1, Ny-1):
@@ -104,11 +110,13 @@ def stencil_air(u0, u1, u2, mask):
                 bottom = u1[ix, iy-1]
                 top = u1[ix, iy+1]
                 last = u2[ix, iy]
-                u0[ix, iy] = 0.5 * (left+right+bottom+top) - last
+                current = u1[ix, iy]
+                neighbors = left+right+bottom+top
+                u0[ix, iy] = (2-4*l2)*current + l2*neighbors - last
 
 
 @nb.njit(parallel=True)
-def stencil_boundary_rigid(u0, u1, u2, bn_ixy, adj_bn):
+def stencil_boundary_rigid(u0, u1, u2, bn_ixy, adj_bn, l2):
     _, Ny = u1.shape
     Nb = bn_ixy.size
     for i in nb.prange(Nb):
@@ -124,7 +132,7 @@ def stencil_boundary_rigid(u0, u1, u2, bn_ixy, adj_bn):
         bottom = u1.flat[ib - Ny]
 
         neighbors = left + right + top + bottom
-        u0.flat[ib] = (2 - 0.5 * K) * last1 + 0.5 * neighbors - last2
+        u0.flat[ib] = (2-l2*K)*last1 + l2*neighbors - last2
 
 
 @nb.njit(parallel=True)

@@ -14,6 +14,7 @@ struct Constants2D {
   long Nx;
   long Ny;
   long Nt;
+  Real l2;
   Real lossFactor;
 };
 

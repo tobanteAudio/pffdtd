@@ -35,11 +35,15 @@ def room_mode_kind(m, n, p):
     return 'oblique'
 
 
-def room_modes(L, W, H, max_order=6, c=343):
+def room_modes(L, W, H, max_order=6, c=343, dimensions=3):
+    if dimensions not in (2, 3):
+        raise ValueError('Room modes require two or three dimensions')
+
+    p_orders = range(max_order+1) if dimensions == 3 else (0,)
     modes = []
     for m in range(max_order+1):
         for n in range(max_order+1):
-            for p in range(max_order+1):
+            for p in p_orders:
                 if m+n+p > 0:
                     modes.append({
                         'm': m,
@@ -77,11 +81,13 @@ def detect_room_modes(
     height,
     num_modes,
     plot,
+    dimensions=3,
 ):
     directory = pathlib.Path(sim_dir)
-    paths = filename
-    if not paths:
+    if not filename:
         paths = collect_wav_files(directory, '*_out_normalised.wav')
+    else:
+        paths = [filename]
 
     with h5py.File(directory / 'constants.h5', 'r') as constants:
         c = float(constants['c'][...])
@@ -95,7 +101,7 @@ def detect_room_modes(
     S = 2*(L*W+L*H+W*H)
 
     max_order = 8
-    modes = room_modes(L, W, H, max_order=max_order, c=c)[:25]
+    modes = room_modes(L, W, H, max_order=max_order, c=c, dimensions=dimensions)[:25]
 
     print(f"{L=:.3f}m {W=:.3f}m {H=:.3f}m")
     print(f"{A=:.2f}m^2 {S=:.2f}m^2 {V=:.2f}m^3")
@@ -188,6 +194,7 @@ def detect_room_modes(
 @click.option('--height', default=4.0, type=float)
 @click.option('--num_modes', default=10, type=int)
 @click.option('--plot/--no-plot', default=True)
+@click.option('--dimensions', default=3, type=click.Choice([2, 3]))
 def main(
     filename,
     sim_dir,
@@ -198,6 +205,7 @@ def main(
     height,
     num_modes,
     plot,
+    dimensions,
 ):
     detect_room_modes(filename, sim_dir, fmin, fmax, width,
-                      length, height, num_modes, plot)
+                      length, height, num_modes, plot, dimensions)

@@ -72,6 +72,7 @@ auto run(Simulation2D const& sim) {
   auto const Nt          = sim.Nt;
   auto const Ns          = sim.in_ixy.size();
   auto const Nr          = sim.out_ixy.size();
+  auto const l2          = static_cast<Real>(sim.l2);
   auto const loss_factor = static_cast<Real>(sim.loss_factor);
 
   auto queue  = sycl::queue{sycl::property::queue::enable_profiling{}};
@@ -114,13 +115,15 @@ auto run(Simulation2D const& sim) {
           return;
         }
 
-        auto const left   = u1[idx - 1];
-        auto const right  = u1[idx + 1];
-        auto const bottom = u1[idx - Ny];
-        auto const top    = u1[idx + Ny];
-        auto const last   = u2[idx];
+        auto const left      = u1[idx - 1];
+        auto const right     = u1[idx + 1];
+        auto const bottom    = u1[idx - Ny];
+        auto const top       = u1[idx + Ny];
+        auto const last      = u2[idx];
+        auto const current   = u1[idx];
+        auto const neighbors = left + right + bottom + top;
 
-        u0[idx] = Real(0.5) * (left + right + bottom + top) - last;
+        u0[idx] = (Real(2) - Real(4) * l2) * current + l2 * neighbors - last;
       });
     });
 
@@ -144,7 +147,7 @@ auto run(Simulation2D const& sim) {
         auto const top       = u1[ib + Ny];
         auto const neighbors = left + right + top + bottom;
 
-        u0[ib] = (Real(2) - Real(0.5) * K) * last1 + Real(0.5) * neighbors - last2;
+        u0[ib] = (Real(2) - l2 * K) * last1 + l2 * neighbors - last2;
       });
     });
 
