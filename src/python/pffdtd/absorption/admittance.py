@@ -60,6 +60,9 @@ def convert_Sabs_to_Yn(Sabs, max_iter=100):
     def fgd(g):
         return -8.0*(-4*g**2 - 6*g + 4 * (1+g)**2*g*np.log((g+1)/g)-1)/(1+g)**2
 
+    assert Sabs >= 0
+    assert max_iter > 0
+
     if Sabs > 0.9512:
         _print('warning, Sabs>0.9512 -- not possible for locally-reactive model')
         Sabs = 0.9512

@@ -90,6 +90,7 @@ def air_absorption(
 ) -> AirAbsorption:
     """This is an implementation of formulae in the ISO9613-1 standard for air absorption
     """
+    assert pressure_atmospheric_kPa > 0
     assert pressure_atmospheric_kPa <= 200
     assert temperature_celsius >= -20
     assert temperature_celsius <= 50
@@ -97,6 +98,7 @@ def air_absorption(
     assert rel_humidity_pnct >= 10
 
     f = np.asarray(frequencies)
+    assert np.all(f >= 0)
     T = temperature_celsius
     rh = rel_humidity_pnct
 
@@ -113,7 +115,7 @@ def air_absorption(
     T0 = 293.15
 
     # ambient pressure
-    pa = 101.325  # kPa
+    pa = pressure_atmospheric_kPa  # kPa
     # reference pressure (standard)
     pr = 101.325  # kPa
 
@@ -362,7 +364,11 @@ def apply_visco_filter(x, Fs, Tc, rh, NdB=120, t_start=None):
     n_start = iceil(t_start*Fs)
     assert n_start > 0
 
-    y[:, :n_start] = x[:, :n_start]
+    # For short inputs, the requested unfiltered prefix can extend beyond the
+    # signal (and even into the filter's output tail). Only the input samples
+    # are available to copy in that case.
+    n_copy = min(n_start, Nt0)
+    y[:, :n_copy] = x[:, :n_copy]
     Tsg2 = 2*Ts*g
     Tsg2pi = 2*Ts*g*pi
     gTs = g*Ts
