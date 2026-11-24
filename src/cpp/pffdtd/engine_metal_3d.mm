@@ -7,6 +7,7 @@
 #include "pffdtd/metal.hpp"
 #include "pffdtd/progress.hpp"
 #include "pffdtd/time.hpp"
+#include "pffdtd/utility.hpp"
 
 #include <fmt/format.h>
 

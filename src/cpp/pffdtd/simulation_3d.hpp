@@ -4,19 +4,14 @@
 // preparing for simulation, and writing outputs
 #pragma once
 
-#include "pffdtd/assert.hpp"
 #include "pffdtd/mat_quad.hpp"
 #include "pffdtd/precision.hpp"
-#include "pffdtd/utility.hpp"
 
 #include <algorithm>
-#include <cmath>
 #include <cstdint>
-#include <cstdio>
 #include <cstdlib>
 #include <cstring>
 #include <filesystem>
-#include <limits>
 #include <vector>
 
 namespace pffdtd {

@@ -3,19 +3,17 @@
 
 #pragma once
 
-#include "pffdtd/assert.hpp"
-#include "pffdtd/time.hpp"
-
 #if not defined(PFFDTD_HAS_METAL)
   #error "Metal must be enabled in CMake via PFFDTD_ENABLE_METAL"
 #endif
+
+#include "pffdtd/assert.hpp"
 
 #include <fmt/format.h>
 
 #include <Foundation/Foundation.h>
 #include <Metal/Metal.h>
 
-#include <algorithm>
 #include <cstring>
 
 namespace pffdtd {

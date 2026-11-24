@@ -3,8 +3,7 @@
 
 #include "simulation_3d.hpp"
 
-#include "pffdtd/double.hpp"
-#include "pffdtd/exception.hpp"
+#include "pffdtd/assert.hpp"
 #include "pffdtd/hdf.hpp"
 #include "pffdtd/utility.hpp"
 
@@ -13,7 +12,6 @@
 #include <cfloat>
 #include <cstdio>
 #include <cstring>
-#include <limits>
 #include <numbers>
 #include <utility>
 

@@ -12,10 +12,6 @@
 
 #include <omp.h>
 
-#include <algorithm>
-#include <concepts>
-#include <ranges>
-
 namespace pffdtd {
 
 namespace {

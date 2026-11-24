@@ -4,14 +4,12 @@
 #include "pffdtd/double.hpp"
 #include "pffdtd/engine_cpu_2d.hpp"
 #include "pffdtd/engine_cpu_3d.hpp"
-#include "pffdtd/exception.hpp"
 #include "pffdtd/hdf.hpp"
 #include "pffdtd/precision.hpp"
 #include "pffdtd/print.hpp"
 #include "pffdtd/simulation_2d.hpp"
 #include "pffdtd/simulation_3d.hpp"
 #include "pffdtd/time.hpp"
-#include "pffdtd/utility.hpp"
 
 #if defined(PFFDTD_HAS_CUDA)
   #include "pffdtd/engine_cuda_3d.hpp"

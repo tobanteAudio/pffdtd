@@ -4,7 +4,6 @@
 
 #pragma once
 
-#include "pffdtd/precision.hpp"
 #include "pffdtd/simulation_3d.hpp"
 
 namespace pffdtd {

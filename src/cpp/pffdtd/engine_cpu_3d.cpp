@@ -6,6 +6,7 @@
 
 #include "pffdtd/double.hpp"
 #include "pffdtd/exception.hpp"
+#include "pffdtd/precision.hpp"
 #include "pffdtd/progress.hpp"
 #include "pffdtd/time.hpp"
 #include "pffdtd/utility.hpp"
@@ -15,7 +16,6 @@
 #include <omp.h>
 
 #include <bit>
-#include <cmath>
 #include <cstddef>
 #include <cstdlib>
 #include <vector>

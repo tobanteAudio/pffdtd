@@ -2,11 +2,11 @@
 // SPDX-FileCopyrightText: 2024 Tobias Hienzsch
 #pragma once
 
-#include "pffdtd/simulation_3d.hpp"
-
 #if not defined(PFFDTD_HAS_METAL)
   #error "METAL must be enabled in CMake via PFFDTD_ENABLE_METAL"
 #endif
+
+#include "pffdtd/simulation_3d.hpp"
 
 namespace pffdtd {
 
