@@ -74,6 +74,7 @@ class Engine2D:
             video_name = self.sim_dir/'out.avi'
             print(f'--SIM-ENGINE: Create python video file: {video_name}')
             height, width = u0.shape
+            # height, width = 1000, 1000
             pressure_scale = np.max(np.abs(in_sigs))
             pressure_scale_decay = np.exp(-Ts/5e-3)
             fourcc = cv2.VideoWriter_fourcc(*'DIVX')
@@ -89,8 +90,10 @@ class Engine2D:
             u0.flat[in_ixy] += in_sigs[nt]
             self.out[:, nt] = u0.flat[[out_ixy]]
 
-            u2 = u1.copy()
-            u1 = u0.copy()
+            tmp = u2
+            u2 = u1
+            u1 = u0
+            u0 = tmp
 
             if self.video:
                 frame_peak = np.max(np.abs(u0))
