@@ -18,7 +18,7 @@ def pressure_to_grayscale(pressure, scale):
 
 
 class Engine2D:
-    def __init__(self, sim_dir, out='out.h5', video=False, video_color: str = 'black_norm'):
+    def __init__(self, sim_dir, out='out.h5', video=False, video_color: str = 'black-norm'):
         self.sim_dir = Path(sim_dir)
         self.video = video
         self.video_color = video_color
