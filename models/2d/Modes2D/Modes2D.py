@@ -15,7 +15,7 @@ def model(*, Lx=None, Ly=None, Nx=None, Ny=None, dx=None, X=None, Y=None, in_mas
 
 
 sim_setup_2d(
-    sim_dir='../../sim_data/Modes2D/cpu',
+    sim_dir='../../../sim_data/2d/Modes2D',
     room=(3.65, 6),
     Tc=20,
     rh=50,

@@ -12,9 +12,9 @@ python_dir="$root_dir/src/python"
 engine_exe="$root_dir/$build_dir/src/cpp/pffdtd-engine"
 
 sim_name="DXF_Scene"
-sim_dir="$root_dir/sim_data/$sim_name/cpu"
+sim_dir="$root_dir/sim_data/2d/$sim_name"
 sim_setup="${sim_name}.py"
-model_dir="$root_dir/models/$sim_name"
+model_dir="$root_dir/models/2d/$sim_name"
 
 jobs=16
 

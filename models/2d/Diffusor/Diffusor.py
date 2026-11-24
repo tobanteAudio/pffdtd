@@ -115,7 +115,7 @@ def diffusor_model_factory(*, Lx=None, Ly=None, Nx=None, Ny=None, dx=None, X=Non
 
 
 sim_setup_2d(
-    sim_dir='../../sim_data/Diffusor/cpu',
+    sim_dir='../../../sim_data/2d/Diffusor',
     room=(15, 15),
     Tc=20,
     rh=50,

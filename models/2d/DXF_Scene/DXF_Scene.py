@@ -167,7 +167,7 @@ def load_dxf_scene(path, tolerance=1e-3):
 
 
 def main():
-    sim_dir = pathlib.Path('../../sim_data/DXF_Scene/cpu')
+    sim_dir = pathlib.Path('../../../sim_data/2d/DXF_Scene')
     sim_dir.mkdir(parents=True, exist_ok=True)
 
     dxf_path = sim_dir/'scene.dxf'
