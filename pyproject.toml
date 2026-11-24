@@ -25,6 +25,7 @@ classifiers = [
 
 dependencies = [
     "click",
+    "ezdxf",
     "h5py",
     "matplotlib",
     "memory_profiler",
@@ -37,9 +38,10 @@ dependencies = [
     "psutil",
     "resampy",
     "scipy",
+    "shapely",
     "sympy",
-    "tqdm",
     "tabulate",
+    "tqdm",
     "xlrd",
 ]
 

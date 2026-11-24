@@ -73,7 +73,7 @@ class Engine2D:
         if self.video:
             video_name = self.sim_dir/'out.avi'
             print(f'--SIM-ENGINE: Create python video file: {video_name}')
-            height, width = u0.shape
+            width, height = u0.shape
             # height, width = 1000, 1000
             pressure_scale = np.max(np.abs(in_sigs))
             pressure_scale_decay = np.exp(-Ts/5e-3)
