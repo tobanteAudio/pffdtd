@@ -6,10 +6,24 @@ import pathlib
 import cv2
 import h5py
 import numpy as np
-from scipy.signal import lfilter
+from scipy.signal import butter, lfilter, sosfilt
 
 from pffdtd.absorption.admittance import convert_R_to_Yn
 from pffdtd.sim3d.constants import SimConstants
+
+
+def generate_source_signal(sample_count, sample_rate, cutoff, band_limited):
+    signal = np.zeros(sample_count, dtype=np.float64)
+    signal[0] = 1.0
+
+    if not band_limited:
+        return signal
+
+    if not 0 < cutoff < sample_rate/2:
+        raise ValueError(f'Band-limit cutoff must be between 0 Hz and Nyquist ({sample_rate/2:.3f} Hz)')
+
+    lowpass = butter(8, cutoff, btype='lowpass', fs=sample_rate, output='sos')
+    return sosfilt(lowpass, signal)
 
 
 def write_model_image(in_mask, in_ixy, out_ixy, img_path):
@@ -36,6 +50,7 @@ def sim_setup_2d(
 
     apply_loss=True,
     diff=True,
+    band_limited=False,
     image=True,
     verbose=True,
 ):
@@ -97,8 +112,12 @@ def sim_setup_2d(
         loss_factor = 0.5*constants.l*g  # a loss factor
 
     # Set up an excitation signal
-    in_sigs = np.zeros(Nt, dtype=np.float64)
-    in_sigs[0] = 1.0
+    in_sigs = generate_source_signal(
+        sample_count=Nt,
+        sample_rate=constants.fs,
+        cutoff=constants.fmax,
+        band_limited=band_limited,
+    )
     in_sigs_f = in_sigs
 
     if diff:

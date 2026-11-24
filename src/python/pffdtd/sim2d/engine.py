@@ -10,14 +10,23 @@ import numpy as np
 from tqdm import tqdm
 
 
+def pressure_to_grayscale(pressure, scale):
+    if scale <= 0:
+        return np.full(pressure.shape, 128, dtype=np.uint8)
+    normalized = np.clip(pressure/scale, -1.0, 1.0)
+    return np.rint((normalized+1.0)*127.5).astype(np.uint8)
+
+
 class Engine2D:
-    def __init__(self, sim_dir, out='out.h5', video=False):
+    def __init__(self, sim_dir, out='out.h5', video=False, video_color: str = 'black_norm'):
         self.sim_dir = Path(sim_dir)
         self.video = video
+        self.video_color = video_color
         self.output_file = out
 
         with h5py.File(self.sim_dir / 'constants.h5', 'r') as h5f:
             self.l2 = h5f['l2'][()]
+            self.Ts = h5f['Ts'][()]
         if not 0 < self.l2 <= 0.5:
             raise ValueError(f'Invalid 2D CFL number squared: {self.l2}')
 
@@ -48,6 +57,7 @@ class Engine2D:
         out_ixy = self.out_ixy
         loss_factor = self.loss_factor
         l2 = self.l2
+        Ts = self.Ts
         fps = self.fps
 
         print('--SIM-ENGINE: Allocate python memory')
@@ -63,7 +73,9 @@ class Engine2D:
         if self.video:
             video_name = self.sim_dir/'out.avi'
             print(f'--SIM-ENGINE: Create python video file: {video_name}')
-            height, width = 1000, 1000  # u0.shape
+            height, width = u0.shape
+            pressure_scale = np.max(np.abs(in_sigs))
+            pressure_scale_decay = np.exp(-Ts/5e-3)
             fourcc = cv2.VideoWriter_fourcc(*'DIVX')
             video = cv2.VideoWriter(video_name, fourcc, fps,
                                     (width, height), isColor=False)
@@ -81,12 +93,23 @@ class Engine2D:
             u1 = u0.copy()
 
             if self.video:
-                img = np.abs(u0)
-                img = cv2.normalize(img, None, 0, 255,
-                                    cv2.NORM_MINMAX).astype(np.uint8)
-                img.flat[bn_ixy] = 255
-                img.flat[~in_mask] = 255
-                img = cv2.resize(img, (1000, 1000))
+                frame_peak = np.max(np.abs(u0))
+                pressure_scale = max(pressure_scale*pressure_scale_decay, frame_peak)
+                match self.video_color:
+                    case 'light-decay':
+                        img = pressure_to_grayscale(u0, pressure_scale)
+                        rigid_color = 0
+                    case 'black-decay':
+                        img = np.abs(u0/pressure_scale*255).astype(np.uint8)
+                        rigid_color = 255
+                    case 'black-norm' | _:
+                        img = np.abs(u0)
+                        img = cv2.normalize(img, None, 0, 255, cv2.NORM_MINMAX).astype(np.uint8)
+                        rigid_color = 255
+                img.flat[bn_ixy] = rigid_color
+                img.flat[~in_mask] = rigid_color
+
+                # img = cv2.resize(img, (1000, 1000))
                 video.write(cv2.rotate(img, cv2.ROTATE_90_COUNTERCLOCKWISE))
 
         if self.video:

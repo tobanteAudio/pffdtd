@@ -100,7 +100,7 @@ def diffusor_model_factory(*, Lx=None, Ly=None, Nx=None, Ny=None, dx=None, X=Non
     # Diffusor
     print('--DIFFUSOR: Generate diffusor')
     prime = 17
-    depth = 0.35
+    depth = 2.35
     width = 0.048
     in_mask = add_diffusor(prime, width, depth, (Lx, Ly),
                            in_mask, X, Y, dx, 343.0, True)
@@ -116,16 +116,17 @@ def diffusor_model_factory(*, Lx=None, Ly=None, Nx=None, Ny=None, dx=None, X=Non
 
 sim_setup_2d(
     sim_dir='../../sim_data/Diffusor/cpu',
-    room=(45, 45),
+    room=(15, 15),
     Tc=20,
     rh=50,
-    fmax=20_000,
+    fmax=2_000,
     ppw=10.5,
     duration=0.085,
     refl_coeff=0.99,
     model_factory=diffusor_model_factory,
     apply_loss=True,
     diff=False,
+    band_limited=True,
     image=True,
     verbose=True,
 )
