@@ -191,11 +191,12 @@ jobs:
     env:
       BASH_ENV: /opt/intel/oneapi/setvars.sh
       SETVARS_ARGS: "--force"
+      PFFDTD_EXTRA_TEST_ENGINES: "sycl"
     steps:
       - name: Install dependencies
         run: |
           apt-get update
-          apt-get install -y --no-install-recommends git git-lfs cmake ninja-build libhdf5-dev libfmt-dev libcli11-dev
+          apt-get install -y --no-install-recommends git git-lfs python3 python3-pip cmake ninja-build libhdf5-dev libfmt-dev libcli11-dev
 
       - name: Checkout code
         uses: actions/checkout@v7
@@ -217,3 +218,9 @@ jobs:
 
       - name: List SYCL devices
         run: sycl-ls
+
+      - name: PIP
+        run: pip3 install --verbose .[test]
+
+      - name: Pytest
+        run: pytest --cov=pffdtd --cov-branch

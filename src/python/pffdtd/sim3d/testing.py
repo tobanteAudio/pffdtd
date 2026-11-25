@@ -10,7 +10,16 @@ import pytest
 from pffdtd.common.metal import metal_device_available
 from pffdtd.sim3d.engine import EnginePython3D
 
-SIM3D_ENGINES = ['python', 'cpu']
+
+def engines_to_test() -> list[str]:
+    engines = ['python', 'cpu']
+    extra = os.environ.get('PFFDTD_EXTRA_TEST_ENGINES')
+    if extra:
+        for engine in extra.split(';'):
+            # Metal is excluded, because it doesn't support float64
+            assert engine in ['cuda', 'sycl']
+            engines.append(engine)
+    return engines
 
 
 def run_engine(
@@ -50,3 +59,8 @@ def skip_if_native_engine_unavailable(engine):
             pytest.skip('Native engine not available')
     if engine == 'metal' and not metal_device_available():
         pytest.skip('No Metal device is available')
+
+
+def skip_if_fcc_unsupported(engine):
+    if engine in ['metal', 'sycl']:
+        pytest.skip(f'"{engine}" engine does does not support FCC grids')
