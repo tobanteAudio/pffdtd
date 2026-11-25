@@ -185,6 +185,7 @@ jobs:
         shell: bash
     env:
       BASH_ENV: /opt/intel/oneapi/setvars.sh
+      SETVARS_ARGS: "--force"
     steps:
       - name: Install dependencies
         run: |
