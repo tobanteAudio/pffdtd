@@ -12,14 +12,12 @@ elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     target_compile_options(pffdtd.compiler_warnings INTERFACE
         "-Wall"
         "-Wextra"
-        "-Wpedantic"
         "-Wsign-compare"
     )
 elseif(CMAKE_CXX_COMPILER_ID MATCHES "AppleClang|Clang|IntelLLVM")
     target_compile_options(pffdtd.compiler_warnings INTERFACE
         "-Wall"
         "-Wextra"
-        "-Wpedantic"
         "-Wsign-compare"
         "-Wno-deprecated-declarations" # SYCL 2020 deprecations
     )

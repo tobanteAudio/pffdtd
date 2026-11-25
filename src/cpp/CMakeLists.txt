@@ -45,7 +45,6 @@ target_sources(pffdtd
 if(PFFDTD_ENABLE_CUDA)
     target_sources(pffdtd PRIVATE pffdtd/engine_cuda_3d.cu pffdtd/engine_cuda_3d.hpp)
     target_compile_definitions(pffdtd PUBLIC PFFDTD_HAS_CUDA=1)
-    target_compile_options(pffdtd PRIVATE $<$<COMPILE_LANG_AND_ID:CUDA,NVIDIA>:-Xcompiler=-Wno-pedantic>)
 endif()
 
 if(PFFDTD_HAS_SYCL)
