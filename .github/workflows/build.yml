@@ -21,27 +21,33 @@ jobs:
     name: ${{ matrix.name }}
     runs-on: ${{ matrix.os }}
     env:
-      CMAKE_PREFIX_PATH: ${{ matrix.cmake_prefix_path }}
       MACOSX_DEPLOYMENT_TARGET: ${{ matrix.osx_target }}
       PFFDTD_ENGINE_EXE: ${{ matrix.pffdtd_engine_exe }}
     strategy:
       fail-fast: false
       matrix:
         include:
-          - name: Linux
+          - name: Linux x64
             os: ubuntu-24.04
             osx_target: ""
-            cmake_prefix_path: ""
             cmake_flags: ""
             build_type: "Debug"
             cxx_flags: "--coverage -march=native -Og"
             python_version: "3.12"
             pffdtd_engine_exe: "build/src/cpp/pffdtd-engine"
 
-          - name: macOS-ARM64
+          - name: Linux arm64
+            os: ubuntu-26.04-arm
+            osx_target: ""
+            cmake_flags: ""
+            build_type: "Release"
+            cxx_flags: ""
+            python_version: "3.14"
+            pffdtd_engine_exe: "build/src/cpp/pffdtd-engine"
+
+          - name: macOS arm64
             os: macos-15
             osx_target: "15.0"
-            cmake_prefix_path: ""
             cmake_flags: '-D OpenMP_ROOT=`brew list libomp | grep libomp.a | sed -E "s/\/lib\/.*//"`'
             build_type: "Release"
             cxx_flags: ""
@@ -51,7 +57,6 @@ jobs:
           - name: Windows
             os: windows-2025
             osx_target: ""
-            cmake_prefix_path: ""
             cmake_flags: ""
             build_type: "Release"
             cxx_flags: "/EHsc"
@@ -113,7 +118,7 @@ jobs:
         run: pytest --cov=pffdtd --cov-branch
 
       - name: GCOV
-        if: runner.os == 'Linux'
+        if: ${{ matrix.name == 'Linux x64' }}
         run: |
           ./build/src/cpp/pffdtd-engine test
           gcovr --xml-pretty --exclude-unreachable-branches --exclude-throw-branches -r src -s build -o build/coverage.xml
