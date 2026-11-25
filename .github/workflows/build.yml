@@ -196,7 +196,7 @@ jobs:
       - name: Install dependencies
         run: |
           apt-get update
-          apt-get install -y --no-install-recommends git git-lfs python3 python3-pip cmake ninja-build libhdf5-dev libfmt-dev libcli11-dev
+          apt-get install -y --no-install-recommends git git-lfs python3 python3-pip python3-venv cmake ninja-build libhdf5-dev libfmt-dev libcli11-dev
 
       - name: Checkout code
         uses: actions/checkout@v7
@@ -220,7 +220,12 @@ jobs:
         run: sycl-ls
 
       - name: PIP
-        run: pip3 install --verbose .[test]
+        run: |
+          python3 -m venv .venv
+          source .venv/bin/activate
+          pip install --no-cache-dir --verbose .[test]
 
       - name: Pytest
-        run: pytest --cov=pffdtd --cov-branch
+        run: |
+          source .venv/bin/activate
+          pytest --cov=pffdtd --cov-branch
