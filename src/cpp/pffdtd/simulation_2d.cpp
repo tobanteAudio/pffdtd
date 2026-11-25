@@ -5,7 +5,7 @@
 
 #include "pffdtd/assert.hpp"
 #include "pffdtd/hdf.hpp"
-#include "pffdtd/print.hpp"
+#include "pffdtd/log.hpp"
 
 namespace pffdtd {
 
@@ -36,18 +36,18 @@ auto loadSimulation2D(std::filesystem::path const& dir) -> Simulation2D {
 }
 
 auto summary(Simulation2D const& sim) -> void {
-  println("Nt = {}", sim.Nt);
-  println("l2 = {}", sim.l2);
-  println("Nx = {}", sim.Nx);
-  println("Ny = {}", sim.Ny);
-  println("N = {}", sim.Nx * sim.Ny);
-  println("in_mask = {}", sim.in_mask.size());
-  println("bn_ixy = {}", sim.bn_ixy.size());
-  println("adj_bn = {}", sim.adj_bn.size());
-  println("in_sigs = {}", sim.in_sigs.size());
-  println("in_ixy = {}", sim.in_ixy.size());
-  println("out_ixy = {}", sim.out_ixy.size());
-  println("loss_factor = {}", sim.loss_factor);
+  Log::info("Nt = {}", sim.Nt);
+  Log::info("l2 = {}", sim.l2);
+  Log::info("Nx = {}", sim.Nx);
+  Log::info("Ny = {}", sim.Ny);
+  Log::info("N = {}", sim.Nx * sim.Ny);
+  Log::info("in_mask = {}", sim.in_mask.size());
+  Log::info("bn_ixy = {}", sim.bn_ixy.size());
+  Log::info("adj_bn = {}", sim.adj_bn.size());
+  Log::info("in_sigs = {}", sim.in_sigs.size());
+  Log::info("in_ixy = {}", sim.in_ixy.size());
+  Log::info("out_ixy = {}", sim.out_ixy.size());
+  Log::info("loss_factor = {}", sim.loss_factor);
 }
 
 } // namespace pffdtd

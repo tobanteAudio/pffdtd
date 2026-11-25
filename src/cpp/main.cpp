@@ -5,8 +5,8 @@
 #include "pffdtd/engine_cpu_2d.hpp"
 #include "pffdtd/engine_cpu_3d.hpp"
 #include "pffdtd/hdf.hpp"
+#include "pffdtd/log.hpp"
 #include "pffdtd/precision.hpp"
-#include "pffdtd/print.hpp"
 #include "pffdtd/simulation_2d.hpp"
 #include "pffdtd/simulation_3d.hpp"
 #include "pffdtd/time.hpp"
@@ -113,7 +113,7 @@ struct Arguments {
 
 auto run3D(Arguments::Sim3D const& args) {
   using namespace pffdtd;
-  println("Running: {} on {} with precision {}", args.simDir, args.engine, toString(args.precision));
+  Log::info("Running: {} on {} with precision {}", args.simDir, args.engine, toString(args.precision));
 
   auto const engines = getEngines3D();
   auto const& engine = engines.at(args.engine);
@@ -130,7 +130,7 @@ auto run3D(Arguments::Sim3D const& args) {
 
   auto const stop = getTime();
   auto const sec  = Seconds(stop - start);
-  println("--Simulation time: {} s", sec.count());
+  Log::info("--Simulation time: {} s", sec.count());
 }
 
 } // namespace
@@ -159,7 +159,7 @@ auto main(int argc, char** argv) -> int {
 
   if (*sim2d) {
     using namespace pffdtd;
-    println("Using {} with precision {}", toUpper(args.sim2d.engine), toString(args.sim2d.precision));
+    Log::info("Using {} with precision {}", toUpper(args.sim2d.engine), toString(args.sim2d.precision));
     auto const engines = getEngines2D();
     auto const& engine = engines.at(args.sim2d.engine);
 
@@ -173,7 +173,7 @@ auto main(int argc, char** argv) -> int {
 
     auto const stop = pffdtd::getTime();
     auto const sec  = pffdtd::Seconds(stop - start);
-    println("Simulation time: {} s", sec.count());
+    Log::info("Simulation time: {} s", sec.count());
   }
 
   if (*sim3d) {

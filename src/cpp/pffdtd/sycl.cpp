@@ -3,7 +3,7 @@
 
 #include "sycl.hpp"
 
-#include "pffdtd/print.hpp"
+#include "pffdtd/log.hpp"
 
 namespace pffdtd {
 
@@ -44,22 +44,22 @@ auto summary(sycl::device const& dev) -> void {
   auto const hasProfiling     = dev.get_info<sycl::info::device::queue_profiling>();
   auto const extensions       = dev.get_info<sycl::info::device::extensions>();
 
-  println("----------------------------------------");
-  println("Vendor: {}", vendor);
-  println("Name: {}", name);
-  println("Type: {}", toString(type));
-  println("Driver: {}", driverVersion);
-  println("Has queue profiling: {}", hasProfiling ? "true" : "false");
-  println("Global memory: {} GB", globalMemorySize / 1'000'000'000);
-  println("Local memory: {} KB", localMemorySize / 1000);
-  println("Max alloc size: {} GB", allocSize / 1'000'000'000);
-  println("Max clock frequency: {} Hz", clockFrequency);
-  println("Max compute units: {}", computeUnits);
-  println("Max work group size: {}", workGroupSize);
-  println("Max work item size: [{},{},{}]", workItemSize[0], workItemSize[1], workItemSize[2]);
-  println("Extension:");
+  Log::info("----------------------------------------");
+  Log::info("Vendor: {}", vendor);
+  Log::info("Name: {}", name);
+  Log::info("Type: {}", toString(type));
+  Log::info("Driver: {}", driverVersion);
+  Log::info("Has queue profiling: {}", hasProfiling ? "true" : "false");
+  Log::info("Global memory: {} GB", globalMemorySize / 1'000'000'000);
+  Log::info("Local memory: {} KB", localMemorySize / 1000);
+  Log::info("Max alloc size: {} GB", allocSize / 1'000'000'000);
+  Log::info("Max clock frequency: {} Hz", clockFrequency);
+  Log::info("Max compute units: {}", computeUnits);
+  Log::info("Max work group size: {}", workGroupSize);
+  Log::info("Max work item size: [{},{},{}]", workItemSize[0], workItemSize[1], workItemSize[2]);
+  Log::info("Extension:");
   for (auto const& ext : extensions) {
-    println("  - '{}'", ext);
+    Log::info("  - '{}'", ext);
   }
 }
 

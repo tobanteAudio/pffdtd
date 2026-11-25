@@ -5,7 +5,7 @@
 
 #include "pffdtd/double.hpp"
 #include "pffdtd/exception.hpp"
-#include "pffdtd/print.hpp"
+#include "pffdtd/log.hpp"
 #include "pffdtd/progress.hpp"
 #include "pffdtd/sycl.hpp"
 #include "pffdtd/time.hpp"
@@ -37,7 +37,7 @@ template<typename Real>
 auto scaleInput(std::vector<double> const& buf) {
   static constexpr auto min_exp = static_cast<double>(FloatTraits<Real>::minExponent);
   static constexpr auto max_exp = static_cast<double>(FloatTraits<Real>::maxExponent);
-  println("min_exp = {}, min_exp = {}", min_exp, max_exp);
+  Log::info("min_exp = {}, min_exp = {}", min_exp, max_exp);
 
   auto const aexp  = 0.5;
   auto const pow2  = static_cast<int>(std::round(aexp * max_exp + (1 - aexp) * min_exp));
@@ -47,7 +47,7 @@ auto scaleInput(std::vector<double> const& buf) {
   auto const inv_infac = norm1 / max_in;
   auto const infac     = 1.0 / inv_infac;
 
-  println(
+  Log::info(
       "max_in = {:.16e}, pow2 = {}, norm1 = {:.16e}, inv_infac = {:.16e}, infac = {:.16e}\n",
       max_in,
       pow2,

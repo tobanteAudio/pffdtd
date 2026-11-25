@@ -28,10 +28,10 @@ target_sources(pffdtd
         pffdtd/exception.hpp
         pffdtd/float.hpp
         pffdtd/hdf.hpp
+        pffdtd/log.hpp
         pffdtd/mdspan.hpp
         pffdtd/precision.cpp
         pffdtd/precision.hpp
-        pffdtd/print.hpp
         pffdtd/progress.cpp
         pffdtd/progress.hpp
         pffdtd/simulation_2d.cpp
