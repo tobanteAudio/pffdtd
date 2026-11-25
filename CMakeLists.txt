@@ -38,7 +38,7 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 include(compiler_warnings)
 
 include(FetchContent)
-FetchContent_Declare(mdspan GIT_REPOSITORY "https://github.com/kokkos/mdspan" GIT_TAG "stable" GIT_SHALLOW TRUE)
+FetchContent_Declare(mdspan GIT_REPOSITORY "https://github.com/kokkos/mdspan" GIT_TAG "5.3.0" GIT_SHALLOW TRUE)
 FetchContent_MakeAvailable(mdspan)
 
 find_package(CLI11 REQUIRED)
