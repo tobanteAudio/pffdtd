@@ -191,6 +191,7 @@ jobs:
     env:
       BASH_ENV: /opt/intel/oneapi/setvars.sh
       SETVARS_ARGS: "--force"
+      PFFDTD_ENGINE_EXE: "build/src/cpp/pffdtd-engine"
       PFFDTD_EXTRA_TEST_ENGINES: "sycl"
     steps:
       - name: Install dependencies
