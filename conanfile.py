@@ -6,7 +6,7 @@ from conan import ConanFile
 
 class PFFDTD(ConanFile):
     settings = 'os', 'compiler', 'build_type', 'arch'
-    generators = 'CMakeToolchain', 'CMakeDeps'
+    generators = 'CMakeConfigDeps'
 
     def requirements(self):
         self.requires('cli11/2.7.2')
