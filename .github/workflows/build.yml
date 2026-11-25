@@ -177,7 +177,7 @@ jobs:
       fail-fast: false
       matrix:
         sycl:
-          - "2026.2.0"
+          - "2026.1.1"
     container:
       image: intel/oneapi-toolkit:${{ matrix.sycl }}-devel-ubuntu24.04
     defaults:
