@@ -17,7 +17,7 @@ env:
   HOMEBREW_NO_INSTALL_CLEANUP: 1
 
 jobs:
-  build:
+  native:
     name: ${{ matrix.name }}
     runs-on: ${{ matrix.os }}
     env:
@@ -126,7 +126,7 @@ jobs:
           files: ./.coverage,./build/coverage.xml
           handle_no_reports_found: true
 
-  build-cuda:
+  cuda:
     name: CUDA ${{ matrix.cuda }}
     runs-on: ubuntu-24.04
     strategy:
@@ -170,7 +170,7 @@ jobs:
       - name: CMake build
         run: cmake --build build
 
-  build-sycl:
+  sycl:
     name: SYCL ${{ matrix.sycl }}
     runs-on: ubuntu-26.04
     strategy:
