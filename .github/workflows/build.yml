@@ -138,15 +138,15 @@ jobs:
     container:
       image: nvidia/cuda:${{ matrix.cuda }}-devel-ubuntu24.04
     steps:
+      - name: Install dependencies
+        run: |
+          apt-get update
+          apt-get install -y git git-lfs cmake ninja-build libomp-dev libhdf5-dev libfmt-dev libcli11-dev
+
       - name: Checkout code
         uses: actions/checkout@v7
         with:
           lfs: true
-
-      - name: Install dependencies
-        run: |
-          sudo apt update -y
-          sudo apt install -y libomp-dev libhdf5-dev libfmt-dev libcli11-dev
 
       - name: CMake configure
         run: >
