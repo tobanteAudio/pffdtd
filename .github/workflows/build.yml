@@ -163,7 +163,7 @@ jobs:
           -G Ninja
           -D CMAKE_BUILD_TYPE=Release
           -D CMAKE_CUDA_COMPILER=/usr/local/cuda/bin/nvcc
-          -D CMAKE_CUDA_ARCHITECTURES="89"
+          -D CMAKE_CUDA_ARCHITECTURES="75;80;89;90"
           -D CMAKE_PROJECT_TOP_LEVEL_INCLUDES=external/cmake-conan/conan_provider.cmake
           -D PFFDTD_ENABLE_CUDA=ON
 
