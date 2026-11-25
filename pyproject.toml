@@ -31,7 +31,7 @@ dependencies = [
     "memory_profiler",
     "numba",
     "numpy",
-    "opencv-python",
+    "opencv-python-headless",
     "pandas",
     "plotly",
     "polyscope",
