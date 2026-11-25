@@ -172,14 +172,14 @@ jobs:
 
   build-sycl:
     name: SYCL ${{ matrix.sycl }}
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     strategy:
       fail-fast: false
       matrix:
         sycl:
           - "2026.1.1"
     container:
-      image: intel/oneapi-toolkit:${{ matrix.sycl }}-devel-ubuntu24.04
+      image: intel/oneapi-toolkit:${{ matrix.sycl }}-devel-ubuntu26.04
     defaults:
       run:
         shell: bash
@@ -190,18 +190,12 @@ jobs:
       - name: Install dependencies
         run: |
           apt-get update
-          apt-get install -y --no-install-recommends git git-lfs python3 python3-pip cmake ninja-build
-          pip3 install --break-system-packages conan
+          apt-get install -y --no-install-recommends git git-lfs cmake ninja-build libhdf5-dev libfmt-dev libcli11-dev
 
       - name: Checkout code
         uses: actions/checkout@v7
         with:
           lfs: true
-
-      - name: Setup conan
-        run: |
-          conan profile detect -f
-          git clone https://github.com/conan-io/cmake-conan.git -b develop2 external/cmake-conan
 
       - name: CMake configure
         run: >
@@ -211,8 +205,6 @@ jobs:
           -D CMAKE_BUILD_TYPE=Release
           -D CMAKE_C_COMPILER=icx
           -D CMAKE_CXX_COMPILER=icpx
-          -D CMAKE_PROJECT_TOP_LEVEL_INCLUDES=external/cmake-conan/conan_provider.cmake
-          -D CONAN_HOST_PROFILE="../cmake/profile/linux-sycl-2026.02"
           -D PFFDTD_ENABLE_SYCL_ONEAPI=ON
 
       - name: CMake build
