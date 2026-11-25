@@ -24,7 +24,7 @@ SPDX-License-Identifier = "CC-BY-SA-4.0"
 
 [[annotations]]
 path = [
-    "cmake/profile/linux_sycl",
+    "cmake/profile/linux-sycl-2026.02",
     "cmake/profile/windows_sycl",
     "doc/data/*.csv",
     "Doxyfile",
