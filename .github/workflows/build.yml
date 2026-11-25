@@ -17,163 +17,163 @@ env:
   HOMEBREW_NO_INSTALL_CLEANUP: 1
 
 jobs:
-  # native:
-  #   name: ${{ matrix.name }}
-  #   runs-on: ${{ matrix.os }}
-  #   env:
-  #     MACOSX_DEPLOYMENT_TARGET: ${{ matrix.osx_target }}
-  #     PFFDTD_ENGINE_EXE: ${{ matrix.pffdtd_engine_exe }}
-  #   strategy:
-  #     fail-fast: false
-  #     matrix:
-  #       include:
-  #         - name: Linux x64
-  #           os: ubuntu-24.04
-  #           osx_target: ""
-  #           cmake_flags: ""
-  #           build_type: "Debug"
-  #           cxx_flags: "--coverage -march=native -Og"
-  #           python_version: "3.12"
-  #           pffdtd_engine_exe: "build/src/cpp/pffdtd-engine"
+  native:
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    env:
+      MACOSX_DEPLOYMENT_TARGET: ${{ matrix.osx_target }}
+      PFFDTD_ENGINE_EXE: ${{ matrix.pffdtd_engine_exe }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Linux x64
+            os: ubuntu-24.04
+            osx_target: ""
+            cmake_flags: ""
+            build_type: "Debug"
+            cxx_flags: "--coverage -march=native -Og"
+            python_version: "3.12"
+            pffdtd_engine_exe: "build/src/cpp/pffdtd-engine"
 
-  #         - name: Linux arm64
-  #           os: ubuntu-26.04-arm
-  #           osx_target: ""
-  #           cmake_flags: ""
-  #           build_type: "Release"
-  #           cxx_flags: ""
-  #           python_version: "3.14"
-  #           pffdtd_engine_exe: "build/src/cpp/pffdtd-engine"
+          - name: Linux arm64
+            os: ubuntu-26.04-arm
+            osx_target: ""
+            cmake_flags: ""
+            build_type: "Release"
+            cxx_flags: ""
+            python_version: "3.14"
+            pffdtd_engine_exe: "build/src/cpp/pffdtd-engine"
 
-  #         - name: macOS arm64
-  #           os: macos-15
-  #           osx_target: "15.0"
-  #           cmake_flags: '-D OpenMP_ROOT=`brew list libomp | grep libomp.a | sed -E "s/\/lib\/.*//"`'
-  #           build_type: "Release"
-  #           cxx_flags: ""
-  #           python_version: "3.15"
-  #           pffdtd_engine_exe: "build/src/cpp/pffdtd-engine"
+          - name: macOS arm64
+            os: macos-15
+            osx_target: "15.0"
+            cmake_flags: '-D OpenMP_ROOT=`brew list libomp | grep libomp.a | sed -E "s/\/lib\/.*//"`'
+            build_type: "Release"
+            cxx_flags: ""
+            python_version: "3.15"
+            pffdtd_engine_exe: "build/src/cpp/pffdtd-engine"
 
-  #         - name: Windows
-  #           os: windows-2025
-  #           osx_target: ""
-  #           cmake_flags: ""
-  #           build_type: "Release"
-  #           cxx_flags: "/EHsc"
-  #           python_version: "3.14"
-  #           pffdtd_engine_exe: "build/src/cpp/pffdtd-engine.exe"
+          - name: Windows
+            os: windows-2025
+            osx_target: ""
+            cmake_flags: ""
+            build_type: "Release"
+            cxx_flags: "/EHsc"
+            python_version: "3.14"
+            pffdtd_engine_exe: "build/src/cpp/pffdtd-engine.exe"
 
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v7
-  #       with:
-  #         lfs: true
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+        with:
+          lfs: true
 
-  #     - uses: actions/setup-python@v7
-  #       with:
-  #         python-version: ${{ matrix.python_version }}
+      - uses: actions/setup-python@v7
+        with:
+          python-version: ${{ matrix.python_version }}
 
-  #     - name: Install dependencies (Linux)
-  #       if: runner.os == 'Linux'
-  #       run: |
-  #         sudo apt update -y
-  #         sudo apt install -y --no-install-recommends libomp-dev gcovr
-  #         pip3 install --break-system-packages conan
+      - name: Install dependencies (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt update -y
+          sudo apt install -y --no-install-recommends libomp-dev gcovr
+          pip3 install --break-system-packages conan
 
-  #     - name: Install dependencies (macOS)
-  #       if: runner.os == 'macOS'
-  #       run: brew install conan hdf5 libomp llvm
+      - name: Install dependencies (macOS)
+        if: runner.os == 'macOS'
+        run: brew install conan hdf5 libomp llvm
 
-  #     - name: Install dependencies (Windows)
-  #       if: runner.os == 'Windows'
-  #       shell: bash
-  #       run: pip3 install --upgrade conan
+      - name: Install dependencies (Windows)
+        if: runner.os == 'Windows'
+        shell: bash
+        run: pip3 install --upgrade conan
 
-  #     - name: Set up Visual Studio shell
-  #       if: runner.os == 'Windows'
-  #       uses: egor-tensin/vs-shell@v2
+      - name: Set up Visual Studio shell
+        if: runner.os == 'Windows'
+        uses: egor-tensin/vs-shell@v2
 
-  #     - name: Setup conan
-  #       run: |
-  #         conan profile detect -f
-  #         git clone https://github.com/conan-io/cmake-conan.git -b develop2 external/cmake-conan
+      - name: Setup conan
+        run: |
+          conan profile detect -f
+          git clone https://github.com/conan-io/cmake-conan.git -b develop2 external/cmake-conan
 
-  #     - name: CMake configure
-  #       run: >
-  #         cmake
-  #         -B build
-  #         -G Ninja
-  #         -D CMAKE_BUILD_TYPE=${{ matrix.build_type }}
-  #         -D CMAKE_CXX_FLAGS="${{ matrix.cxx_flags }}"
-  #         -D CMAKE_PROJECT_TOP_LEVEL_INCLUDES=external/cmake-conan/conan_provider.cmake
-  #         ${{ matrix.cmake_flags }}
+      - name: CMake configure
+        run: >
+          cmake
+          -B build
+          -G Ninja
+          -D CMAKE_BUILD_TYPE=${{ matrix.build_type }}
+          -D CMAKE_CXX_FLAGS="${{ matrix.cxx_flags }}"
+          -D CMAKE_PROJECT_TOP_LEVEL_INCLUDES=external/cmake-conan/conan_provider.cmake
+          ${{ matrix.cmake_flags }}
 
-  #     - name: CMake build
-  #       run: cmake --build build
+      - name: CMake build
+        run: cmake --build build
 
-  #     - name: PIP
-  #       run: pip3 install --verbose .[test]
+      - name: PIP
+        run: pip3 install --verbose .[test]
 
-  #     - name: Pytest
-  #       run: pytest --cov=pffdtd --cov-branch
+      - name: Pytest
+        run: pytest --cov=pffdtd --cov-branch
 
-  #     - name: GCOV
-  #       if: ${{ matrix.name == 'Linux x64' }}
-  #       run: |
-  #         ./build/src/cpp/pffdtd-engine test
-  #         gcovr --xml-pretty --exclude-unreachable-branches --exclude-throw-branches -r src -s build -o build/coverage.xml
+      - name: GCOV
+        if: ${{ matrix.name == 'Linux x64' }}
+        run: |
+          ./build/src/cpp/pffdtd-engine test
+          gcovr --xml-pretty --exclude-unreachable-branches --exclude-throw-branches -r src -s build -o build/coverage.xml
 
-  #     - name: Upload coverage report
-  #       uses: codecov/codecov-action@v7
-  #       with:
-  #         token: ${{ secrets.CODECOV_TOKEN }}
-  #         fail_ci_if_error: true
-  #         files: ./.coverage,./build/coverage.xml
-  #         handle_no_reports_found: true
+      - name: Upload coverage report
+        uses: codecov/codecov-action@v7
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: true
+          files: ./.coverage,./build/coverage.xml
+          handle_no_reports_found: true
 
-  # cuda:
-  #   name: CUDA ${{ matrix.cuda }}
-  #   runs-on: ubuntu-24.04
-  #   strategy:
-  #     fail-fast: false
-  #     matrix:
-  #       cuda:
-  #         - "12.6.3"
-  #         - "12.9.1"
-  #         # Fails to compile because of deprecations in "cudaDeviceProp". Member "memoryClockRate" is missing
-  #         # - "13.5.0"
-  #   container:
-  #     image: nvidia/cuda:${{ matrix.cuda }}-devel-ubuntu24.04
-  #   steps:
-  #     - name: Install dependencies
-  #       run: |
-  #         apt-get update
-  #         apt-get install -y --no-install-recommends git git-lfs python3 python3-pip cmake ninja-build libomp-dev
-  #         pip3 install --break-system-packages conan
+  cuda:
+    name: CUDA ${{ matrix.cuda }}
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        cuda:
+          - "12.6.3"
+          - "12.9.1"
+          # Fails to compile because of deprecations in "cudaDeviceProp". Member "memoryClockRate" is missing
+          # - "13.5.0"
+    container:
+      image: nvidia/cuda:${{ matrix.cuda }}-devel-ubuntu24.04
+    steps:
+      - name: Install dependencies
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends git git-lfs python3 python3-pip cmake ninja-build libomp-dev
+          pip3 install --break-system-packages conan
 
-  #     - name: Checkout code
-  #       uses: actions/checkout@v7
-  #       with:
-  #         lfs: true
+      - name: Checkout code
+        uses: actions/checkout@v7
+        with:
+          lfs: true
 
-  #     - name: Setup conan
-  #       run: |
-  #         conan profile detect -f
-  #         git clone https://github.com/conan-io/cmake-conan.git -b develop2 external/cmake-conan
+      - name: Setup conan
+        run: |
+          conan profile detect -f
+          git clone https://github.com/conan-io/cmake-conan.git -b develop2 external/cmake-conan
 
-  #     - name: CMake configure
-  #       run: >
-  #         cmake
-  #         -B build
-  #         -G Ninja
-  #         -D CMAKE_BUILD_TYPE=Release
-  #         -D CMAKE_CUDA_COMPILER=/usr/local/cuda/bin/nvcc
-  #         -D CMAKE_CUDA_ARCHITECTURES="75;80;89;90"
-  #         -D CMAKE_PROJECT_TOP_LEVEL_INCLUDES=external/cmake-conan/conan_provider.cmake
-  #         -D PFFDTD_ENABLE_CUDA=ON
+      - name: CMake configure
+        run: >
+          cmake
+          -B build
+          -G Ninja
+          -D CMAKE_BUILD_TYPE=Release
+          -D CMAKE_CUDA_COMPILER=/usr/local/cuda/bin/nvcc
+          -D CMAKE_CUDA_ARCHITECTURES="75;80;89;90"
+          -D CMAKE_PROJECT_TOP_LEVEL_INCLUDES=external/cmake-conan/conan_provider.cmake
+          -D PFFDTD_ENABLE_CUDA=ON
 
-  #     - name: CMake build
-  #       run: cmake --build build
+      - name: CMake build
+        run: cmake --build build
 
   sycl:
     name: SYCL ${{ matrix.sycl }}
