@@ -125,3 +125,38 @@ jobs:
           fail_ci_if_error: true
           files: ./.coverage,./build/coverage.xml
           handle_no_reports_found: true
+
+  build-cuda:
+    name: CUDA ${{ matrix.cuda }}
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        cuda:
+          - "12.6.3"
+          - "13.5.0"
+    container:
+      image: nvidia/cuda:${{ matrix.cuda }}-devel-ubuntu24.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+        with:
+          lfs: true
+
+      - name: Install dependencies
+        run: |
+          sudo apt update -y
+          sudo apt install -y libomp-dev libhdf5-dev libfmt-dev libcli11-dev
+
+      - name: CMake configure
+        run: >
+          cmake
+          -B build
+          -G Ninja
+          -D CMAKE_BUILD_TYPE=Release
+          -D CMAKE_CUDA_COMPILER=/usr/local/cuda/bin/nvcc
+          -D CMAKE_CUDA_ARCHITECTURES="75;80;89;90"
+          -D PFFDTD_ENABLE_CUDA=ON
+
+      - name: CMake build
+        run: cmake --build build
