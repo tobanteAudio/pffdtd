@@ -7,6 +7,7 @@
 #include "pffdtd/hdf.hpp"
 #include "pffdtd/utility.hpp"
 
+#include <fmt/core.h>
 #include <fmt/format.h>
 
 #include <cfloat>

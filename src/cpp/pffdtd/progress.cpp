@@ -6,6 +6,7 @@
 #include "pffdtd/assert.hpp"
 #include "pffdtd/time.hpp"
 
+#include <fmt/core.h>
 #include <fmt/format.h>
 
 #include <cstdio>

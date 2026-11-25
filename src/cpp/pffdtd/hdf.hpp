@@ -9,6 +9,8 @@
 #include "pffdtd/utility.hpp"
 
 #include "hdf5.h"
+
+#include <fmt/core.h>
 #include <fmt/format.h>
 
 #include <array>
