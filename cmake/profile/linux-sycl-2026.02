@@ -9,5 +9,6 @@ build_type=Release
 
 [conf]
 tools.intel:installation_path=/opt/intel/oneapi
+tools.intel:setvars_args="--force"
 tools.cmake.cmaketoolchain:generator=Ninja
 tools.build:compiler_executables={"c":"/opt/intel/oneapi/compiler/2026.1/bin/icx","cpp":"/opt/intel/oneapi/compiler/2026.1/bin/icpx"}
