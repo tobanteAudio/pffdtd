@@ -179,7 +179,7 @@ jobs:
         sycl:
           - "2026.2.0"
     container:
-      image: intel/oneapi-basekit:${{ matrix.sycl }}-devel-ubuntu24.04
+      image: intel/oneapi-toolkit:${{ matrix.sycl }}-devel-ubuntu24.04
     defaults:
       run:
         shell: bash
