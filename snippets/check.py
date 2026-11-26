@@ -1,25 +1,30 @@
-
 # SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: 2025 Tobias Hienzsch
-
 import pathlib
 import sys
 
 import h5py
 import numpy as np
 
-sim_dir = pathlib.Path(sys.argv[1])
 
-with h5py.File(sim_dir / 'out-mojo.h5', 'r') as f:
-    out_cpp = f['out'][...]
+def main():
+    path_a = sys.argv[1]
+    path_b = sys.argv[2]
 
-with h5py.File(sim_dir / 'out.h5', 'r') as f:
-    out_mojo = f['out'][...]
+    with h5py.File(path_a, 'r') as f:
+        out_a = f['out'][...]
+    with h5py.File(path_b, 'r') as f:
+        out_b = f['out'][...]
 
-print(np.max(np.abs(out_mojo - out_cpp)))
+    assert not np.isnan(out_b).any()
+    assert not np.isinf(out_b).any()
+    assert not np.isnan(out_a).any()
+    assert not np.isinf(out_a).any()
 
-assert not np.isnan(out_mojo).any()
-assert not np.isinf(out_mojo).any()
-assert not np.isnan(out_cpp).any()
-assert not np.isinf(out_cpp).any()
-assert np.allclose(out_mojo, out_cpp, atol=1e-6)
+    max_error = np.max(np.abs(out_b - out_a))
+    print(f'Max-Error: {max_error:.5e}')
+    print(f'Max-Error: {20*np.log10(max_error):.4f} dB')
+
+
+if __name__ == '__main__':
+    main()

@@ -32,7 +32,7 @@ jobs:
             osx_target: ""
             cmake_flags: ""
             build_type: "Debug"
-            cxx_flags: "--coverage -march=native -Og"
+            cxx_flags: "-fno-fast-math -ffp-contract=off --coverage -march=native -Og"
             python_version: "3.12"
             pffdtd_engine_exe: "build/src/cpp/pffdtd-engine"
 
@@ -41,7 +41,7 @@ jobs:
             osx_target: ""
             cmake_flags: ""
             build_type: "Release"
-            cxx_flags: ""
+            cxx_flags: "-fno-fast-math -ffp-contract=off"
             python_version: "3.14"
             pffdtd_engine_exe: "build/src/cpp/pffdtd-engine"
 
@@ -50,7 +50,7 @@ jobs:
             osx_target: "15.0"
             cmake_flags: '-D OpenMP_ROOT=`brew list libomp | grep libomp.a | sed -E "s/\/lib\/.*//"`'
             build_type: "Release"
-            cxx_flags: ""
+            cxx_flags: "-fno-fast-math -ffp-contract=off"
             python_version: "3.15"
             pffdtd_engine_exe: "build/src/cpp/pffdtd-engine"
 
@@ -59,7 +59,7 @@ jobs:
             osx_target: ""
             cmake_flags: ""
             build_type: "Release"
-            cxx_flags: "/EHsc"
+            cxx_flags: "/EHsc /fp:strict"
             python_version: "3.14"
             pffdtd_engine_exe: "build/src/cpp/pffdtd-engine.exe"
 
