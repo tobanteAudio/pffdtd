@@ -79,7 +79,7 @@ if(PFFDTD_HAS_METAL)
     # Add a custom command to compile the Metal shader
     add_custom_command(
         OUTPUT ${SHADER_OUTPUT}
-        COMMAND xcrun -sdk macosx metal -std=metal3.0 -c ${SHADER_FILES} -o ${SHADER_OUTPUT}
+        COMMAND xcrun -sdk macosx metal -std=metal3.0 -fno-fast-math -ffp-contract=off -c ${SHADER_FILES} -o ${SHADER_OUTPUT}
         DEPENDS ${SHADER_FILES} ${SHADER_HEADERS}
         COMMENT "Compiling Metal shader: ${SHADER_FILES}"
         VERBATIM
