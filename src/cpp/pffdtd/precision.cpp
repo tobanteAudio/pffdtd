@@ -4,7 +4,6 @@
 #include "precision.hpp"
 
 #include "pffdtd/exception.hpp"
-#include "pffdtd/float.hpp"
 
 namespace pffdtd {
 
@@ -25,10 +24,17 @@ auto getEpsilon(Precision precision) -> double {
 }
 
 auto getMinMaxExponent(Precision precision) -> std::pair<int, int> {
-  using std::pair;
   switch (precision) {
-    case Precision::Float: return pair{FloatTraits<float>::minExponent, FloatTraits<float>::maxExponent};
-    case Precision::Double: return pair{FloatTraits<double>::minExponent, FloatTraits<double>::maxExponent};
+    case Precision::Float:
+      return std::pair{
+          std::numeric_limits<float>::min_exponent,
+          std::numeric_limits<float>::max_exponent,
+      };
+    case Precision::Double:
+      return std::pair{
+          std::numeric_limits<double>::min_exponent,
+          std::numeric_limits<double>::max_exponent,
+      };
     default: break;
   }
 

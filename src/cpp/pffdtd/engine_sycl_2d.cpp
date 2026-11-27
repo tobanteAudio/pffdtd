@@ -35,8 +35,8 @@ struct CopyOutput;
 
 template<typename Real>
 auto scaleInput(std::vector<double> const& buf) {
-  static constexpr auto min_exp = static_cast<double>(FloatTraits<Real>::minExponent);
-  static constexpr auto max_exp = static_cast<double>(FloatTraits<Real>::maxExponent);
+  static constexpr auto min_exp = static_cast<double>(std::numeric_limits<Real>::min_exponent);
+  static constexpr auto max_exp = static_cast<double>(std::numeric_limits<Real>::max_exponent);
   Log::info("min_exp = {}, min_exp = {}", min_exp, max_exp);
 
   auto const aexp  = 0.5;
