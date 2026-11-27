@@ -8,13 +8,8 @@
 namespace pffdtd {
 
 enum struct Precision : unsigned char {
-  Half,
   Float,
   Double,
-
-  DoubleHalf,
-  DoubleFloat,
-  DoubleDouble,
 };
 
 [[nodiscard]] auto getEpsilon(Precision precision) -> double;

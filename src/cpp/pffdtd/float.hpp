@@ -5,23 +5,10 @@
 
 #include <limits>
 
-#if (defined(__APPLE__) or defined(__clang__)) and not defined(__INTEL_LLVM_COMPILER)
-  #define PFFDTD_HAS_FLOAT16
-#endif
-
 namespace pffdtd {
 
 template<typename T>
 struct FloatTraits;
-
-#if defined(PFFDTD_HAS_FLOAT16)
-template<>
-struct FloatTraits<_Float16> {
-  static constexpr auto digits      = 11;
-  static constexpr auto minExponent = -13;
-  static constexpr auto maxExponent = 16;
-};
-#endif
 
 template<>
 struct FloatTraits<float> {

@@ -20,7 +20,6 @@ target_link_libraries(pffdtd
 target_sources(pffdtd
     PRIVATE
         pffdtd/assert.hpp
-        pffdtd/double.hpp
         pffdtd/engine_cpu_2d.cpp
         pffdtd/engine_cpu_2d.hpp
         pffdtd/engine_cpu_3d.cpp

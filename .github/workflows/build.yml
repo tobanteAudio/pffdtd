@@ -119,9 +119,7 @@ jobs:
 
       - name: GCOV
         if: ${{ matrix.name == 'Linux x64' }}
-        run: |
-          ./build/src/cpp/pffdtd-engine test
-          gcovr --xml-pretty --exclude-unreachable-branches --exclude-throw-branches -r src -s build -o build/coverage.xml
+        run: gcovr --xml-pretty --exclude-unreachable-branches --exclude-throw-branches -r src -s build -o build/coverage.xml
 
       - name: Upload coverage report
         uses: codecov/codecov-action@v7

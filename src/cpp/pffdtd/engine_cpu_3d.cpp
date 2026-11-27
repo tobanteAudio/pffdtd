@@ -4,7 +4,6 @@
 
 #include "engine_cpu_3d.hpp"
 
-#include "pffdtd/double.hpp"
 #include "pffdtd/exception.hpp"
 #include "pffdtd/precision.hpp"
 #include "pffdtd/progress.hpp"
@@ -386,8 +385,6 @@ auto EngineCPU3D::operator()(Simulation3D const& sim) const -> void {
   switch (sim.precision) {
     case Precision::Float: run<float>(sim); return;
     case Precision::Double: run<double>(sim); return;
-    case Precision::DoubleFloat: run<Double<float>>(sim); return;
-    case Precision::DoubleDouble: run<Double<double>>(sim); return;
     default: raisef<std::invalid_argument>("invalid precision {}", static_cast<int>(sim.precision));
   }
 }

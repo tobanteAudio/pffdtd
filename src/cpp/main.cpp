@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 // SPDX-FileCopyrightText: 2024 Tobias Hienzsch
 
-#include "pffdtd/double.hpp"
 #include "pffdtd/engine_cpu_2d.hpp"
 #include "pffdtd/engine_cpu_3d.hpp"
 #include "pffdtd/hdf.hpp"
@@ -35,12 +34,8 @@ namespace {
 [[nodiscard]] auto precisionOptions() {
   using pffdtd::Precision;
   return std::map<std::string, Precision>{
-      {  "16",         Precision::Half},
-      {  "32",        Precision::Float},
-      {  "64",       Precision::Double},
-      {"16x2",   Precision::DoubleHalf},
-      {"32x2",  Precision::DoubleFloat},
-      {"64x2", Precision::DoubleDouble},
+      {"32",  Precision::Float},
+      {"64", Precision::Double},
   };
 }
 
@@ -154,7 +149,6 @@ auto main(int argc, char** argv) -> int {
       ->required()
       ->transform(CLI::CheckedTransformer(precisionOptions(), CLI::ignore_case));
 
-  auto* test = app.add_subcommand("test", "Run unit tests");
   CLI11_PARSE(app, argc, argv);
 
   if (*sim2d) {
@@ -178,40 +172,6 @@ auto main(int argc, char** argv) -> int {
 
   if (*sim3d) {
     run3D(args.sim3d);
-  }
-
-  if (*test) {
-    // NOLINTBEGIN
-    using pffdtd::Double;
-    PFFDTD_ASSERT(static_cast<float>(Double{42.0F} + 2.0F) == 44.0F);
-    PFFDTD_ASSERT(static_cast<float>(Double{42.0F} + Double{2.0F}) == 44.0F);
-    PFFDTD_ASSERT(static_cast<float>(Double{42.0F} - Double{2.0F}) == 40.0F);
-    PFFDTD_ASSERT(static_cast<float>(Double{42.0F} * Double{2.0F}) == 84.0F);
-    PFFDTD_ASSERT(static_cast<float>(Double{42.0F} / Double{2.0F}) == 21.0F);
-
-    PFFDTD_ASSERT(static_cast<double>(Double{42.0} + 2.0) == 44.0);
-    PFFDTD_ASSERT(static_cast<double>(Double{42.0} + Double{2.0}) == 44.0);
-    PFFDTD_ASSERT(static_cast<double>(Double{42.0} - Double{2.0}) == 40.0);
-    PFFDTD_ASSERT(static_cast<double>(Double{42.0} * Double{2.0}) == 84.0);
-    PFFDTD_ASSERT(static_cast<double>(Double{42.0} / Double{2.0}) == 21.0);
-
-    auto a = Double{42.0};
-    PFFDTD_ASSERT(a == a);
-    PFFDTD_ASSERT(a != Double<double>{});
-    PFFDTD_ASSERT(Double<double>{} != a);
-    PFFDTD_ASSERT(static_cast<double>(+a) == +42.0);
-    PFFDTD_ASSERT(static_cast<double>(-a) == -42.0);
-
-    a += Double{2.0};
-    PFFDTD_ASSERT(static_cast<double>(a) == 44.0);
-    a -= Double{2.0};
-    PFFDTD_ASSERT(static_cast<double>(a) == 42.0);
-    a *= Double{2.0};
-    PFFDTD_ASSERT(static_cast<double>(a) == 84.0);
-    a /= Double{2.0};
-    PFFDTD_ASSERT(static_cast<double>(a) == 42.0);
-
-    // NOLINTEND
   }
 
   return EXIT_SUCCESS;

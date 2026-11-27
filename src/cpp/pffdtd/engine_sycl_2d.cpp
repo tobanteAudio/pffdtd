@@ -3,7 +3,6 @@
 
 #include "engine_sycl_2d.hpp"
 
-#include "pffdtd/double.hpp"
 #include "pffdtd/exception.hpp"
 #include "pffdtd/log.hpp"
 #include "pffdtd/progress.hpp"
@@ -244,15 +243,8 @@ auto run(Simulation2D const& sim) {
 auto EngineSYCL2D::operator()(Simulation2D const& sim, Precision precision) const
     -> stdex::mdarray<double, stdex::dextents<size_t, 2>> {
   switch (precision) {
-#if defined(PFFDTD_HAS_FLOAT16)
-    case Precision::Half: return run<_Float16>(sim);
-    case Precision::DoubleHalf: return run<Double<_Float16>>(sim);
-#endif
-
     case Precision::Float: return run<float>(sim);
     case Precision::Double: return run<double>(sim);
-    case Precision::DoubleFloat: return run<Double<float>>(sim);
-    case Precision::DoubleDouble: return run<Double<double>>(sim);
     default: raisef<std::invalid_argument>("invalid precision {}", static_cast<int>(precision));
   }
 }

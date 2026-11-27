@@ -3,7 +3,6 @@
 #include "engine_sycl_3d.hpp"
 
 #include "pffdtd/assert.hpp"
-#include "pffdtd/double.hpp"
 #include "pffdtd/exception.hpp"
 #include "pffdtd/precision.hpp"
 #include "pffdtd/progress.hpp"
@@ -363,16 +362,8 @@ auto run(Simulation3D const& sim) -> void {
 
 auto EngineSYCL3D::operator()(Simulation3D const& sim) const -> void {
   switch (sim.precision) {
-#if defined(PFFDTD_HAS_FLOAT16)
-    case Precision::Half: run<_Float16>(sim); return;
-    case Precision::DoubleHalf: run<Double<_Float16>>(sim); return;
-#endif
-
     case Precision::Float: run<float>(sim); return;
     case Precision::Double: run<double>(sim); return;
-    case Precision::DoubleFloat: run<Double<float>>(sim); return;
-    case Precision::DoubleDouble: run<Double<double>>(sim); return;
-
     default: raisef<std::invalid_argument>("invalid precision {}", static_cast<int>(sim.precision));
   }
 }
