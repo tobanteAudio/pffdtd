@@ -256,7 +256,7 @@ auto run(Simulation3D const& sim) -> void {
     for (int64_t nb = 0; nb < Nba; nb++) {
       Real const lQ    = l * Q_bna[nb];
       int64_t const ib = bna_ixyz[nb];
-      u0[ib]           = (u0[ib] + lQ * u2ba[nb]) / (1.0 + lQ);
+      u0[ib]           = (u0[ib] + lQ * u2ba[nb]) / (Real(1) + lQ);
     }
 
     // rigid boundary nodes, using adj data

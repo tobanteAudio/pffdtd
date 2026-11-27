@@ -18,7 +18,10 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES "AppleClang|Clang|IntelLLVM")
     target_compile_options(pffdtd.compiler_warnings INTERFACE
         "-Wall"
         "-Wextra"
+        "-Wconversion"
         "-Wsign-compare"
+        "-Wno-implicit-int-conversion"
+        "-Wno-sign-conversion"
         "-Wno-deprecated-declarations" # SYCL 2020 deprecations
     )
 endif ()

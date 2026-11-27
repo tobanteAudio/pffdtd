@@ -105,7 +105,7 @@ auto run(Simulation2D const& sim) {
 
     // Add sources
     for (int64_t s = 0; s < Ns; ++s) {
-      u0[sim.in_ixy[s]] += sim.in_sigs[n];
+      u0[sim.in_ixy[s]] += static_cast<Real>(sim.in_sigs[n]);
     }
 
     // Read outputs

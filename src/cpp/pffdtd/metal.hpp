@@ -15,6 +15,7 @@
 #include <Foundation/Foundation.h>
 #include <Metal/Metal.h>
 
+#include <cstdint>
 #include <cstring>
 
 namespace pffdtd {
@@ -62,8 +63,8 @@ id<MTLBuffer> makeBuffer(id<MTLDevice> device, std::vector<T> const& data, ModeT
 }
 
 template<typename T, typename ModeT>
-id<MTLBuffer> makeEmptyBuffer(id<MTLDevice> device, size_t count, ModeT mode) {
-  auto const size           = count * sizeof(T);
+id<MTLBuffer> makeEmptyBuffer(id<MTLDevice> device, int64_t count, ModeT mode) {
+  auto const size           = static_cast<size_t>(count) * sizeof(T);
   auto const allocationSize = std::max(size, sizeof(T));
   id<MTLBuffer> buf         = [device newBufferWithLength:allocationSize options:mode];
   PFFDTD_ASSERT(buf != nil);
