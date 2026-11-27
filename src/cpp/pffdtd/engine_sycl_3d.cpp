@@ -8,6 +8,7 @@
 #include "pffdtd/progress.hpp"
 #include "pffdtd/sycl.hpp"
 #include "pffdtd/time.hpp"
+#include "pffdtd/utility.hpp"
 
 #include <fmt/core.h>
 #include <fmt/format.h>
