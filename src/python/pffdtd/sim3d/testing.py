@@ -1,6 +1,5 @@
 # SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: 2024 Tobias Hienzsch
-
 import os
 import pathlib
 import subprocess
@@ -9,17 +8,6 @@ import pytest
 
 from pffdtd.common.metal import metal_device_available
 from pffdtd.sim3d.engine import EnginePython3D
-
-
-def engines_to_test() -> list[str]:
-    engines = ['python', 'cpu']
-    extra = os.environ.get('PFFDTD_EXTRA_TEST_ENGINES')
-    if extra:
-        for engine in extra.split(';'):
-            # Metal is excluded, because it doesn't support float64
-            assert engine in ['cuda', 'sycl']
-            engines.append(engine)
-    return engines
 
 
 def run_engine(

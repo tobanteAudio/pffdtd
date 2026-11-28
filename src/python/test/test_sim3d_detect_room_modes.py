@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: 2024 Tobias Hienzsch
+import os
 
 import numpy as np
 import pytest
@@ -8,8 +9,19 @@ from pffdtd.absorption.admittance import write_freq_ind_mat_from_Yn, convert_Sab
 from pffdtd.analysis.room_modes import detect_room_modes, find_nearest
 from pffdtd.sim3d.model_builder import RoomModelBuilder
 from pffdtd.sim3d.setup import sim_setup_3d
-from pffdtd.sim3d.testing import engines_to_test, run_engine, skip_if_native_engine_unavailable, skip_if_fcc_unsupported
+from pffdtd.sim3d.testing import run_engine, skip_if_native_engine_unavailable, skip_if_fcc_unsupported
 from pffdtd.sim3d.process_outputs import process_outputs
+
+
+def engines_to_test() -> list[str]:
+    engines = ['python', 'cpu']
+    extra = os.environ.get('PFFDTD_EXTRA_TEST_ENGINES')
+    if extra:
+        for engine in extra.split(';'):
+            # Metal is excluded, because it doesn't support float64
+            assert engine in ['cuda', 'sycl']
+            engines.append(engine)
+    return engines
 
 
 @pytest.mark.slow
