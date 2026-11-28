@@ -94,7 +94,6 @@ def engines_to_test() -> list[str]:
 @pytest.mark.parametrize('engine', engines_to_test())
 def test_sim2d_python_vs_engine(engine, exe_path, sim_config, python_output):
     out_py, sim_path = python_output
-    sim_setup_2d(sim_dir=sim_path, **sim_config)
 
     args = [str(exe_path), 'sim2d', '-e', engine, '-p', '64', '-s', str(sim_path), '-o', f'out-{engine}.h5']
     result = subprocess.run(args=args, capture_output=True, text=True, check=True)
