@@ -14,7 +14,7 @@ from pffdtd.geometry.math import to_ixy
 from pffdtd.sim2d.setup import sim_setup_2d
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope='module')
 def exe_path():
     env = os.environ.get('PFFDTD_ENGINE_EXE')
     if not env:
@@ -25,7 +25,7 @@ def exe_path():
 
 
 @pytest.fixture(
-    scope='session',
+    scope='module',
     params=[
         pytest.param({}, id='baseline'),
         pytest.param({'fmax': 10000.0, 'duration': 0.05}, id='high-frequency'),
@@ -63,7 +63,7 @@ def sim_config(request):
     }
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope='module')
 def python_output(tmp_path_factory, sim_config):
     tmp_path = tmp_path_factory.mktemp('python_vs_engine')
     sim_setup_2d(sim_dir=tmp_path, **sim_config)

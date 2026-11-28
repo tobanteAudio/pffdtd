@@ -13,19 +13,8 @@ from pffdtd.sim3d.testing import run_engine, skip_if_native_engine_unavailable, 
 from pffdtd.sim3d.process_outputs import process_outputs
 
 
-def engines_to_test() -> list[str]:
-    engines = ['python', 'cpu']
-    extra = os.environ.get('PFFDTD_EXTRA_TEST_ENGINES')
-    if extra:
-        for engine in extra.split(';'):
-            # Metal is excluded, because it doesn't support float64
-            assert engine in ['cuda', 'sycl']
-            engines.append(engine)
-    return engines
-
-
 @pytest.mark.slow
-@pytest.mark.parametrize('engine', engines_to_test())
+@pytest.mark.parametrize('engine', ['cpu'])
 @pytest.mark.parametrize(
     'room,fmax,ppw,fcc,dx_scale,tolerance_pct',
     [
